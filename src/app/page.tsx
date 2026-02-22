@@ -34,6 +34,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("runner");
   const [scores, setScores] = useState<Score[]>([]);
   const [criteria, setCriteria] = useState<ScoringCriteria[]>([]);
+  const [promptExpanded, setPromptExpanded] = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -338,12 +339,31 @@ export default function Home() {
 
         {activeTab === "runner" && (
           <>
-            {/* Benchmark info bar */}
+            {/* Benchmark prompt panel */}
             {selectedBenchmarkInfo && (
-              <div className="px-6 py-2 border-b border-zinc-800/50 bg-zinc-900/50">
-                <span className="text-xs text-zinc-500">
-                  Prompt: {selectedBenchmarkInfo.prompt.slice(0, 150)}...
-                </span>
+              <div className="border-b border-zinc-800/50 bg-zinc-900/50">
+                <button
+                  onClick={() => setPromptExpanded((p) => !p)}
+                  className="w-full px-6 py-2 flex items-center gap-2 hover:bg-zinc-800/30 transition-colors text-left"
+                >
+                  <svg
+                    className={`w-3 h-3 text-zinc-500 transition-transform ${promptExpanded ? "rotate-90" : ""}`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M6 4l8 6-8 6V4z" />
+                  </svg>
+                  <span className="text-xs font-medium text-zinc-400">
+                    Prompt — {selectedBenchmarkInfo.name}
+                  </span>
+                </button>
+                {promptExpanded && (
+                  <div className="px-6 pb-3 max-h-60 overflow-y-auto">
+                    <pre className="text-xs text-zinc-400 whitespace-pre-wrap font-mono leading-relaxed">
+                      {selectedBenchmarkInfo.prompt}
+                    </pre>
+                  </div>
+                )}
               </div>
             )}
 
