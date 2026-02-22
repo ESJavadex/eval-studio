@@ -15,6 +15,7 @@ interface ModelInfo {
   baseUrl: string;
   hasApiKey: boolean;
   defaultModel: string;
+  source?: string;
 }
 
 export default function Home() {

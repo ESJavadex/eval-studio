@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const model = getModelById(modelId);
+    const model = await getModelById(modelId);
     if (!model) {
       return NextResponse.json(
         { error: `Model "${modelId}" not found in config` },

@@ -6,6 +6,7 @@ interface ModelInfo {
   baseUrl: string;
   hasApiKey: boolean;
   defaultModel: string;
+  source?: string;
 }
 
 interface Props {
@@ -22,7 +23,7 @@ export default function ModelSelector({ models, selected, onToggle }: Props) {
       </span>
       {models.map((m) => {
         const isChecked = selected.has(m.id);
-        const isLocal = m.baseUrl.includes("localhost");
+        const badge = m.source || (m.baseUrl.includes("localhost") ? "LOCAL" : null);
         return (
           <label
             key={m.id}
@@ -59,9 +60,9 @@ export default function ModelSelector({ models, selected, onToggle }: Props) {
               )}
             </span>
             <span>{m.name}</span>
-            {isLocal && (
+            {badge && (
               <span className="text-[10px] bg-zinc-700 text-zinc-400 px-1.5 py-0.5 rounded">
-                LOCAL
+                {badge}
               </span>
             )}
           </label>

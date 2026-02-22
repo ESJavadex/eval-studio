@@ -1,44 +1,12 @@
-[
-  {
-    "id": "qwen3-4b",
-    "name": "Qwen3 4B Instruct",
-    "baseUrl": "http://localhost:1234/v1",
-    "apiKey": "not-needed",
-    "defaultModel": "qwen3-4b-instruct-2507"
-  },
-  {
-    "id": "qwen3-14b-claude-opus",
-    "name": "Qwen3 14B Claude Opus Distill",
-    "baseUrl": "http://localhost:1234/v1",
-    "apiKey": "not-needed",
-    "defaultModel": "qwen3-14b-claude-4.5-opus-high-reasoning-distill"
-  },
-  {
-    "id": "qwen3-14b-claude-sonnet",
-    "name": "Qwen3 14B Sonnet Distill",
-    "baseUrl": "http://localhost:1234/v1",
-    "apiKey": "not-needed",
-    "defaultModel": "qwen3-14b-claude-sonnet-4.5-reasoning-distill"
-  },
-  {
-    "id": "qwen3-coder",
-    "name": "Qwen3 Coder Next",
-    "baseUrl": "http://localhost:1234/v1",
-    "apiKey": "not-needed",
-    "defaultModel": "qwen3-coder-next"
-  },
-  {
-    "id": "gpt-oss-20b",
-    "name": "GPT-OSS 20B",
-    "baseUrl": "http://localhost:1234/v1",
-    "apiKey": "not-needed",
-    "defaultModel": "gpt-oss-20b"
-  },
-  {
-    "id": "glm-4.7-flash",
-    "name": "GLM 4.7 Flash",
-    "baseUrl": "http://localhost:1234/v1",
-    "apiKey": "not-needed",
-    "defaultModel": "zai-org/glm-4.7-flash"
-  }
-]
+{
+  "providers": [
+    {
+      "id": "lmstudio",
+      "name": "LM Studio",
+      "baseUrl": "http://localhost:1234/v1",
+      "apiKey": "not-needed",
+      "type": "openai"
+    }
+  ],
+  "models": []
+}

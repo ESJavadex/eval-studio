@@ -5,6 +5,7 @@ export interface ModelConfig {
   apiKey: string;
   defaultModel: string;
   provider?: "openai" | "anthropic";
+  source?: string;
 }
 
 export interface BenchmarkInfo {

@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
     // Run models sequentially to avoid overwhelming local inference
     for (const modelId of modelIds) {
-      const model = getModelById(modelId);
+      const model = await getModelById(modelId);
       if (!model) {
         results.push({
           benchmarkId,
