@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import type { ModelConfig } from "./types";
+import { getModelStates } from "./lmstudio";
 
 interface ProviderConfig {
   id: string;
@@ -16,17 +17,11 @@ interface ModelsConfig {
 }
 
 // Patterns that indicate non-chat models (embeddings, rerankers, etc.)
-const SKIP_PATTERNS = [
-  /embed/i,
-  /rerank/i,
-  /whisper/i,
-  /tts/i,
-  /clip/i,
-];
+const SKIP_PATTERNS = [/embed/i, /rerank/i, /whisper/i, /tts/i, /clip/i];
 
 let cachedModels: ModelConfig[] | null = null;
 let cacheTimestamp = 0;
-const CACHE_TTL_MS = 30_000; // refresh every 30s
+const CACHE_TTL_MS = 30_000;
 
 function loadConfig(): ModelsConfig {
   const configPath = join(process.cwd(), "config", "models.json");
@@ -42,42 +37,61 @@ function resolveApiKey(value: string): string {
   return value;
 }
 
-function modelIdToName(id: string): string {
-  return id
-    .replace(/^.*\//, "") // strip org prefix like "zai-org/"
-    .split(/[-_]+/)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-}
-
 function shouldSkipModel(id: string): boolean {
   return SKIP_PATTERNS.some((p) => p.test(id));
 }
 
 /**
- * Fetch models from an OpenAI-compatible /v1/models endpoint.
+ * Fetch models from LM Studio's native API for better display names,
+ * then map to ModelConfig format.
  */
-async function discoverModels(provider: ProviderConfig): Promise<ModelConfig[]> {
-  const url = `${provider.baseUrl.replace(/\/$/, "")}/models`;
-  const headers: Record<string, string> = {};
+async function discoverModels(
+  provider: ProviderConfig
+): Promise<ModelConfig[]> {
   const apiKey = resolveApiKey(provider.apiKey);
 
+  // Use LM Studio's native /api/v1/models for rich metadata
+  const models = await getModelStates(provider.baseUrl);
+
+  if (models.length > 0) {
+    return models
+      .filter((m) => m.type !== "embedding" && !shouldSkipModel(m.key))
+      .map((m) => ({
+        id: m.key,
+        name: m.display_name,
+        baseUrl: provider.baseUrl,
+        apiKey: apiKey,
+        defaultModel: m.key,
+        provider: provider.type,
+        source: provider.name,
+      }));
+  }
+
+  // Fallback: OpenAI-compat /v1/models
+  const url = `${provider.baseUrl.replace(/\/$/, "")}/models`;
+  const headers: Record<string, string> = {};
   if (apiKey && apiKey !== "not-needed") {
     headers["Authorization"] = `Bearer ${apiKey}`;
   }
 
   try {
-    const res = await fetch(url, { headers, signal: AbortSignal.timeout(5000) });
+    const res = await fetch(url, {
+      headers,
+      signal: AbortSignal.timeout(5000),
+    });
     if (!res.ok) return [];
-
     const data = await res.json();
-    const models: { id: string }[] = data.data ?? [];
+    const list: { id: string }[] = data.data ?? [];
 
-    return models
+    return list
       .filter((m) => !shouldSkipModel(m.id))
       .map((m) => ({
         id: m.id,
-        name: modelIdToName(m.id),
+        name: m.id
+          .replace(/^.*\//, "")
+          .split(/[-_]+/)
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" "),
         baseUrl: provider.baseUrl,
         apiKey: apiKey,
         defaultModel: m.id,
@@ -85,7 +99,6 @@ async function discoverModels(provider: ProviderConfig): Promise<ModelConfig[]> 
         source: provider.name,
       }));
   } catch {
-    // Provider offline — silently skip
     return [];
   }
 }
@@ -102,26 +115,22 @@ export async function getModels(): Promise<ModelConfig[]> {
 
   const config = loadConfig();
 
-  // Discover from all providers in parallel
   const discovered = (
     await Promise.all(config.providers.map(discoverModels))
   ).flat();
 
-  // Manual models with resolved keys
   const manual = (config.models ?? []).map((m) => ({
     ...m,
     provider: m.provider ?? "openai",
     apiKey: resolveApiKey(m.apiKey),
   }));
 
-  // Manual entries override discovered ones by id
   const manualIds = new Set(manual.map((m) => m.id));
   const merged = [
     ...manual,
     ...discovered.filter((m) => !manualIds.has(m.id)),
   ];
 
-  // Sort alphabetically by name
   merged.sort((a, b) => a.name.localeCompare(b.name));
 
   cachedModels = merged;
@@ -129,7 +138,9 @@ export async function getModels(): Promise<ModelConfig[]> {
   return cachedModels;
 }
 
-export async function getModelById(id: string): Promise<ModelConfig | undefined> {
+export async function getModelById(
+  id: string
+): Promise<ModelConfig | undefined> {
   const models = await getModels();
   return models.find((m) => m.id === id);
 }
