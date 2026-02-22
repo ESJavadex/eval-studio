@@ -1,0 +1,8 @@
+Create a single HTML file that displays "Hello World" centered on the page with the following requirements:
+- The text should be in a large, bold font (at least 48px)
+- Use a gradient background that goes from deep blue (#1a1a2e) to dark purple (#16213e)
+- The text color should be white
+- Add a subtle text-shadow glow effect
+- The page should be responsive and the text should remain centered on any screen size
+- Include all CSS inline within <style> tags in the HTML file
+- Do NOT use any external libraries or CDNs

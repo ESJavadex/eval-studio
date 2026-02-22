@@ -1,0 +1,30 @@
+[
+  {
+    "id": "instructions",
+    "name": "Instructions",
+    "description": "Did it follow the prompt instructions?",
+    "min": 0,
+    "max": 10
+  },
+  {
+    "id": "functionality",
+    "name": "Functionality",
+    "description": "Does the output work correctly?",
+    "min": 0,
+    "max": 10
+  },
+  {
+    "id": "aesthetics",
+    "name": "Aesthetics",
+    "description": "Visual quality and design",
+    "min": 0,
+    "max": 10
+  },
+  {
+    "id": "code_quality",
+    "name": "Code Quality",
+    "description": "Clean, correct code",
+    "min": 0,
+    "max": 10
+  }
+]

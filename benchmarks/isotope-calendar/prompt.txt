@@ -1,0 +1,27 @@
+Context: You are designing the chronological system for a Mars colony that uses the "Isotope Calendar".
+
+Calendar Rules:
+- The year has 13 months.
+- The first 12 months have exactly 28 days each (4 perfect weeks).
+- Month 13 (called "Extra Month") has the remaining 29 days (to add up to 365).
+- The week has 7 days: Mon, Tue, Wed, Thu, Fri, Sat, Sun. Day 1 of Month 1 is always Monday.
+
+Task: Create a single HTML file containing CSS and JavaScript (no external libraries or CDNs allowed) to:
+
+1. **Conversion Function**: A function that receives an Earth date (e.g., February 20, 2026) and converts it to the corresponding Isotope Calendar date. The calculation must be manual: compute the day-of-year (1-365) from the Earth date, then map it to your 28-day months. Do NOT use any date libraries — calculate everything by hand.
+
+2. **Visual Interface**: A widget that displays:
+   - The "current month" in this calendar as a grid.
+   - A visual marker highlighting today's day.
+   - A counter showing "Days remaining until end of year" in this system.
+
+3. **Interactivity**: A date input so the user can test any day and see the calendar change visually.
+
+Critical constraints:
+- Month 13 MUST have exactly 29 days, not 28.
+- Since each 28-day month starts on Monday, the grid must be a perfect 4x7 grid with NO gaps at the beginning of the month.
+- Day 1 on Earth (January 1) = Month 1, Day 1 in Isotope Calendar.
+- Day 29 on Earth (January 29) = Month 2, Day 1 in Isotope Calendar.
+- Use a modern dark theme with clean styling. You may use inline Tailwind-style utility classes or write your own CSS.
+- Everything must be in a single HTML file with inline CSS and JavaScript.
+- Do NOT use any external libraries, CDNs, or frameworks.

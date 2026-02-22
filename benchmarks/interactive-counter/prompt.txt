@@ -1,0 +1,10 @@
+Create a single HTML file with an interactive counter application. Requirements:
+- Display a large number (starting at 0) centered on the page
+- Include three buttons: "-" (decrement), "Reset", and "+" (increment)
+- Style with a modern dark theme (background #0f172a, text white)
+- Buttons should have rounded corners, hover effects, and smooth transitions
+- The "+" button should be green (#22c55e), "-" should be red (#ef4444), "Reset" should be gray (#64748b)
+- The counter number should change color: red when negative, green when positive, white when zero
+- Add a subtle animation when the number changes
+- Include all CSS and JavaScript inline within the HTML file
+- Do NOT use any external libraries or CDNs

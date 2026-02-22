@@ -1,0 +1,8 @@
+Create a single HTML file that renders a Piet Mondrian-style abstract composition using only HTML and CSS. Requirements:
+- Use a CSS Grid layout to create the characteristic rectangular blocks
+- Use only Mondrian's palette: white, red (#c0392b), blue (#2980b9), yellow (#f1c40f), and black borders
+- The grid should have at least 8 distinct blocks of varying sizes
+- Black borders between all blocks should be at least 4px thick
+- The composition should fill the viewport (100vw x 100vh)
+- Include all CSS inline within <style> tags
+- Do NOT use any external libraries, CDNs, JavaScript, or canvas
