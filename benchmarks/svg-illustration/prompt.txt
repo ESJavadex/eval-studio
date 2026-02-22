@@ -1,0 +1,12 @@
+Create a single HTML file that renders an animated SVG illustration of a solar system with the following requirements:
+- The sun should be centered, colored with a radial gradient from bright yellow (#FFD700) to orange (#FF8C00)
+- Include at least 5 planets orbiting the sun at different distances, sizes, and speeds
+- Each planet should have a distinct color and orbit path (shown as a faint circle)
+- The planets should animate continuously using SVG <animateTransform> or CSS animations (NO JavaScript required, but allowed)
+- Add a starfield background using small white/gray circles or dots scattered randomly
+- Include labels for each planet (Mercury, Venus, Earth, Mars, Jupiter) positioned near their orbits
+- Earth should have a tiny moon orbiting around it
+- The entire illustration should be responsive and centered on the page
+- Use a dark background (#0a0a2e)
+- Include all CSS inline within <style> tags
+- All graphics must be pure inline SVG — do NOT use any external images, libraries, or CDNs

@@ -1,0 +1,27 @@
+Create a single HTML file that renders a complex diagram using the Mermaid.js library with the following requirements:
+- Include Mermaid.js via CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+- Render THREE separate diagrams on the same page, stacked vertically with clear headings:
+
+1. **Flowchart**: A software deployment pipeline showing:
+   - Developer pushes code → CI runs tests → Tests pass/fail branch
+   - If pass: Build Docker image → Push to registry → Deploy to staging → Run E2E tests → Deploy to production
+   - If fail: Notify developer (loops back)
+   - Use appropriate shapes (rectangles, diamonds for decisions, rounded for start/end)
+
+2. **Sequence Diagram**: An authentication flow showing interactions between:
+   - User, Frontend, Auth Service, Database, Token Store
+   - Show: login request, credential validation, token generation, token storage, response with JWT
+   - Include error path for invalid credentials
+
+3. **Entity Relationship Diagram**: A simple e-commerce schema with:
+   - Users (id, name, email)
+   - Orders (id, user_id, total, status)
+   - Products (id, name, price, stock)
+   - OrderItems (order_id, product_id, quantity)
+   - Show proper relationships (one-to-many, many-to-many)
+
+- Use a dark theme (dark background #1a1a2e, light text)
+- Style the page with a clean layout: centered content, max-width 900px, spacing between diagrams
+- Each diagram should have a title/heading above it
+- Initialize Mermaid with: theme 'dark', securityLevel 'loose'
+- Include all CSS inline within <style> tags
