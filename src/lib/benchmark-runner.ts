@@ -66,25 +66,45 @@ export async function callModel(
     headers["Authorization"] = `Bearer ${model.apiKey}`;
   }
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-  });
+  const payload = JSON.stringify(body);
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(
-      `API error ${res.status} from ${model.name}: ${errorText}`
-    );
+  // Retry once on connection failure (LM Studio can drop under concurrent load)
+  let lastError: Error | null = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers,
+        body: payload,
+        // 10 minute timeout for slow CPU inference
+        signal: AbortSignal.timeout(600_000),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(
+          `API error ${res.status} from ${model.name}: ${errorText}`
+        );
+      }
+
+      const data = await res.json();
+      const content =
+        data.choices?.[0]?.message?.content ?? data.choices?.[0]?.text ?? "";
+      const durationMs = Date.now() - start;
+
+      return { content, durationMs };
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err));
+      // Only retry on connection/network errors, not API errors
+      if (lastError.message.startsWith("API error")) throw lastError;
+      // Wait 2s before retry
+      if (attempt === 0) {
+        await new Promise((r) => setTimeout(r, 2000));
+      }
+    }
   }
 
-  const data = await res.json();
-  const content =
-    data.choices?.[0]?.message?.content ?? data.choices?.[0]?.text ?? "";
-  const durationMs = Date.now() - start;
-
-  return { content, durationMs };
+  throw lastError!;
 }
 
 /**

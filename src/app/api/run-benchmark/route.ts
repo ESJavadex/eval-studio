@@ -5,6 +5,9 @@ import { getModelById } from "@/lib/models";
 import { listBenchmarks, runBenchmark } from "@/lib/benchmark-runner";
 import type { RunResult } from "@/lib/types";
 
+// Allow up to 10 minutes for long inference runs
+export const maxDuration = 600;
+
 export async function POST(req: NextRequest) {
   try {
     const { benchmarkId, modelIds } = await req.json();

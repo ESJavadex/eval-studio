@@ -203,6 +203,8 @@ export default function Home() {
     await Promise.allSettled(
       modelIds.map(async (modelId, idx) => {
         try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 600_000);
           const res = await fetch("/api/run-benchmark", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -210,7 +212,9 @@ export default function Home() {
               benchmarkId: selectedBenchmark,
               modelIds: [modelId],
             }),
+            signal: controller.signal,
           });
+          clearTimeout(timeout);
           const data = await res.json();
           if (data.results?.[0]) {
             resultsRef[idx] = data.results[0];
@@ -256,7 +260,6 @@ export default function Home() {
       .then(setPastResults);
   };
 
-  // ---- Run all benchmarks for 1 model ----
   // ---- Run all benchmarks for 1 model (sequential) ----
   const runAllBenchmarks = async () => {
     if (selectedModels.size !== 1) return;
@@ -277,6 +280,8 @@ export default function Home() {
       setSelectedBenchmark(benchmark.id);
 
       try {
+        const ctrl = new AbortController();
+        const tm = setTimeout(() => ctrl.abort(), 600_000);
         const res = await fetch("/api/run-benchmark", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -284,7 +289,9 @@ export default function Home() {
             benchmarkId: benchmark.id,
             modelIds: [modelId],
           }),
+          signal: ctrl.signal,
         });
+        clearTimeout(tm);
         const data = await res.json();
         if (data.results) {
           allResults.push(...data.results);
