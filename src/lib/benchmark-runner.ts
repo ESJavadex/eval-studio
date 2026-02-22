@@ -55,7 +55,7 @@ export async function callModel(
       },
     ],
     temperature: 0.3,
-    max_tokens: 4096,
+    max_tokens: 16384,
   };
 
   const headers: Record<string, string> = {

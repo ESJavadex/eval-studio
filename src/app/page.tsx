@@ -185,7 +185,7 @@ export default function Home() {
     refreshModelStates();
   };
 
-  // ---- Run benchmark: 1 benchmark × N models (parallel) ----
+  // ---- Run benchmark: 1 benchmark × N models (parallel, no unloading) ----
   const runBenchmark = async () => {
     if (!selectedBenchmark || selectedModels.size === 0) return;
 
@@ -193,15 +193,14 @@ export default function Home() {
     setResults([]);
 
     const modelIds = Array.from(selectedModels);
-    const allResults: RunResult[] = new Array(modelIds.length);
+    const resultsRef: (RunResult | null)[] = modelIds.map(() => null);
     let completed = 0;
 
     setRunProgress(
       `Running ${modelIds.length} model${modelIds.length > 1 ? "s" : ""} in parallel...`
     );
 
-    // Run all models in parallel
-    await Promise.all(
+    await Promise.allSettled(
       modelIds.map(async (modelId, idx) => {
         try {
           const res = await fetch("/api/run-benchmark", {
@@ -213,11 +212,23 @@ export default function Home() {
             }),
           });
           const data = await res.json();
-          if (data.results) {
-            allResults[idx] = data.results[0];
+          if (data.results?.[0]) {
+            resultsRef[idx] = data.results[0];
+          } else {
+            resultsRef[idx] = {
+              benchmarkId: selectedBenchmark,
+              modelId,
+              modelName: modelNames[modelId] ?? modelId,
+              rawResponse: "",
+              extractedCode: "",
+              resultPath: "",
+              durationMs: 0,
+              success: false,
+              error: data.error ?? "Empty response from server",
+            };
           }
         } catch (err) {
-          allResults[idx] = {
+          resultsRef[idx] = {
             benchmarkId: selectedBenchmark,
             modelId,
             modelName: modelNames[modelId] ?? modelId,
@@ -230,15 +241,12 @@ export default function Home() {
           };
         }
         completed++;
-        setRunProgress(
-          `Completed ${completed}/${modelIds.length} models...`
-        );
-        // Update results as each finishes
-        setResults(allResults.filter(Boolean));
+        setRunProgress(`Completed ${completed}/${modelIds.length} models...`);
+        setResults(resultsRef.filter((r): r is RunResult => r !== null));
       })
     );
 
-    setResults(allResults.filter(Boolean));
+    setResults(resultsRef.filter((r): r is RunResult => r !== null));
     setRunningModel(null);
     setRunning(false);
     setRunProgress(null);
