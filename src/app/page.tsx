@@ -38,6 +38,7 @@ export default function Home() {
   const [running, setRunning] = useState(false);
   const [runningModel, setRunningModel] = useState<string | null>(null);
   const [runProgress, setRunProgress] = useState<string | null>(null);
+  const [runLogs, setRunLogs] = useState<string[]>([]);
 
   const [activeTab, setActiveTab] = useState("runner");
   const [scores, setScores] = useState<Score[]>([]);
@@ -185,53 +186,92 @@ export default function Home() {
     refreshModelStates();
   };
 
-  // ---- Run benchmark: 1 benchmark × N models (parallel, no unloading) ----
+  // ---- SSE stream consumer for run-benchmark API ----
+  const consumeRunStream = async (
+    benchmarkId: string,
+    modelIds: string[],
+    onResult: (result: RunResult) => void,
+    onLog: (msg: string) => void
+  ) => {
+    const res = await fetch("/api/run-benchmark", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ benchmarkId, modelIds }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+
+    const reader = res.body?.getReader();
+    if (!reader) throw new Error("No response body");
+
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("data: ")) continue;
+        try {
+          const event = JSON.parse(trimmed.slice(6));
+          if (event.type === "log") onLog(event.message);
+          if (event.type === "result") onResult(event.result);
+        } catch {
+          // skip
+        }
+      }
+    }
+  };
+
+  // ---- Run benchmark: 1 benchmark × N models (parallel, SSE streams) ----
   const runBenchmark = async () => {
     if (!selectedBenchmark || selectedModels.size === 0) return;
 
     setRunning(true);
     setResults([]);
+    setRunLogs([]);
 
     const modelIds = Array.from(selectedModels);
     const resultsRef: (RunResult | null)[] = modelIds.map(() => null);
     let completed = 0;
 
+    const addLog = (msg: string) => {
+      const ts = new Date().toLocaleTimeString();
+      setRunLogs((prev) => [...prev, `[${ts}] ${msg}`]);
+    };
+
     setRunProgress(
       `Running ${modelIds.length} model${modelIds.length > 1 ? "s" : ""} in parallel...`
     );
 
+    addLog(`Starting ${modelIds.length} parallel stream(s)...`);
+
     await Promise.allSettled(
       modelIds.map(async (modelId, idx) => {
         try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 600_000);
-          const res = await fetch("/api/run-benchmark", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              benchmarkId: selectedBenchmark,
-              modelIds: [modelId],
-            }),
-            signal: controller.signal,
-          });
-          clearTimeout(timeout);
-          const data = await res.json();
-          if (data.results?.[0]) {
-            resultsRef[idx] = data.results[0];
-          } else {
-            resultsRef[idx] = {
-              benchmarkId: selectedBenchmark,
-              modelId,
-              modelName: modelNames[modelId] ?? modelId,
-              rawResponse: "",
-              extractedCode: "",
-              resultPath: "",
-              durationMs: 0,
-              success: false,
-              error: data.error ?? "Empty response from server",
-            };
-          }
+          await consumeRunStream(
+            selectedBenchmark,
+            [modelId],
+            (result) => {
+              resultsRef[idx] = result;
+              completed++;
+              setRunProgress(`Completed ${completed}/${modelIds.length} models...`);
+              setResults(resultsRef.filter((r): r is RunResult => r !== null));
+            },
+            addLog
+          );
         } catch (err) {
+          const errMsg = err instanceof Error ? err.message : "Network error";
+          addLog(`FAILED ${modelNames[modelId] ?? modelId}: ${errMsg}`);
           resultsRef[idx] = {
             benchmarkId: selectedBenchmark,
             modelId,
@@ -241,15 +281,16 @@ export default function Home() {
             resultPath: "",
             durationMs: 0,
             success: false,
-            error: err instanceof Error ? err.message : "Network error",
+            error: errMsg,
           };
+          completed++;
+          setRunProgress(`Completed ${completed}/${modelIds.length} models...`);
+          setResults(resultsRef.filter((r): r is RunResult => r !== null));
         }
-        completed++;
-        setRunProgress(`Completed ${completed}/${modelIds.length} models...`);
-        setResults(resultsRef.filter((r): r is RunResult => r !== null));
       })
     );
 
+    addLog("All models finished.");
     setResults(resultsRef.filter((r): r is RunResult => r !== null));
     setRunningModel(null);
     setRunning(false);
@@ -260,16 +301,24 @@ export default function Home() {
       .then(setPastResults);
   };
 
-  // ---- Run all benchmarks for 1 model (sequential) ----
+  // ---- Run all benchmarks for 1 model (sequential, SSE streams) ----
   const runAllBenchmarks = async () => {
     if (selectedModels.size !== 1) return;
 
     const modelId = Array.from(selectedModels)[0];
     setRunning(true);
     setResults([]);
+    setRunLogs([]);
 
     const totalBenchmarks = benchmarks.length;
     const allResults: RunResult[] = [];
+
+    const addLog = (msg: string) => {
+      const ts = new Date().toLocaleTimeString();
+      setRunLogs((prev) => [...prev, `[${ts}] ${msg}`]);
+    };
+
+    addLog(`Starting RUN ALL: ${totalBenchmarks} benchmarks for ${modelNames[modelId] ?? modelId}`);
 
     for (let i = 0; i < benchmarks.length; i++) {
       const benchmark = benchmarks[i];
@@ -280,24 +329,18 @@ export default function Home() {
       setSelectedBenchmark(benchmark.id);
 
       try {
-        const ctrl = new AbortController();
-        const tm = setTimeout(() => ctrl.abort(), 600_000);
-        const res = await fetch("/api/run-benchmark", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            benchmarkId: benchmark.id,
-            modelIds: [modelId],
-          }),
-          signal: ctrl.signal,
-        });
-        clearTimeout(tm);
-        const data = await res.json();
-        if (data.results) {
-          allResults.push(...data.results);
-          setResults([...allResults]);
-        }
+        await consumeRunStream(
+          benchmark.id,
+          [modelId],
+          (result) => {
+            allResults.push(result);
+            setResults([...allResults]);
+          },
+          addLog
+        );
       } catch (err) {
+        const errMsg = err instanceof Error ? err.message : "Network error";
+        addLog(`FAILED ${benchmark.name}: ${errMsg}`);
         allResults.push({
           benchmarkId: benchmark.id,
           modelId,
@@ -307,12 +350,13 @@ export default function Home() {
           resultPath: "",
           durationMs: 0,
           success: false,
-          error: err instanceof Error ? err.message : "Network error",
+          error: errMsg,
         });
         setResults([...allResults]);
       }
     }
 
+    addLog("All benchmarks finished.");
     setRunningModel(null);
     setRunning(false);
     setRunProgress(null);
@@ -502,6 +546,41 @@ export default function Home() {
                     </pre>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Live Logs */}
+            {runLogs.length > 0 && (
+              <div className="border-b border-zinc-800/50 bg-zinc-900/30 px-6 py-2 max-h-40 overflow-y-auto">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+                    Live Logs
+                  </span>
+                  {!running && (
+                    <button
+                      onClick={() => setRunLogs([])}
+                      className="text-[10px] text-zinc-600 hover:text-zinc-400 transition-colors"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                {runLogs.map((log, i) => (
+                  <div
+                    key={i}
+                    className={`text-[11px] font-mono leading-relaxed ${
+                      log.includes("FAILED")
+                        ? "text-red-400"
+                        : log.includes("completed")
+                          ? "text-green-400"
+                          : log.includes("generating")
+                            ? "text-yellow-400/70"
+                            : "text-zinc-500"
+                    }`}
+                  >
+                    {log}
+                  </div>
+                ))}
               </div>
             )}
 
