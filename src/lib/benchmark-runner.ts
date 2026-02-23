@@ -31,7 +31,11 @@ export function listBenchmarks(): BenchmarkInfo[] {
 }
 
 /**
- * Calls an OpenAI-compatible chat completions endpoint.
+ * Calls an OpenAI-compatible chat completions endpoint using STREAMING.
+ *
+ * Streaming keeps the connection alive with continuous token flow,
+ * preventing Node.js/Next.js idle body timeouts (~300s) from killing
+ * long-running inference on CPU.
  */
 export async function callModel(
   model: ModelConfig,
@@ -56,6 +60,7 @@ export async function callModel(
     ],
     temperature: 0.3,
     max_tokens: 16384,
+    stream: true,
   };
 
   const headers: Record<string, string> = {
@@ -76,7 +81,6 @@ export async function callModel(
         method: "POST",
         headers,
         body: payload,
-        // 10 minute timeout for slow CPU inference
         signal: AbortSignal.timeout(600_000),
       });
 
@@ -87,9 +91,8 @@ export async function callModel(
         );
       }
 
-      const data = await res.json();
-      const content =
-        data.choices?.[0]?.message?.content ?? data.choices?.[0]?.text ?? "";
+      // Read the SSE stream and accumulate content
+      const content = await readSSEStream(res);
       const durationMs = Date.now() - start;
 
       return { content, durationMs };
@@ -105,6 +108,49 @@ export async function callModel(
   }
 
   throw lastError!;
+}
+
+/**
+ * Reads an OpenAI-compatible SSE stream and returns the full content.
+ * Each SSE event is `data: {...}` with `choices[0].delta.content`.
+ * Stream ends with `data: [DONE]`.
+ */
+async function readSSEStream(res: Response): Promise<string> {
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error("No response body to stream");
+
+  const decoder = new TextDecoder();
+  let content = "";
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    // Process complete lines from buffer
+    const lines = buffer.split("\n");
+    // Keep the last (potentially incomplete) line in the buffer
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith(":")) continue; // empty or comment
+      if (trimmed === "data: [DONE]") continue;
+      if (!trimmed.startsWith("data: ")) continue;
+
+      try {
+        const json = JSON.parse(trimmed.slice(6));
+        const delta = json.choices?.[0]?.delta?.content;
+        if (delta) content += delta;
+      } catch {
+        // Skip malformed JSON lines
+      }
+    }
+  }
+
+  return content;
 }
 
 /**
