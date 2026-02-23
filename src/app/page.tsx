@@ -45,6 +45,7 @@ export default function Home() {
   const [scores, setScores] = useState<Score[]>([]);
   const [criteria, setCriteria] = useState<ScoringCriteria[]>([]);
   const [promptExpanded, setPromptExpanded] = useState(true);
+  const [logsExpanded, setLogsExpanded] = useState(true);
 
   // Streaming state for live token display
   const [streamingStates, setStreamingStates] = useState<Record<string, StreamingState>>({});
@@ -742,36 +743,54 @@ export default function Home() {
 
             {/* Live Logs */}
             {runLogs.length > 0 && (
-              <div className="border-b border-zinc-800/50 bg-zinc-900/30 px-6 py-2 max-h-40 overflow-y-auto">
-                <div className="flex items-center justify-between mb-1">
+              <div className="border-b border-zinc-800/50 bg-zinc-900/30">
+                <button
+                  onClick={() => setLogsExpanded((p) => !p)}
+                  className="w-full px-6 py-2 flex items-center gap-2 hover:bg-zinc-800/30 transition-colors text-left"
+                >
+                  <svg
+                    className={`w-3 h-3 text-zinc-500 transition-transform ${logsExpanded ? "rotate-90" : ""}`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M6 4l8 6-8 6V4z" />
+                  </svg>
                   <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
-                    Live Logs
+                    Live Logs ({runLogs.length})
                   </span>
+                  <span className="flex-1" />
                   {!running && (
-                    <button
-                      onClick={() => setRunLogs([])}
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setRunLogs([]);
+                      }}
                       className="text-[10px] text-zinc-600 hover:text-zinc-400 transition-colors"
                     >
                       Clear
-                    </button>
+                    </span>
                   )}
-                </div>
-                {runLogs.map((log, i) => (
-                  <div
-                    key={i}
-                    className={`text-[11px] font-mono leading-relaxed ${
-                      log.includes("FAILED")
-                        ? "text-red-400"
-                        : log.includes("completed")
-                          ? "text-green-400"
-                          : log.includes("generating")
-                            ? "text-yellow-400/70"
-                            : "text-zinc-500"
-                    }`}
-                  >
-                    {log}
+                </button>
+                {logsExpanded && (
+                  <div className="px-6 pb-2 max-h-40 overflow-y-auto">
+                    {runLogs.map((log, i) => (
+                      <div
+                        key={i}
+                        className={`text-[11px] font-mono leading-relaxed ${
+                          log.includes("FAILED")
+                            ? "text-red-400"
+                            : log.includes("completed")
+                              ? "text-green-400"
+                              : log.includes("generating")
+                                ? "text-yellow-400/70"
+                                : "text-zinc-500"
+                        }`}
+                      >
+                        {log}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             )}
 
