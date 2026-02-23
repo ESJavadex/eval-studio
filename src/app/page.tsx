@@ -7,7 +7,8 @@ import ResultsGrid from "@/components/ResultsGrid";
 import PastResults from "@/components/PastResults";
 import TabBar from "@/components/TabBar";
 import Scoreboard from "@/components/Scoreboard";
-import type { BenchmarkInfo, RunResult, Score, ScoringCriteria } from "@/lib/types";
+import type { BenchmarkInfo, RunResult, Score, ScoringCriteria, StreamingState } from "@/lib/types";
+import { extractCodePartial } from "@/lib/code-extractor";
 
 interface ModelInfo {
   id: string;
@@ -44,6 +45,11 @@ export default function Home() {
   const [scores, setScores] = useState<Score[]>([]);
   const [criteria, setCriteria] = useState<ScoringCriteria[]>([]);
   const [promptExpanded, setPromptExpanded] = useState(true);
+
+  // Streaming state for live token display
+  const [streamingStates, setStreamingStates] = useState<Record<string, StreamingState>>({});
+  const streamingRef = useRef<Record<string, StreamingState>>({});
+  const throttleTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   // Model management state
   const [modelStates, setModelStates] = useState<Record<string, ModelState>>({});
@@ -191,7 +197,8 @@ export default function Home() {
     benchmarkId: string,
     modelIds: string[],
     onResult: (result: RunResult) => void,
-    onLog: (msg: string) => void
+    onLog: (msg: string) => void,
+    onToken?: (modelId: string, delta: string) => void
   ) => {
     const res = await fetch("/api/run-benchmark", {
       method: "POST",
@@ -224,12 +231,51 @@ export default function Home() {
         try {
           const event = JSON.parse(trimmed.slice(6));
           if (event.type === "log") onLog(event.message);
+          if (event.type === "token" && onToken) onToken(event.modelId, event.delta);
           if (event.type === "result") onResult(event.result);
         } catch {
           // skip
         }
       }
     }
+  };
+
+  // ---- Token handler with 300ms throttle for HTML extraction ----
+  const handleToken = (modelId: string, delta: string) => {
+    // Initialize if needed
+    if (!streamingRef.current[modelId]) {
+      streamingRef.current[modelId] = {
+        partialContent: "",
+        extractedHtml: "",
+        tokenCount: 0,
+        startTime: Date.now(),
+      };
+    }
+
+    const state = streamingRef.current[modelId];
+    state.partialContent += delta;
+    state.tokenCount++;
+
+    // Throttle extractCodePartial + React state update to every 300ms
+    if (!throttleTimers.current[modelId]) {
+      throttleTimers.current[modelId] = setTimeout(() => {
+        delete throttleTimers.current[modelId];
+        const current = streamingRef.current[modelId];
+        if (!current) return;
+        const extracted = extractCodePartial(current.partialContent);
+        current.extractedHtml = extracted;
+        setStreamingStates({ ...streamingRef.current });
+      }, 300);
+    }
+  };
+
+  const clearStreamingState = (modelId: string) => {
+    delete streamingRef.current[modelId];
+    if (throttleTimers.current[modelId]) {
+      clearTimeout(throttleTimers.current[modelId]);
+      delete throttleTimers.current[modelId];
+    }
+    setStreamingStates({ ...streamingRef.current });
   };
 
   // ---- Run benchmark: 1 benchmark × N models (parallel, SSE streams) ----
@@ -239,6 +285,8 @@ export default function Home() {
     setRunning(true);
     setResults([]);
     setRunLogs([]);
+    streamingRef.current = {};
+    setStreamingStates({});
 
     const modelIds = Array.from(selectedModels);
     const resultsRef: (RunResult | null)[] = modelIds.map(() => null);
@@ -262,14 +310,17 @@ export default function Home() {
             selectedBenchmark,
             [modelId],
             (result) => {
+              clearStreamingState(modelId);
               resultsRef[idx] = result;
               completed++;
               setRunProgress(`Completed ${completed}/${modelIds.length} models...`);
               setResults(resultsRef.filter((r): r is RunResult => r !== null));
             },
-            addLog
+            addLog,
+            handleToken
           );
         } catch (err) {
+          clearStreamingState(modelId);
           const errMsg = err instanceof Error ? err.message : "Network error";
           addLog(`FAILED ${modelNames[modelId] ?? modelId}: ${errMsg}`);
           resultsRef[idx] = {
@@ -309,6 +360,8 @@ export default function Home() {
     setRunning(true);
     setResults([]);
     setRunLogs([]);
+    streamingRef.current = {};
+    setStreamingStates({});
 
     const totalBenchmarks = benchmarks.length;
     const allResults: RunResult[] = [];
@@ -333,12 +386,15 @@ export default function Home() {
           benchmark.id,
           [modelId],
           (result) => {
+            clearStreamingState(modelId);
             allResults.push(result);
             setResults([...allResults]);
           },
-          addLog
+          addLog,
+          handleToken
         );
       } catch (err) {
+        clearStreamingState(modelId);
         const errMsg = err instanceof Error ? err.message : "Network error";
         addLog(`FAILED ${benchmark.name}: ${errMsg}`);
         allResults.push({
@@ -357,6 +413,126 @@ export default function Home() {
     }
 
     addLog("All benchmarks finished.");
+    setRunningModel(null);
+    setRunning(false);
+    setRunProgress(null);
+
+    fetch("/api/results")
+      .then((r) => r.json())
+      .then(setPastResults);
+  };
+
+  // ---- TEST ALL: sequential load → run → unload for each model ----
+  const testAllModels = async () => {
+    if (!selectedBenchmark || selectedModels.size === 0) return;
+
+    setRunning(true);
+    setResults([]);
+    setRunLogs([]);
+    streamingRef.current = {};
+    setStreamingStates({});
+
+    const modelIds = Array.from(selectedModels);
+    const allResults: RunResult[] = [];
+    const baseUrl = "http://localhost:1234/v1";
+
+    const addLog = (msg: string) => {
+      const ts = new Date().toLocaleTimeString();
+      setRunLogs((prev) => [...prev, `[${ts}] ${msg}`]);
+    };
+
+    addLog(`Starting TEST ALL: ${modelIds.length} models sequentially with load/unload`);
+
+    for (let i = 0; i < modelIds.length; i++) {
+      const modelId = modelIds[i];
+      const name = modelNames[modelId] ?? modelId;
+
+      setRunProgress(`[${i + 1}/${modelIds.length}] Unloading all models...`);
+      addLog(`Unloading all models before loading ${name}...`);
+
+      try {
+        await fetch("/api/model-management", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "unload-all", baseUrl }),
+        });
+      } catch {
+        addLog("Warning: unload-all failed, continuing anyway...");
+      }
+
+      setRunProgress(`[${i + 1}/${modelIds.length}] Loading ${name}...`);
+      addLog(`Loading ${name}...`);
+
+      try {
+        const loadRes = await fetch("/api/model-management", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "load", modelId, baseUrl }),
+        });
+        const loadData = await loadRes.json();
+        if (loadData.error) {
+          addLog(`Warning: load failed for ${name}: ${loadData.error}`);
+        } else {
+          const loadTime = loadData.loadTime
+            ? ` (${loadData.loadTime.toFixed(1)}s)`
+            : "";
+          addLog(`${name} loaded${loadTime}`);
+        }
+      } catch {
+        addLog(`Warning: load request failed for ${name}, trying benchmark anyway...`);
+      }
+
+      refreshModelStates();
+
+      setRunProgress(`[${i + 1}/${modelIds.length}] Running ${name}...`);
+      setRunningModel(modelId);
+      addLog(`Running benchmark for ${name}...`);
+
+      try {
+        await consumeRunStream(
+          selectedBenchmark,
+          [modelId],
+          (result) => {
+            clearStreamingState(modelId);
+            allResults.push(result);
+            setResults([...allResults]);
+          },
+          addLog,
+          handleToken
+        );
+      } catch (err) {
+        clearStreamingState(modelId);
+        const errMsg = err instanceof Error ? err.message : "Network error";
+        addLog(`FAILED ${name}: ${errMsg}`);
+        allResults.push({
+          benchmarkId: selectedBenchmark,
+          modelId,
+          modelName: name,
+          rawResponse: "",
+          extractedCode: "",
+          resultPath: "",
+          durationMs: 0,
+          success: false,
+          error: errMsg,
+        });
+        setResults([...allResults]);
+      }
+    }
+
+    // Final cleanup: unload all
+    addLog("Unloading all models (cleanup)...");
+    try {
+      await fetch("/api/model-management", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "unload-all", baseUrl }),
+      });
+    } catch {
+      // ignore
+    }
+
+    refreshModelStates();
+    addLog("TEST ALL finished.");
     setRunningModel(null);
     setRunning(false);
     setRunProgress(null);
@@ -405,6 +581,7 @@ export default function Home() {
   );
 
   const canRunAll = selectedModels.size === 1 && benchmarks.length > 0;
+  const canTestAll = selectedModels.size >= 1 && !!selectedBenchmark;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100">
@@ -459,6 +636,20 @@ export default function Home() {
               )}
 
               <div className="flex items-center gap-2">
+                {canTestAll && (
+                  <button
+                    onClick={testAllModels}
+                    disabled={running}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
+                      running
+                        ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                        : "bg-amber-600 hover:bg-amber-500 text-white shadow-lg shadow-amber-600/20"
+                    }`}
+                  >
+                    TEST ALL
+                  </button>
+                )}
+
                 {canRunAll && (
                   <button
                     onClick={runAllBenchmarks}
@@ -593,6 +784,7 @@ export default function Home() {
                 scores={scores}
                 criteria={criteria}
                 onScoreSaved={handleScoreSaved}
+                streamingStates={streamingStates}
               />
             </div>
           </>

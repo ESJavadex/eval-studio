@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 import { getModelById } from "@/lib/models";
-import { listBenchmarks, runBenchmark } from "@/lib/benchmark-runner";
+import { listBenchmarks, runBenchmarkStreaming } from "@/lib/benchmark-runner";
 
 // Allow up to 20 minutes for long inference runs
 export const maxDuration = 1200;
@@ -71,21 +71,21 @@ export async function POST(req: NextRequest) {
             message: `Calling ${model.name}... (streaming tokens)`,
           });
 
-          const startTime = Date.now();
-
-          // Send heartbeat every 30s to keep connection alive
-          const heartbeat = setInterval(() => {
-            const elapsed = Math.round((Date.now() - startTime) / 1000);
-            sendEvent(controller, "log", {
-              message: `${model.name}: generating... (${elapsed}s elapsed)`,
-            });
-          }, 30_000);
-
           try {
-            const { rawResponse, extractedCode, durationMs } =
-              await runBenchmark(benchmark, model);
+            const gen = runBenchmarkStreaming(benchmark, model);
 
-            clearInterval(heartbeat);
+            // Stream token deltas to the client
+            let genResult = await gen.next();
+            while (!genResult.done) {
+              sendEvent(controller, "token", {
+                modelId,
+                delta: genResult.value,
+              });
+              genResult = await gen.next();
+            }
+
+            // Generator return value has the final result
+            const { rawResponse, extractedCode, durationMs } = genResult.value;
 
             // Save result to disk
             const resultDir = join(
@@ -123,7 +123,6 @@ export async function POST(req: NextRequest) {
               },
             });
           } catch (err) {
-            clearInterval(heartbeat);
             const errMsg = err instanceof Error ? err.message : String(err);
             sendEvent(controller, "log", {
               message: `${model.name} FAILED: ${errMsg}`,

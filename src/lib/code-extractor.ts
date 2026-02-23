@@ -118,6 +118,32 @@ function extractFromText(text: string): string {
 }
 
 /**
+ * Partial extraction for in-progress streaming content.
+ * Handles incomplete <think> blocks by stripping from the opening tag onward,
+ * then delegates to extractCode() on the cleaned text.
+ */
+export function extractCodePartial(raw: string): string {
+  let cleaned = raw;
+
+  // If there's an unclosed <think> block, strip from the last <think> onward
+  const lastThinkOpen = cleaned.lastIndexOf("<think>");
+  if (lastThinkOpen !== -1) {
+    const closeAfter = cleaned.indexOf("</think>", lastThinkOpen);
+    if (closeAfter === -1) {
+      // Unclosed think block — strip it
+      cleaned = cleaned.slice(0, lastThinkOpen);
+    }
+  }
+
+  // Strip any fully closed think blocks
+  cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+
+  if (!cleaned) return "";
+
+  return extractCode(cleaned);
+}
+
+/**
  * Merges multiple extracted blocks into a single HTML file.
  * Useful when a model returns CSS and JS in separate fenced blocks.
  */

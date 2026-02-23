@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import type { RunResult, Score, ScoringCriteria } from "@/lib/types";
+import { useState, useRef, useEffect } from "react";
+import type { RunResult, Score, ScoringCriteria, StreamingState } from "@/lib/types";
 import ScorePanel from "./ScorePanel";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
   scores: Score[];
   criteria: ScoringCriteria[];
   onScoreSaved: (score: Score) => void;
+  streamingStates?: Record<string, StreamingState>;
 }
 
 function RawResponseViewer({
@@ -78,6 +79,83 @@ function RawResponseViewer({
   );
 }
 
+function StreamingCard({
+  modelId,
+  modelName,
+  state,
+}: {
+  modelId: string;
+  modelName: string;
+  state: StreamingState;
+}) {
+  const preRef = useRef<HTMLPreElement>(null);
+  const elapsed = ((Date.now() - state.startTime) / 1000).toFixed(1);
+
+  // Auto-scroll raw text viewer
+  useEffect(() => {
+    if (preRef.current) {
+      preRef.current.scrollTop = preRef.current.scrollHeight;
+    }
+  }, [state.partialContent]);
+
+  return (
+    <div className="flex flex-col rounded-lg border border-blue-500/40 overflow-hidden bg-zinc-900 min-h-0">
+      {/* Header with pulsing blue dot */}
+      <div className="flex items-center justify-between px-3 py-2 bg-zinc-800/80 border-b border-blue-500/30">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="relative flex h-2.5 w-2.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500" />
+          </span>
+          <span className="text-sm font-medium text-zinc-200 truncate">
+            {modelName}
+          </span>
+        </div>
+        <div className="flex items-center gap-3 shrink-0 ml-2">
+          <span className="text-[11px] text-blue-400 font-mono">
+            {state.tokenCount} tokens
+          </span>
+          <span className="text-[11px] text-zinc-500 font-mono">
+            {elapsed}s
+          </span>
+        </div>
+      </div>
+
+      {/* Live HTML preview */}
+      <div className="flex-1 min-h-[200px]">
+        {state.extractedHtml ? (
+          <iframe
+            srcDoc={state.extractedHtml}
+            title={`${modelId}-streaming`}
+            className="w-full h-full border-0 bg-white"
+            sandbox="allow-scripts"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-zinc-600 text-sm">
+            Waiting for code...
+          </div>
+        )}
+      </div>
+
+      {/* Auto-scrolling raw text viewer */}
+      <div className="border-t border-zinc-700/50">
+        <div className="px-3 py-1.5 text-[11px] text-zinc-500 flex items-center gap-1.5">
+          <svg className="w-2.5 h-2.5 rotate-90" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M6 4l8 6-8 6V4z" />
+          </svg>
+          Raw Stream
+        </div>
+        <pre
+          ref={preRef}
+          className="px-3 pb-2 max-h-36 overflow-auto text-[11px] text-zinc-400 whitespace-pre-wrap font-mono leading-relaxed"
+        >
+          {state.partialContent}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
 export default function ResultsGrid({
   results,
   modelNames,
@@ -85,13 +163,22 @@ export default function ResultsGrid({
   scores,
   criteria,
   onScoreSaved,
+  streamingStates = {},
 }: Props) {
   const successful = results.filter((r) => r.success);
   const failed = results.filter((r) => !r.success);
   const multiBenchmark =
     new Set(successful.map((r) => r.benchmarkId)).size > 1;
 
-  if (results.length === 0) {
+  // Models that are streaming but don't have a result yet
+  const completedModelIds = new Set(results.map((r) => r.modelId));
+  const streamingEntries = Object.entries(streamingStates).filter(
+    ([id]) => !completedModelIds.has(id)
+  );
+
+  const totalCards = successful.length + streamingEntries.length;
+
+  if (results.length === 0 && streamingEntries.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center text-zinc-500">
         <div className="text-center">
@@ -106,11 +193,11 @@ export default function ResultsGrid({
   }
 
   const cols =
-    successful.length === 1
+    totalCards === 1
       ? "grid-cols-1"
-      : successful.length === 2
+      : totalCards === 2
         ? "grid-cols-2"
-        : successful.length <= 4
+        : totalCards <= 4
           ? "grid-cols-2"
           : "grid-cols-3";
 
@@ -132,6 +219,17 @@ export default function ResultsGrid({
         </div>
       )}
       <div className={`grid ${cols} gap-3 flex-1`}>
+        {/* Streaming cards (in-progress models) */}
+        {streamingEntries.map(([modelId, state]) => (
+          <StreamingCard
+            key={`streaming-${modelId}`}
+            modelId={modelId}
+            modelName={modelNames[modelId] ?? modelId}
+            state={state}
+          />
+        ))}
+
+        {/* Completed result cards */}
         {successful.map((r) => (
           <div
             key={`${r.benchmarkId}-${r.modelId}`}

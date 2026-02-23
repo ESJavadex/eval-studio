@@ -42,3 +42,10 @@ export interface ScoringCriteria {
   min: number;
   max: number;
 }
+
+export interface StreamingState {
+  partialContent: string;
+  extractedHtml: string;
+  tokenCount: number;
+  startTime: number;
+}
