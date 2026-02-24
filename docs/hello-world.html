@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello World — Eval Studio Showcase</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #09090b;
+      color: #e4e4e7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 48px 24px 32px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header .subtitle {
+      font-size: 0.95rem;
+      color: #71717a;
+    }
+
+    .header .meta {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #52525b;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 0 32px 48px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #18181b;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3f3f46;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #1c1c1f;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .model-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d4d4d8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .avg-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .card-iframe-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #000;
+    }
+
+    .card-iframe-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .scores {
+      padding: 10px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-top: 1px solid #27272a;
+    }
+
+    .scores.no-scores {
+      color: #52525b;
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 8px 16px;
+    }
+
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .score-label {
+      font-size: 0.7rem;
+      color: #71717a;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .score-bar-bg {
+      flex: 1;
+      height: 4px;
+      background: #27272a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .score-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .score-val {
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 24px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .score-avg {
+      text-align: right;
+      font-size: 0.7rem;
+      color: #71717a;
+      font-weight: 600;
+      margin-top: 2px;
+      padding-top: 4px;
+      border-top: 1px solid #27272a;
+    }
+
+    .score-avg span {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.75rem;
+      color: #3f3f46;
+      border-top: 1px solid #18181b;
+    }
+
+    @media (max-width: 1200px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; padding: 0 16px 32px; }
+      .header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Hello World</h1>
+    <div class="subtitle">Eval Studio — LLM Frontend Benchmark Showcase</div>
+    <div class="meta">6 models · Exported February 24, 2026</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b</span>
+          <span class="avg-badge" style="background:#4ade8020;color:#4ade80">8.0</span>
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Hello World&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        .hello-world {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.7),
+                0 0 20px rgba(255, 255, 255, 0.5);
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;hello-world&quot;&gt;Hello World&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores">
+            <div class="score-item">
+                  <span class="score-label">Instructions</span>
+                  <div class="score-bar-bg">
+                    <div class="score-bar" style="width:90%;background:#4ade80"></div>
+                  </div>
+                  <span class="score-val" style="color:#4ade80">9</span>
+                </div><div class="score-item">
+                  <span class="score-label">Functionality</span>
+                  <div class="score-bar-bg">
+                    <div class="score-bar" style="width:80%;background:#4ade80"></div>
+                  </div>
+                  <span class="score-val" style="color:#4ade80">8</span>
+                </div><div class="score-item">
+                  <span class="score-label">Aesthetics</span>
+                  <div class="score-bar-bg">
+                    <div class="score-bar" style="width:70%;background:#4ade80"></div>
+                  </div>
+                  <span class="score-val" style="color:#4ade80">7</span>
+                </div><div class="score-item">
+                  <span class="score-label">Code Quality</span>
+                  <div class="score-bar-bg">
+                    <div class="score-bar" style="width:80%;background:#4ade80"></div>
+                  </div>
+                  <span class="score-val" style="color:#4ade80">8</span>
+                </div>
+            <div class="score-avg">AVG <span style="color:#4ade80">8.0</span></div>
+          </div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">lfm2.5-1.2b-thinking-claude-4.6-opus-heretic-uncensored-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Centered Text&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial Bold', sans-serif;
+            background: linear-gradient(to right, #1a1a2e, #16213e);
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div style=&quot;text-align: center; font-size: 48px;&quot;&gt;
+        Hello World!
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-instruct-2507</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Hello World&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    
+    .hello-world {
+      font-size: 48px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 
+        0 0 15px rgba(255, 255, 255, 0.7),
+        0 0 30px rgba(255, 255, 255, 0.5);
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;hello-world&quot;&gt;Hello World&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2507-claude-4.5-opus-high-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Hello World&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Content here --&gt;
+    
+    &lt;style&gt;
+        /* All CSS will go here */
+    &lt;/style&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2507-distill-claude-opus-4.6-reasoning-abliterated</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Hello World&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Content will be placed here --&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2509-genius-coder-ai-full</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;Hello World&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+    }
+    h1 {
+      font-size: 48px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;h1&gt;Hello World&lt;/h1&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+  </div>
+
+  <div class="footer">
+    Generated by Eval Studio
+  </div>
+</body>
+</html>

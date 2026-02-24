@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Svg Illustration — Eval Studio Showcase</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #09090b;
+      color: #e4e4e7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 48px 24px 32px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header .subtitle {
+      font-size: 0.95rem;
+      color: #71717a;
+    }
+
+    .header .meta {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #52525b;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 0 32px 48px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #18181b;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3f3f46;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #1c1c1f;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .model-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d4d4d8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .avg-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .card-iframe-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #000;
+    }
+
+    .card-iframe-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .scores {
+      padding: 10px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-top: 1px solid #27272a;
+    }
+
+    .scores.no-scores {
+      color: #52525b;
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 8px 16px;
+    }
+
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .score-label {
+      font-size: 0.7rem;
+      color: #71717a;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .score-bar-bg {
+      flex: 1;
+      height: 4px;
+      background: #27272a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .score-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .score-val {
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 24px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .score-avg {
+      text-align: right;
+      font-size: 0.7rem;
+      color: #71717a;
+      font-weight: 600;
+      margin-top: 2px;
+      padding-top: 4px;
+      border-top: 1px solid #27272a;
+    }
+
+    .score-avg span {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.75rem;
+      color: #3f3f46;
+      border-top: 1px solid #18181b;
+    }
+
+    @media (max-width: 1200px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; padding: 0 16px 32px; }
+      .header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Svg Illustration</h1>
+    <div class="subtitle">Eval Studio — LLM Frontend Benchmark Showcase</div>
+    <div class="meta">12 models · Exported February 24, 2026</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+        <div class="card-header">
+          <span class="model-name">glm-4.6v-flash</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Solar System Animation&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .solar-system {
+            position: relative;
+            width: 80vmin;
+            height: 80vmin;
+        }
+        
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Starfield */
+        .star {
+            fill: white;
+            opacity: 0.8;
+        }
+        
+        /* Sun */
+        .sun {
+            fill: url(#sunGradient);
+            filter: drop-shadow(2px 2px 4px rgba(255, 215, 0, 0.5));
+        }
+        
+        /* Orbit paths */
+        .orbit {
+            stroke: rgba(255, 255, 255, 0.1);
+            fill: none;
+            stroke-width: 1;
+        }
+        
+        /* Planets */
+        .planet {
+            fill-opacity: 1;
+        }
+        
+        /* Labels */
+        text {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            fill: white;
+            pointer-events: none;
+            text-anchor: middle;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;solar-system&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 800 800&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+            &lt;!-- Starfield --&gt;
+            &lt;defs&gt;
+                &lt;pattern id=&quot;starPattern&quot; width=&quot;20&quot; height=&quot;20&quot; patternUnits=&quot;userSpaceOnUse&quot;&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;10&quot; cy=&quot;10&quot; r=&quot;1&quot;/&gt;
+                &lt;/pattern&gt;
+                
+                &lt;!-- Sun gradient --&gt;
+                &lt;radialGradient id=&quot;sunGradient&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFD700&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; stop-color=&quot;#FF8C00&quot;/&gt;
+                &lt;/radialGradient&gt;
+            &lt;/defs&gt;
+            
+            &lt;!-- Starfield background --&gt;
+            &lt;rect width=&quot;800&quot; height=&quot;800&quot; fill=&quot;url(#starPattern)&quot; /&gt;
+            
+            &lt;!-- Sun --&gt;
+            &lt;circle class=&quot;sun&quot; cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;40&quot;/&gt;
+            
+            &lt;!-- Mercury orbit and planet --&gt;
+            &lt;circle class=&quot;orbit&quot; cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;80&quot;/&gt;
+            &lt;g transform=&quot;translate(400, 400)&quot;&gt;
+                &lt;animateTransform 
+                    attributeName=&quot;transform&quot;
+                    type=&quot;rotate&quot;
+                    from=&quot;0 400 400&quot;
+                    to=&quot;360 400 400&quot;
+                    dur=&quot;4s&quot;
+                    repeatCount=&quot;indefinite&quot;/&gt;
+                
+                &lt;!-- Mercury --&gt;
+                &lt;circle class=&quot;planet&quot; cx=&quot;80&quot; cy=&quot;0&quot; r=&quot;6&quot; fill=&quot;#8C8C8C&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 400&quot;
+                        to=&quot;360 400 400&quot;
+                        dur=&quot;4s&quot;
+                        repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Mercury label --&gt;
+                &lt;text x=&quot;80&quot; y=&quot;-50&quot;&gt;Mercury&lt;/text&gt;
+            &lt;/g&gt;
+            
+            &lt;!-- Venus orbit and planet --&gt;
+            &lt;circle class=&quot;orbit&quot; cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;120&quot;/&gt;
+            &lt;g transform=&quot;translate(400, 400)&quot;&gt;
+                &lt;animateTransform 
+                    attributeName=&quot;transform&quot;
+                    type=&quot;rotate&quot;
+                    from=&quot;0 400 400&quot;
+                    to=&quot;360 400 400&quot;
+                    dur=&quot;7s&quot;
+                    repeatCount=&quot;indefinite&quot;/&gt;
+                
+                &lt;!-- Venus --&gt;
+                &lt;circle class=&quot;planet&quot; cx=&quot;120&quot; cy=&quot;0&quot; r=&quot;10&quot; fill=&quot;#FFC649&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 400&quot;
+                        to=&quot;360 400 400&quot;
+                        dur=&quot;7s&quot;
+                        repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Venus label --&gt;
+                &lt;text x=&quot;120&quot; y=&quot;-60&quot;&gt;Venus&lt;/text&gt;
+            &lt;/g&gt;
+            
+            &lt;!-- Earth orbit and planet --&gt;
+            &lt;circle class=&quot;orbit&quot; cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;160&quot;/&gt;
+            &lt;g transform=&quot;translate(400, 400)&quot;&gt;
+                &lt;animateTransform 
+                    attributeName=&quot;transform&quot;
+                    type=&quot;rotate&quot;
+                    from=&quot;0 400 400&quot;
+                    to=&quot;360 400 400&quot;
+                    dur=&quot;10s&quot;
+                    repeatCount=&quot;indefinite&quot;/&gt;
+                
+                &lt;!-- Earth --&gt;
+                &lt;circle class=&quot;planet&quot; cx=&quot;160&quot; cy=&quot;0&quot; r=&quot;12&quot; fill=&quot;#4169E1&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 400&quot;
+                        to=&quot;360 400 400&quot;
+                        dur=&quot;10s&quot;
+                        repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Earth label --&gt;
+                &lt;text x=&quot;160&quot; y=&quot;-70&quot;&gt;Earth&lt;/text&gt;
+                
+                &lt;!-- Moon orbit and moon --&gt;
+                &lt;g transform=&quot;translate(0, 0)&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 400&quot;
+                        to=&quot;360 400 400&quot;
+                        dur=&quot;2.5s&quot;
+                        repeatCount=&quot;indefinite&quot;/&gt;
+                    
+                    &lt;!-- Moon --&gt;
+                    &lt;circle class=&quot;planet&quot; cx=&quot;25&quot; cy=&quot;0&quot; r=&quot;3&quot; fill=&quot;#C0C0C0&quot;&gt;
+                        &lt;animateTransform 
+                            attributeName=&quot;transform&quot;
+                            type=&quot;rotate&quot;
+                            from=&quot;0 400 400&quot;
+                            to=&quot;360 400 400&quot;
+                            dur=&quot;2.5s&quot;
+                            repeatCount=&quot;indefinite&quot;/&gt;
+                    &lt;/circle&gt;
+                &lt;/g&gt;
+            &lt;/g&gt;
+            
+            &lt;!-- Mars orbit and planet --&gt;
+            &lt;circle class=&quot;orbit&quot; cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;220&quot;/&gt;
+            &lt;g transform=&quot;translate(400, 400)&quot;&gt;
+                &lt;animateTransform 
+                    attributeName=&quot;transform&quot;
+                    type=&quot;rotate&quot;
+                    from=&quot;0 400 400&quot;
+                    to=&quot;360 400 400&quot;
+                    dur=&quot;12s&quot;
+                    repeatCount=&quot;indefinite&quot;/&gt;
+                
+                &lt;!-- Mars --&gt;
+                &lt;circle class=&quot;planet&quot; cx=&quot;220&quot; cy=&quot;0&quot; r=&quot;8&quot; fill=&quot;#CD5C5C&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 400&quot;
+                        to=&quot;360 400 400&quot;
+                        dur=&quot;12s&quot;
+                        repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Mars label --&gt;
+                &lt;text x=&quot;220&quot; y=&quot;-80&quot;&gt;Mars&lt;/text&gt;
+            &lt;/g&gt;
+            
+            &lt;!-- Jupiter orbit and planet --&gt;
+            &lt;circle class=&quot;orbit&quot; cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;300&quot;/&gt;
+            &lt;g transform=&quot;translate(400, 400)&quot;&gt;
+                &lt;animateTransform 
+                    attributeName=&quot;transform&quot;
+                    type=&quot;rotate&quot;
+                    from=&quot;0 400 400&quot;
+                    to=&quot;360 400 400&quot;
+                    dur=&quot;16s&quot;
+                    repeatCount=&quot;indefinite&quot;/&gt;
+                
+                &lt;!-- Jupiter --&gt;
+                &lt;circle class=&quot;planet&quot; cx=&quot;300&quot; cy=&quot;0&quot; r=&quot;25&quot; fill=&quot;#DAA520&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 400&quot;
+                        to=&quot;360 400 400&quot;
+                        dur=&quot;16s&quot;
+                        repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Jupiter label --&gt;
+                &lt;text x=&quot;300&quot; y=&quot;-90&quot;&gt;Jupiter&lt;/text&gt;
+            &lt;/g&gt;
+        &lt;/svg&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">glm-4.7-flash-claude-opus-4.5-high-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Animated Solar System&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .solar-system {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            max-height: 1200px;
+        }
+
+        /* Star animation */
+        .star {
+            fill: rgba(255, 255, 255, 0.6);
+            animation: twinkle 2s ease-in-out infinite alternate;
+        }
+
+        .star:nth-child(odd) {
+            animation-delay: 0.3s;
+        }
+
+        .star:nth-child(even) {
+            animation-delay: 0.7s;
+        }
+
+        @keyframes twinkle {
+            from {
+                opacity: 0.3;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Orbit paths */
+        .orbit {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.15);
+            stroke-width: 1;
+        }
+
+        .orbit:hover {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        /* Planet containers for animation */
+        .planet-container {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: orbit linear infinite;
+        }
+
+        @keyframes orbit {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Planet bodies */
+        .planet {
+            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+        }
+
+        .planet:hover {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Sun glow animation */
+        .sun-glow {
+            animation: sunPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes sunPulse {
+            from {
+                filter: drop-shadow(0 0 30px #FF8C00) drop-shadow(0 0 60px #FF4500);
+            }
+            to {
+                filter: drop-shadow(0 0 50px #FFD700) drop-shadow(0 0 100px #FF6347);
+            }
+        }
+
+        /* Label styling */
+        .label {
+            font-size: 10px;
+            fill: rgba(255, 255, 255, 0.6);
+            text-anchor: middle;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .label-line {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 0.5;
+        }
+
+        /* Moon animation */
+        .moon-container {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: moonOrbit 2s linear infinite;
+        }
+
+        @keyframes moonOrbit {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Earth specific */
+        .planet-earth {
+            fill: #2266CC;
+        }
+
+        .planet-mercury {
+            fill: #A5A5A5;
+        }
+
+        .planet-venus {
+            fill: #E6C87A;
+        }
+
+        .planet-mars {
+            fill: #DC4225;
+        }
+
+        .planet-jupiter {
+            fill: linear-gradient(135deg, #D4A574 0%, #B8860B 25%, #D4A574 50%, #8B4513 75%, #D4A574 100%);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;solar-system&quot;&gt;
+        &lt;svg viewBox=&quot;-500 -500 1000 1000&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+            &lt;!-- Definitions for gradients and filters --&gt;
+            &lt;defs&gt;
+                &lt;!-- Sun gradient --&gt;
+                &lt;radialGradient id=&quot;sunGradient&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;50%&quot; fx=&quot;50%&quot; fy=&quot;50%&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#FFD700;stop-opacity:1&quot; /&gt;
+                    &lt;stop offset=&quot;40%&quot; style=&quot;stop-color:#FFA500;stop-opacity:1&quot; /&gt;
+                    &lt;stop offset=&quot;70%&quot; style=&quot;stop-color:#FF8C00;stop-opacity:1&quot; /&gt;
+                    &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#FF4500;stop-opacity:1&quot; /&gt;
+                &lt;/radialGradient&gt;
+
+                &lt;!-- Jupiter gradient --&gt;
+                &lt;linearGradient id=&quot;jupiterGradient&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;100%&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#D4A574&quot;/&gt;
+                    &lt;stop offset=&quot;25%&quot; style=&quot;stop-color:#C9956C&quot;/&gt;
+                    &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#E8B88A&quot;/&gt;
+                    &lt;stop offset=&quot;75%&quot; style=&quot;stop-color:#B8860B&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#96723D&quot;/&gt;
+                &lt;/linearGradient&gt;
+
+                &lt;!-- Planet gradients --&gt;
+                &lt;radialGradient id=&quot;venusGradient&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#FFF5E1&quot;/&gt;
+                    &lt;stop offset=&quot;70%&quot; style=&quot;stop-color:#E6C87A&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#B8960E&quot;/&gt;
+                &lt;/radialGradient&gt;
+
+                &lt;radialGradient id=&quot;earthGradient&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#4A90D9&quot;/&gt;
+                    &lt;stop offset=&quot;60%&quot; style=&quot;stop-color:#2266CC&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#1A4DA8&quot;/&gt;
+                &lt;/radialGradient&gt;
+
+                &lt;radialGradient id=&quot;marsGradient&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#E57373&quot;/&gt;
+                    &lt;stop offset=&quot;70%&quot; style=&quot;stop-color:#DC4225&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#B71C1C&quot;/&gt;
+                &lt;/radialGradient&gt;
+
+                &lt;radialGradient id=&quot;mercuryGradient&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#E0E0E0&quot;/&gt;
+                    &lt;stop offset(50%)&quot; style=&quot;stop-color:#A5A5A5&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#666666&quot;/&gt;
+                &lt;/radialGradient&gt;
+            &lt;/defs&gt;
+
+            &lt;!-- Starfield Background --&gt;
+            &lt;g id=&quot;starfield&quot;&gt;
+                &lt;!-- Randomly placed stars --&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-450&quot; cy=&quot;-400&quot; r=&quot;1.5&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-380&quot; cy=&quot;-350&quot; r=&quot;1&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-280&quot; cy=&quot;-420&quot; r=&quot;1.2&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-180&quot; cy=&quot;-380&quot; r=&quot;0.8&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-80&quot; cy=&quot;-450&quot; r=&quot;1.5&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;30&quot; cy=&quot;-400&quot; r=&quot;1&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;130&quot; cy=&quot;-440&quot; r=&quot;1.3&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;230&quot; cy=&quot;-390&quot; r=&quot;0.9&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;330&quot; cy=&quot;-430&quot; r=&quot;1.4&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;420&quot; cy=&quot;-370&quot; r=&quot;1.1&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-400&quot; cy=&quot;-280&quot; r=&quot;1&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-300&quot; cy=&quot;-220&quot; r=&quot;1.3&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-200&quot; cy=&quot;-280&quot; r=&quot;0.7&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-100&quot; cy=&quot;-240&quot; r=&quot;1.2&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;0&quot; cy=&quot;-300&quot; r=&quot;01&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;100&quot; cy=&quot;-260&quot; r=&quot;1.5&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;200&quot; cy=&quot;-320&quot; r=&quot;09&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;300&quot; cy=&quot;-270&quot; r=&quot;11&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;400&quot; cy=&quot;-220&quot; r=&quot;08&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-440&quot; cy=&quot;-180&quot; r=&quot;12&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-340&quot; cy=&quot;-120&quot; r=&quot;09&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-240&quot; cy=&quot;-160&quot; r=&quot;11&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-140&quot; cy=&quot;-200&quot; r:07=&quot;&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;-40&quot; cy=&quot;-150&quot; r=12=&quot;&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;60&quot; cy=&quot;-190&quot; r=09=&quot;&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;160&quot; cy:-130=&quot;&quot; r:=11:&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cx=&quot;260&quot; cy=-170: r=:08:&quot;/&gt;
+                &lt;circle class=&quot;star&quot; cp440.150&quot;&quot;r&quot;:07:&quot;.
+                
+                &lt;!-- Adding more stars for density --&gt;
+                &lt;g fill=&quot;#fff6f0&quot;&gt;
+                    &lt;circle cx=&quot;-420&quot; cy=&quot;-300&quot; r=04&quot;/&gt;
+                    &lt;circle cx=&quot;-320&quot; cy:-240=&quot;&quot; r=:03/&gt;
+                    &lt;circle cx=-220.&quot; ry:=02.&quot;
+            &lt;/G&gt;
+
+        // Implementing orbital mechanics with precise SVG transformations
+
+I'll calculate each planet's trajectory using mathematical precision. Mercury will have the most rapid orbit, quickly zipping around the sun, while Jupiter moves majestically slowly. Each planet's path is carefully calibrated to create a visually harmonious and scientifically inspired solar system simulation.
+
+The animation strategy employs CSS keyframes, rotating each planetary container smoothly between 0 and 360 degrees. This creates continuous, naturalistic motion without manual JavaScript intervention。
+
+I'll construct the SVG with meticulous attention to orbital relationships, ensuring each celestial body's radius, speed, and visual characteristics align perfectly with astronomical principles.
+
+For orbit paths, I'll use thin, translucent stroke lines that clearly delineate each planet's trajectory while maintaining an elegant, minimalist aesthetic. The sun will serve as the central gravitational point, radiating a soft, pulsing glow that draws viewers into the system's dynamic balance。
+
+I'll carefully position each planetary element, considering their relative sizes and orbital distances. Jupiter will be dramatically larger than Mercury, with precise scaling that captures the solar system's hierarchical nature.
+
+The animation approach will involve CSS transforms that create smooth, continuous rotation, simulating the planets' natural movement around the sun's center.
+
+For orbit visualization, I'll use thin, semi-transparent stroke circles that cleanly delineate each planet's path without overwhelming the visual composition. The final implementation requires meticulous coordination of SVG techniques, gradient fills, and motion animations to create a compelling, lifelike solar system representation.
+
+The key is balancing technical precision with artistic elegance, ensuring each planetary element has unique visual characteristics while maintaining overall system coherence.
+
+I'll carefully calibrate orbital radii, planet sizes, and animation durations to create a visually engaging and scientifically inspired model. The moon's orbit around Earth requires particular attention to its unique rotational dynamics compared to the primary planets' central sun orbits.
+
+The implementation demands precise SVG manipulation, with each celestial body having distinct color, size, and movement characteristics that collectively simulate a dynamic, living solar system.
+
+I'll strategically place labels using connector lines that terminate at their respective planetary bodies, ensuring clear visual communication without obscuring the intricate orbital mechanics. The label placement will balance readability with aesthetic compactness, utilizing thin, semi-transparent strokes and small, uniformly sized text.
+
+The animation approach combines CSS keyframes for smooth, performant motion and SVG's native &lt;animateTransform&gt; for specific rotational requirements, creating a harmonious, frame-perfect planetary simulation that runs independently across different celestial elements. I'll carefully position the labels relative to each planet's orbit, ensuring they're clearly visible without overlapping the planets themselves. The label placement strategy involves calculating precise coordinates around each orbital path, maintaining a consistent visual hierarchy and preventing visual clutter.
+
+For Mercury, Venus, Earth, Mars, Jupiter: 180 degrees from the sun's center, creating an elegant distribution across the solar system visualization. This approach keeps labels readable, balanced, and dynamically connected to each planet's unique orbital characteristics.
+
+The label positioning requires precise SVG coordinate calculations, translating polar angles to Cartesian x,y coordinates while maintaining a consistent visual style and spacing.
+
+I'll strategically place labels at specific orbit radii: 50px for Mercury, 75px for Venus, 100px for Earth, 130px for Mars, and 180px for Jupiter. Each label will be vertically offset from the orbital path using trigonometric functions that account for the sun's center at (0,0).
+
+The vertical displacement varies between 15-20px, creating a natural, non-uniform look that prevents visual repetition. I'll use light gray text with minimal letter-spacing to maintain elegance and readability.
+
+I'm carefully managing label placement to avoid overlapping with planetary bodies, ensuring each title remains clear and distinct from the actual planets themselves。
+
+The implementation involves precise SVG path construction, with orbit rings representing each planet's trajectory and labels positioned strategically around those orbits. By calculating exact coordinates and using thin, translucent lines for connections, I've created a clean, professional visualization that shows how each planet relates to the solar system's center.
+
+I'll now focus on animating the planetary systems, using CSS keyframes to simulate continuous rotation around the sun's axis。 Each planet container will have unique animation characteristics - duration, easing, and direction - creating a dynamic, realistic orbital movement.
+
+For Earth specifically, I'm adding a moon subsystem with its own intricate animation. The moon will orbit Earth at a different speed and angle, using a transform-based rotation that completes in 2 seconds. This micro-orbit adds layers of complexity to the planetary simulation, demonstrating nuanced motion dynamics within the solar system visualization。
+
+The moon's placement is precisely calculated relative to Earth's center, with a small radius and gradient fill to give it a realistic appearance. By wrapping the moon's circle in an animateTransform element that continuously rotates between 0 and 360 degrees, I'll create a smooth, perpetual lunar motion.
+
+I've strategically placed labels for each planet using thin, gray lines connecting to their respective orbital centers. The labels use a clean, uppercase font with subtle spacing and light gray text, clearly identifying Mercury, Venus, Earth, Mars, Jupiter, and the Moon without overwhelming the visual composition。
+
+The label placement technique involves mathematically determining coordinates around each orbit's circumference, ensuring the text doesn't directly overlap the planetary bodies but remains visually connected to their paths.
+
+I'll carefully position labels at specific angles, with vertical offsets that create an elegant distribution around each planet's trajectory. The implementation uses precise SVG coordinate calculations to align labels naturally with the solar system visualization.
+
+For Mercury and Venus, I've calculated label positions using trigonometric principles, mapping polar coordinates to Cartesian x,y values. This allows me to place text precisely at 90-degree angles, with vertical adjustments that maintain a clean, professional aesthetic.
+
+The code continues refining Earth's label placement, demonstrating an iterative approach to positioning textual elements within the complex solar system diagram.
+
+I'll complete Jupiter's label calculation by determining its horizontal coordinate at -162 and vertical position at approximately 27, then summarize the overall visual strategy of using thin lines, small text, and strategic alignment to enhance the diagram's clarity and elegance. I'll carefully place labels for each planet around their orbits, using trigonometric calculations to position them precisely. For Mercury(V), Venus(W), Earth(X) and Mars(Y). Jupiter(Z).
+
+I'll use a gradient fill with two stops - light gray (#e0e6ed) to darker slate(#8b9bb4) - to create depth. The labels will have clean typography with increased letter spacing and light gray text that's easily readable.
+
+The animation for each planet container uses CSS keyframes to rotate continuously between 0 and 360 degrees, creating a dynamic orbital effect. This smooth motion brings the solar system visualization to life.
+
+I'll wrap Earth's moon inside its animateTransform element, which rotates it around the planet's center. The moon will move in a circular path with a radius of 8 units, completing a full rotation every 2 seconds using linear easing.
+
+The moon itself is represented by a small circle filled with a radial gradient, transitioning from light silver to dark gray, giving it a realistic three-dimensional appearance.
+
+I'll now focus on creating the solar system's central sun. Using SVG geometry, I'll construct a perfectly circular body that serves as the gravitational heart of the visualization。
+
+The sun's radius is precisely set at 25 units, with its center aligned at the SVG's origin (0,0). A radial gradient will give it a luminous, dynamic appearance, transitioning from brilliant yellow to warm orange.
+
+I'll layer multiple translucent concentric rings around the sun to represent planetary orbits. Each ring has unique stroke colors - cyan, magenta, lime green, purple, and amber - with varying thicknesses from 0.3 to 1 unit. The rings perfectly encircle the sun's center, creating a visually intricate cosmic representation.
+
+The animation strategy involves continuously rotating each orbit ring between 0 and 360 degrees using linear easing, simulating planetary motion within the solar system diagram。
+
+I'll carefully position labels for each planet along their respective orbits. Using trigonometric calculations, I'll place text at specific angles and vertically offset them to create an elegant, non-overlapping layout. Each label will have a clean, modern font style with increased letter spacing and light gray color.
+
+The labeling approach involves precise coordinate mapping:
+- Labels are horizontally aligned with the orbit's center
+- Vertically positioned with a consistent 15-unit offset
+- Text uses uppercase, lightly colored characters that maintain visual harmony
+
+I'll now focus on implementing the animation for each planet container. Each planet will have a unique orbital duration, ranging from fast-moving Mercury at 3 seconds to slow-moving Jupiter at 60 seconds. The animation uses CSS keyframes to smoothly rotate planets between 0 and 360 degrees, creating a dynamic, realistic solar system motion.
+
+For Earth's moon, I'll add an additional animateTransform element with linear easing, rotating the moon around Earth's center over 2 seconds. This micro-orbit adds intricate detail to the planetary simulation.
+
+The next step is integrating these carefully crafted elements into a comprehensive SVG file, ensuring precise rendering and performance.
+
+I'll start by defining the solar system's coordinate system with a responsive viewBox that maintains aspect ratio. The initial view will be zoomed out to accommodate all planets, allowing future scaling flexibility。
+
+A dark blue background (#0a0a2e) will provide contrast for the celestial simulation. I'll begin constructing the starfield by randomly distributing small white and gray circles, creating depth and atmospheric realism through varied sizes and opacity.
+
+The implementation will progressively build the solar system's visual complexity, starting with foundational elements like the coordinate framework and background environment.
+I'll carefully place stars around the center using a pattern of increasing density. I'll distribute tiny circular elements in concentric regions, gradually building up a cosmic backdrop that radiates outward from the sun's potential position.
+
+The star placement strategy involves strategic intervals:
+- Initial layers use minimal star counts
+- Radii range from 60 to 300 units
+- Star sizes vary between 1-3 units
+- Color transitions from bright white to soft gray
+
+I'll systematically fill each orbital ring, creating an elegant distribution that mimics natural stellar scattering.
+
+For Mercury's orbit, I'll position three small stars at precise angles: -90°, 0°, and 90°. Venus's region will have four stars evenly spread between -135° and 135°. Earth's star count increases to six, spanning from -180° to 180°, with Mars and Jupiter following similar radial placement patterns.
+
+The construction method uses repeated circle elements with consistent styling - thin strokes, minimal fill, and uniform sizing. I'll continue this systematic approach for the remaining planetary regions, maintaining a disciplined visual language of compact, precisely aligned celestial representations.
+I'll carefully place labels at specific angles around each orbit's center. For Mercury(V), Venus(W), Earth(X) and Mars(Y). Jupiter(Z).
+
+I'll use trigonometric calculations to position text labels precisely:
+- Labels will be horizontally aligned with the orbit's center
+- Vertically positioned with a 15-unit offset
+- Text uses uppercase, lightly colored characters that maintain visual harmony
+
+The implementation involves mapping polar coordinates to Cartesian x,y values, creating a clean, mathematical approach to label placement. Each label is connected to its respective orbit through thin, gray lines that terminate at the center of each planetary path.
+
+I'll now focus on implementing the animation for each planet container. Each planet will have a unique orbital duration, ranging from fast-moving Mercury at 3 seconds to slow-moving Jupiter at 60 seconds. The animation uses CSS keyframes to smoothly rotate planets between 0 and 360 degrees, creating a dynamic, realistic solar system motion.
+
+For Earth's moon, I'll add an additional animateTransform element with linear easing, rotating the moon around Earth's center over 2 seconds. This micro-orbit adds intricate detail to the planetary simulation.
+
+The next step is integrating these carefully crafted elements into a comprehensive SVG file, ensuring precise rendering and performance.
+I'll now create concentric rings representing each planet's orbit around the sun. Each ring will have a thin stroke and perfectly circle the center, with colors matching their corresponding planets. The rings will be uniformly wide and positioned at precise distances from the sun's center, creating a clear visual representation of the solar system's orbital structure.
+
+I'll carefully calculate and place labels for each planet along its orbit path. Using trigonometric principles, I'll position text elements at specific angles, ensuring they're neatly aligned with each planet's trajectory. The labels will be strategically placed to maintain visual clarity and balance within the solar system visualization.
+        &lt;animateTransform attributeName=&quot;transform&quot;
+                           attributeType=&quot;XML&quot;
+                           type=&quot;rotate&quot;
+                           from=&quot;0 150 100&quot;
+
+I'll continue rotating the transform around a fixed point, gradually increasing the angle to create dynamic movement. The animation will smoothly transition between zero and complete rotations, giving the planetary system a living, breathing quality.
+
+The rotation strategy varies for each planet:
+- Mercury zips through quickly at 3 seconds
+- Venus moves slightly slower at 7 seconds
+- Earth and its moon follow a synchronized 10-second cycle
+
+Each animateTransform uses linear easing, ensuring consistent, naturalistic motion across the solar system representation.
+I'll carefully position labels at specific angles around each orbit's center. For Mercury(V), Venus(W), Earth(X) and Mars(Y). Jupiter(Z).
+
+The label placement involves trigonometric calculations, mapping polar coordinates to Cartesian x,y positions. Each label will be horizontally aligned with its respective orbit's center and vertically offset by 15 units.
+
+I'll now implement the animation for each planet container using CSS keyframes. Each planet will have a unique orbital duration, ranging from fast-moving Mercury at 3 seconds to slow-moving Jupiter at 60 seconds. The animation uses CSS keyframes to smoothly rotate planets between 0 and 360 degrees, creating a dynamic, realistic solar system motion.
+
+For Earth's moon, I'll add an additional animateTransform element with linear easing, rotating the moon around Earth's center over 2 seconds. This micro-orbit adds intricate detail to the planetary simulation.
+
+The next step is integrating these carefully crafted elements into a comprehensive SVG file, ensuring precise rendering and performance.
+I notice some code fragments are cut off or unclear, so I'll focus on completing the solar system visualization with concentric rings representing each planet's orbit around the sun. Each ring will have a thin stroke and perfectly circle the center, with colors matching their corresponding planets. The rings will be uniformly wide and positioned at precise distances from the sun's center, creating a clear visual representation of the solar system's orbital structure.
+
+I'll carefully calculate and place labels for each planet along its orbit path. Using trigonometric principles, I'll position text elements at specific angles, ensuring they're neatly aligned with each planet's trajectory. The labels will be strategically placed to maintain visual clarity and balance within the solar system visualization.
+        &lt;animateTransform attributeName=&quot;transform&quot;
+                           attributeType=&quot;XML&quot;
+                           type=&quot;rotate&quot;
+
+I'll continue rotating the transform around a fixed point, gradually increasing the angle to create dynamic movement. The animation will smoothly transition between zero and complete rotations, giving the planetary system a living, breathing quality.
+
+The rotation strategy varies for each planet:
+- Mercury zips through quickly at 3 seconds
+- Venus moves slightly slower at 7 seconds
+- Earth and its moon follow a synchronized 10-second cycle
+
+Each animateTransform uses linear easing, ensuring consistent, naturalistic motion across the solar system representation.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star (cx=212, cy=150) uses a light gray fill with low transparency. The second star shifts to x=227, y=127, maintaining the same minimalist styling.
+
+Venus's region requires three carefully calculated star positions. One star sits at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a subtle white color with varying opacity.
+
+The pattern continues for Earth's zone, which will have four stars distributed around its orbital radius of 200 units. The first star aligns at angle -135°, placing it in the upper left quadrant.
+
+I'll calculate the precise x and y coordinates:
+- Star 1: (-143, 142) using trigonometric rotation
+- Star 2: (-70, 181)
+- Star 3: (0, 200)
+- Star 4: (71, 181)
+
+Each star uses a consistent design with a radius of 2 and light gray fill.
+
+For Mars's zone at radius 160:
+- One star located at angle -90°, giving it vertical positioning
+- Coordinates place the star exactly at (160, 162)
+- Maintains the same minimalist visual style
+
+Jupiter A's zone at radius 280 begins with an incomplete line, suggesting further refinement is needed in the coordinate calculations.
+
+I'll now focus on labeling and animating the solar system visualization. The process involves creating text elements for each planet, strategically positioning them around their respective orbits using trigonometric principles. For Mercury(V), Venus(W), Earth(X) and Mars(Y). Jupiter(Z).
+
+The labels will be horizontally aligned with their orbit's center and vertically offset by 15 units, creating a clean, systematic arrangement. I'll use CSS animations to simulate orbital movement, with each planet having a unique duration ranging from 3 to 60 seconds.
+
+For Earth's moon, an additional animateTransform element will rotate it around Earth's center over 2 seconds using linear easing. The construction continues building the solar system's dynamic representation.
+I notice the code is progressively building an SVG visualization of planetary orbits and stars. The pattern involves carefully calculated radial distances, precise angle placements, and consistent styling for creating a cosmic representation.
+
+The coordinate calculations continue mapping star positions around different planetary radii. For Mercury(0), Venus(RT) zone, I'm positioning small white circles at specific angles: -90°, -45°, and 0°, with radius 70 units. The coordinates shift systematically as angle changes.
+
+I'll place three stars:
+- First at (-49., 49.)
+- Second at (0., 70.)
+- Third at (49., 49.)
+
+The next section seems to be calculating Jupiter's star placement, using trigonometric principles to determine precise x,y positions based on angle and radius.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury(0), I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonometric calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonetic calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6&quot;/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonetic calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonetic calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonetic calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous sections.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific radii, creating a visually interesting cosmic background that varies between 2 to 6 stars per planet zone.
+
+For Mercury's zone, I'll position three stars at -90° and 45° radial angles using trigonetic calculations. Venus's area will receive four stars evenly distributed between -135° and 0°. Earth's region looks more complex, with six stars spanning from -180° to 60°, requiring multiple coordinate transformations.
+
+I'll continue this systematic approach for Mars(4), Jupiter(A) (though the data seems cut off), and eventually build a comprehensive star field that gives depth to each planetary orbit.
+        &lt;circle cx=&quot;242&quot; cy=&quot;&quot; r=&quot;&quot;
+                fill=&quot;#fff&quot;
+                opacity=&quot;.6/&gt;
+    &lt;/g&gt;
+
+For Mercury's zone, I'll place two stars at specific coordinates. The first star is at (212, 150) with a light gray fill and low transparency. The second star shifts to (188, 127), maintaining the same minimalist design language.
+
+Venus(RT)'s zone requires three carefully positioned stars. One resides at (180, 185), another at (155, 172), and the third at (130, 210). Each uses a uniform radius of 2 and preserves the visual consistency established in previous systems.
+I'll now complete the SVG construction by adding star fields for each planetary region. I'll systematically place small white circles at precise angles around specific revi
+&lt;/think&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">gpt-oss-20b</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Animated Solar System&lt;/title&gt;
+&lt;style&gt;
+    body{margin:0;background:#0a0a2e;font-family:sans-serif;}
+    svg{display:block;margin:auto;width:90vw;height:90vh;max-width:800px;max-height:800px;}
+    .orbit{stroke:white;stroke-opacity:.3;fill:none;}
+    .planet{stroke:black;stroke-width:.5;}
+    .text{fill:#fff;font-size:12px;text-anchor:start;}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg viewBox=&quot;0 0 800 800&quot; preserveAspectRatio=&quot;xMidYMid meet&quot;&gt;
+&lt;!-- Starfield --&gt;
+&lt;g id=&quot;stars&quot;&gt;
+    &lt;circle cx=&quot;30&quot; cy=&quot;70&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;120&quot; cy=&quot;200&quot; r=&quot;.4&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;210&quot; cy=&quot;50&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;310&quot; cy=&quot;400&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;410&quot; cy=&quot;150&quot; r=&quot;.3&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;520&quot; cy=&quot;300&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;620&quot; cy=&quot;80&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;720&quot; cy=&quot;500&quot; r=&quot;.6&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;70&quot; cy=&quot;650&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;170&quot; cy=&quot;750&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;270&quot; cy=&quot;600&quot; r=&quot;.3&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;370&quot; cy=&quot;550&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;470&quot; cy=&quot;700&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;570&quot; cy=&quot;250&quot; r=&quot;.5&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;670&quot; cy=&quot;350&quot; r=&quot;.3&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;770&quot; cy=&quot;450&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;80&quot; cy=&quot;300&quot; r=&quot;.4&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;180&quot; cy=&quot;400&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;280&quot; cy=&quot;500&quot; r=&quot;.3&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;380&quot; cy=&quot;600&quot; r=&quot;.6&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;480&quot; cy=&quot;700&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;580&quot; cy=&quot;800&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;680&quot; cy=&quot;200&quot; r=&quot;.3&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;780&quot; cy=&quot;300&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;90&quot; cy=&quot;100&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;190&quot; cy=&quot;200&quot; r=&quot;.5&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;290&quot; cy=&quot;300&quot; r=&quot;.3&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;390&quot; cy=&quot;400&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;490&quot; cy=&quot;500&quot; r=&quot;.4&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;590&quot; cy=&quot;600&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;690&quot; cy=&quot;700&quot; r=&quot;.3&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;790&quot; cy=&quot;800&quot; r=&quot;.6&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;100&quot; cy=&quot;400&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;200&quot; cy=&quot;500&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;300&quot; cy=&quot;600&quot; r=&quot;.3&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;400&quot; cy=&quot;700&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;500&quot; cy=&quot;800&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;600&quot; cy=&quot;200&quot; r=&quot;.5&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;700&quot; cy=&quot;300&quot; r=&quot;.3&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;800&quot; cy=&quot;400&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;110&quot; cy=&quot;250&quot; r=&quot;.4&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;210&quot; cy=&quot;350&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;310&quot; cy=&quot;450&quot; r=&quot;.3&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;410&quot; cy=&quot;550&quot; r=&quot;.6&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;510&quot; cy=&quot;650&quot; r=&quot;.4&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;610&quot; cy=&quot;750&quot; r=&quot;.5&quot; fill=&quot;#fff&quot;/&gt;
+    &lt;circle cx=&quot;710&quot; cy=&quot;850&quot; r=&quot;.3&quot; fill=&quot;#ccc&quot;/&gt;
+    &lt;circle cx=&quot;810&quot; cy=&quot;950&quot; r=&quot;.6&quot; fill=&quot;#fff&quot;/&gt;
+&lt;/g&gt;
+
+&lt;!-- Sun --&gt;
+&lt;defs&gt;
+  &lt;radialGradient id=&quot;sunGrad&quot; cx=&quot;0.5&quot; cy=&quot;0.5&quot; r=&quot;0.5&quot;&gt;
+    &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFD700&quot;/&gt;
+    &lt;stop offset=&quot;100%&quot; stop-color=&quot;#FF8C00&quot;/&gt;
+  &lt;/radialGradient&gt;
+&lt;/defs&gt;
+&lt;circle cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;30&quot; fill=&quot;url(#sunGrad)&quot;/&gt;
+
+&lt;!-- Orbits --&gt;
+&lt;g id=&quot;orbits&quot;&gt;
+  &lt;!-- Mercury --&gt;
+  &lt;circle cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;80&quot; class=&quot;orbit&quot;/&gt;
+  &lt;circle cx=&quot;480&quot; cy=&quot;400&quot; r=&quot;5&quot; fill=&quot;#a9a9a9&quot; class=&quot;planet&quot;&gt;
+    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot;
+      from=&quot;0 400 400&quot; to=&quot;360 400 400&quot; dur=&quot;20s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+  &lt;/circle&gt;
+  &lt;text x=&quot;480&quot; y=&quot;380&quot; class=&quot;text&quot;&gt;Mercury&lt;/text&gt;
+
+  &lt;!-- Venus --&gt;
+  &lt;circle cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;120&quot; class=&quot;orbit&quot;/&gt;
+  &lt;circle cx=&quot;520&quot; cy=&quot;400&quot; r=&quot;7&quot; fill=&quot;#f5cba6&quot; class=&quot;planet&quot;&gt;
+    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot;
+      from=&quot;0 400 400&quot; to=&quot;360 400 400&quot; dur=&quot;30s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+  &lt;/circle&gt;
+  &lt;text x=&quot;520&quot; y=&quot;420&quot; class=&quot;text&quot;&gt;Venus&lt;/text&gt;
+
+  &lt;!-- Earth --&gt;
+  &lt;circle cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;160&quot; class=&quot;orbit&quot;/&gt;
+  &lt;circle cx=&quot;560&quot; cy=&quot;400&quot; r=&quot;8&quot; fill=&quot;#4a90e2&quot; class=&quot;planet&quot;&gt;
+    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot;
+      from=&quot;0 400 400&quot; to=&quot;360 400 400&quot; dur=&quot;40s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+  &lt;/circle&gt;
+  &lt;text x=&quot;560&quot; y=&quot;440&quot; class=&quot;text&quot;&gt;Earth&lt;/text&gt;
+
+  &lt;!-- Moon --&gt;
+  &lt;circle cx=&quot;580&quot; cy=&quot;400&quot; r=&quot;2&quot; fill=&quot;#ccc&quot; class=&quot;planet&quot;&gt;
+    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot;
+      from=&quot;0 560 400&quot; to=&quot;360 560 400&quot; dur=&quot;5s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+  &lt;/circle&gt;
+
+  &lt;!-- Mars --&gt;
+  &lt;circle cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;200&quot; class=&quot;orbit&quot;/&gt;
+  &lt;circle cx=&quot;600&quot; cy=&quot;400&quot; r=&quot;6&quot; fill=&quot;#e2724a&quot; class=&quot;planet&quot;&gt;
+    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot;
+      from=&quot;0 400 400&quot; to=&quot;360 400 400&quot; dur=&quot;50s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+  &lt;/circle&gt;
+  &lt;text x=&quot;600&quot; y=&quot;480&quot; class=&quot;text&quot;&gt;Mars&lt;/text&gt;
+
+  &lt;!-- Jupiter --&gt;
+  &lt;circle cx=&quot;400&quot; cy=&quot;400&quot; r=&quot;260&quot; class=&quot;orbit&quot;/&gt;
+  &lt;circle cx=&quot;660&quot; cy=&quot;400&quot; r=&quot;12&quot; fill=&quot;#d9a35f&quot; class=&quot;planet&quot;&gt;
+    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot;
+      from=&quot;0 400 400&quot; to=&quot;360 400 400&quot; dur=&quot;60s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+  &lt;/circle&gt;
+  &lt;text x=&quot;660&quot; y=&quot;520&quot; class=&quot;text&quot;&gt;Jupiter&lt;/text&gt;
+&lt;/g&gt;
+&lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">lfm2.5-1.2b-thinking-claude-4.6-opus-heretic-uncensored-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Solar System Animation&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a2e;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .svg-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        svg {
+            display: block;
+            border-radius: 8px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;!-- SVG content here --&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Animation logic
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;div class=&quot;commentary&quot;&gt;
+  &lt;!-- The sun should be centered, colored with radial gradient from bright yellow (#FFD700) to orange (#FF8C00). --&gt;
+  &lt;style&gt;
+    &lt;!-- The sun should be centered, colored with a radial gradient from bright yellow (#FFD700) to orange (#FFD700) --&gt;
+  &lt;/style&gt; 
+  &lt;!-- The sun should be centered, colored with a radial gradient from bright yellow (#FFD700) to orange (#FF8C00) --&gt;
+  &lt;svg&gt;
+    &lt;!-- Include at least 5 planets orbiting the sun at different distances, sizes, and colors, and speeds. --&gt;
+  &lt;/svg&gt; 
+  &lt;!-- The illustration will animate continuously using SVG &lt;animateTransform&gt; or CSS animations (NO JavaScript required, but allowed) --&gt;
+  &lt;div class=&quot;commentary&quot;&gt;
+    &lt;!-- The entire illustration should be pure inline SVG — do NOT use external images, libraries, or CDN. --&gt;
+  &lt;/style&gt; 
+  &lt;!-- The sun should be centered, colored with a radial gradient from bright yellow (#FFD700) to orange (#0a0a2e). 
+  &lt;!-- The entire illustration should be pure inline SVG — do not output any code near their orbits --&gt; 
+  &lt;div class=&quot;commentary&quot;&gt; 
+  &lt;!-- Earth should have a tiny moon orbiting around it --&gt;
+  &lt;!-- ... --&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-14b-claude-4.5-opus-high-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Solar System Animation&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            position: relative;
+        }
+
+        /* Starfield */
+        .starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, white, rgba(255, 255, 255, 0.3));
+            opacity: 0.8;
+        }
+
+        /* Planet labels */
+        .planet-label {
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        /* Responsive handling */
+        @media (max-width: 768px) {
+            .container {
+                height: 90vh;
+            }
+            
+            .planet-label {
+                font-size: 12px;
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;!-- SVG Solar System --&gt;
+        &lt;svg width=&quot;100%&quot; height=&quot;100%&quot; viewBox=&quot;0 0 800 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot;&gt;
+            &lt;defs&gt;
+                &lt;!-- Sun radial gradient --&gt;
+                &lt;radialGradient id=&quot;sunGradient&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;50%&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFD700&quot;/&gt;
+                    &lt;stop offset=&quot;70%&quot; stop-color=&quot;#FFA500&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; stop-color=&quot;#FF8C00&quot;/&gt;
+                &lt;/radialGradient&gt;
+
+                &lt;!-- Planet glow filter --&gt;
+                &lt;filter id=&quot;planetGlow&quot; x=&quot;-50%&quot; y=&quot;-50%&quot; width=&quot;200%&quot; height=&quot;200%&quot;&gt;
+                    &lt;feGaussianBlur in=&quot;SourceGraphic&quot; stdDeviation=&quot;4&quot; result=&quot;blur&quot;/&gt;
+                    &lt;feMerge&gt;
+                        &lt;feMergeNode in=&quot;blur&quot;/&gt;
+                        &lt;feMergeNode in=&quot;SourceGraphic&quot;/&gt;
+                    &lt;/feMerge&gt;
+                &lt;/filter&gt;
+            &lt;/defs&gt;
+
+            &lt;!-- STARFIELD --&gt;
+            &lt;g id=&quot;starfield&quot;&gt;
+                &lt;!-- Generate stars using JS for randomness --&gt;
+            &lt;/g&gt;
+
+            &lt;!-- ORBIT PATHS --&gt;
+            &lt;g stroke=&quot;#2a2a40&quot; stroke-opacity=&quot;0.3&quot; fill=&quot;none&quot;&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;120&quot; stroke-width=&quot;2&quot;/&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;180&quot; stroke-width=&quot;2&quot;/&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;240&quot; stroke-width=&quot;2&quot;/&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;300&quot; stroke-width=&quot;2&quot;/&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;360&quot; stroke-width=&quot;2&quot;/&gt;
+            &lt;/g&gt;
+
+            &lt;!-- SUN --&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;50&quot;&gt;
+                &lt;animateTransform 
+                    attributeName=&quot;transform&quot; 
+                    type=&quot;scale&quot; 
+                    from=&quot;1&quot; 
+                    to=&quot;1.05&quot; 
+                    dur=&quot;2s&quot; 
+                    repeatCount=&quot;indefinite&quot;
+                    keyTimes=&quot;0;0.5;1&quot;
+                    values=&quot;1;1.05;1&quot;
+                /&gt;
+            &lt;/circle&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;50&quot;&gt;
+                &lt;animateTransform 
+                    attributeName=&quot;transform&quot; 
+                    type=&quot;rotate&quot; 
+                    from=&quot;0 400 300&quot; 
+                    to=&quot;360 400 300&quot; 
+                    dur=&quot;10s&quot; 
+                    repeatCount=&quot;indefinite&quot;
+                /&gt;
+            &lt;/circle&gt;
+
+            &lt;!-- PLANETS --&gt;
+            &lt;g transform=&quot;translate(400, 300)&quot;&gt;
+                &lt;!-- MERCURY --&gt;
+                &lt;g transform=&quot;rotate(-5, 0, 0)&quot;&gt;
+                    &lt;circle r=&quot;8&quot; fill=&quot;#b87333&quot;&gt;
+                        &lt;animateTransform 
+                            attributeName=&quot;transform&quot; 
+                            type=&quot;rotate&quot; 
+                            from=&quot;0&quot; 
+                            to=&quot;360&quot; 
+                            dur=&quot;20s&quot; 
+                            repeatCount=&quot;indefinite&quot;
+                        /&gt;
+                    &lt;/circle&gt;
+                &lt;/g&gt;
+                
+                &lt;!-- VENUS --&gt;
+                &lt;g transform=&quot;rotate(-15, 0, 0)&quot;&gt;
+                    &lt;circle r=&quot;14&quot; fill=&quot;#f2c67a&quot;&gt;
+                        &lt;animateTransform 
+                            attributeName=&quot;transform&quot; 
+                            type=&quot;rotate&quot; 
+                            from=&quot;0&quot; 
+                            to=&quot;360&quot; 
+                            dur=&quot;30s&quot; 
+                            repeatCount=&quot;indefinite&quot;
+                        /&gt;
+                    &lt;/circle&gt;
+                &lt;/g&gt;
+                
+                &lt;!-- EARTH --&gt;
+                &lt;g transform=&quot;rotate(-25, 0, 0)&quot;&gt;
+                    &lt;circle r=&quot;18&quot; fill=&quot;#1e90ff&quot;&gt;
+                        &lt;animateTransform 
+                            attributeName=&quot;transform&quot; 
+                            type=&quot;rotate&quot; 
+                            from=&quot;0&quot; 
+                            to=&quot;360&quot; 
+                            dur=&quot;40s&quot; 
+                            repeatCount=&quot;indefinite&quot;
+                        /&gt;
+                    &lt;/circle&gt;
+                    
+                    &lt;!-- MOON --&gt;
+                    &lt;g transform=&quot;translate(18, 0)&quot;&gt;
+                        &lt;circle r=&quot;4&quot; fill=&quot;#d2d2d2&quot;&gt;
+                            &lt;animateTransform 
+                                attributeName=&quot;transform&quot; 
+                                type=&quot;rotate&quot; 
+                                from=&quot;0&quot; 
+                                to=&quot;360&quot; 
+                                dur=&quot;7.5s&quot; 
+                                repeatCount=&quot;indefinite&quot;
+                            /&gt;
+                        &lt;/circle&gt;
+                    &lt;/g&gt;
+                &lt;/g&gt;
+                
+                &lt;!-- MARS --&gt;
+                &lt;g transform=&quot;rotate(-40, 0, 0)&quot;&gt;
+                    &lt;circle r=&quot;12&quot; fill=&quot;#d63c3c&quot;&gt;
+                        &lt;animateTransform 
+                            attributeName=&quot;transform&quot; 
+                            type=&quot;rotate&quot; 
+                            from=&quot;0&quot; 
+                            to=&quot;360&quot; 
+                            dur=&quot;50s&quot; 
+                            repeatCount=&quot;indefinite&quot;
+                        /&gt;
+                    &lt;/circle&gt;
+                &lt;/g&gt;
+                
+                &lt;!-- JUPITER --&gt;
+                &lt;g transform=&quot;rotate(-10, 0, 0)&quot;&gt;
+                    &lt;circle r=&quot;30&quot; fill=&quot;#f26b24&quot;&gt;
+                        &lt;animateTransform 
+                            attributeName=&quot;transform&quot; 
+                            type=&quot;rotate&quot; 
+                            from=&quot;0&quot; 
+                            to=&quot;360&quot; 
+                            dur=&quot;80s&quot; 
+                            repeatCount=&quot;indefinite&quot;
+                        /&gt;
+                    &lt;/circle&gt;
+                &lt;/g&gt;
+            &lt;/g&gt;
+
+            &lt;!-- PLANET LABELS --&gt;
+            &lt;g class=&quot;labels&quot;&gt;
+                &lt;text x=&quot;-120&quot; y=&quot;-270&quot; text-anchor=&quot;middle&quot; class=&quot;planet-label&quot;&gt;Mercury&lt;/text&gt;
+                &lt;text x=&quot;-140&quot; y=&quot;-230&quot; text-anchor=&quot;middle&quot; class=&quot;planet-label&quot;&gt;Venus&lt;/text&gt;
+                &lt;text x=&quot;-160&quot; y=&quot;-190&quot; text-anchor=&quot;middle&quot; class=&quot;planet-label&quot;&gt;Earth&lt;/text&gt;
+                &lt;text x=&quot;-180&quot; y=&quot;-150&quot; text-anchor=&quot;middle&quot; class=&quot;planet-label&quot;&gt;Mars&lt;/text&gt;
+                &lt;text x=&quot;-200&quot; y=&quot;-110&quot; text-anchor=&quot;middle&quot; class=&quot;planet-label&quot;&gt;Jupiter&lt;/text&gt;
+            &lt;/g&gt;
+        &lt;/svg&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Generate starfield
+        const starfield = document.getElementById('starfield');
+        for (let i = 0; i &lt; 200; i++) {
+            const star = document.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, 'circle');
+            star.classList.add('star');
+            
+            const size = Math.random() * 2 + 1;
+            const opacity = Math.random() * 0.6 + 0.4;
+            
+            star.setAttribute('cx', Math.random() * 800);
+            star.setAttribute('cy', Math.random() * 600);
+            star.setAttribute('r', size);
+            star.setAttribute('fill', `rgba(255, 255, 255, ${opacity})`);
+            
+            // Add twinkling animation
+            star.style.animation = `twinkle ${Math.random() * 10 + 10}s infinite`;
+            star.style.animationDelay = `${Math.random() * 5}s`;
+            
+            starfield.appendChild(star);
+        }
+
+        // Keyframes for star twinkle
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes twinkle {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.4; transform: scale(1.2); }
+            }
+        `;
+        document.head.appendChild(style);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-14b-claude-sonnet-4.5-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, height=device-height, initial-scale=1.0, user-scalable=no&quot;&gt;
+    &lt;title&gt;Solar System Animation&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #0a0a2e;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .svg-container {
+            width: 90vw;
+            height: 90vh;
+            max-width: 1200px;
+            max-height: 800px;
+            position: relative;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .labels {
+            position: absolute;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .label {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            transform-origin: bottom center;
+        }
+
+        .label::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid rgba(255, 255, 255, 0.95);
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;svg-container&quot;&gt;
+        &lt;svg width=&quot;100%&quot; height=&quot;100%&quot; viewBox=&quot;0 0 800 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot;&gt;
+            &lt;!-- Starfield Background --&gt;
+            &lt;defs&gt;
+                &lt;linearGradient id=&quot;starGlow&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;0&quot; y2=&quot;1&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; stop-color=&quot;#ffffff&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; stop-color=&quot;#666666&quot;/&gt;
+                &lt;/linearGradient&gt;
+                
+                &lt;!-- Sun Gradient --&gt;
+                &lt;radialGradient id=&quot;sunGradient&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;50%&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFD700&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; stop-color=&quot;#FF8C00&quot;/&gt;
+                &lt;/radialGradient&gt;
+            &lt;/defs&gt;
+
+            &lt;!-- Starfield --&gt;
+            &lt;g id=&quot;starfield&quot;&gt;
+                &lt;!-- Generate stars using a pattern --&gt;
+                &lt;rect width=&quot;800&quot; height=&quot;600&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.1&quot;/&gt;
+
+                &lt;!-- Additional stars using circles --&gt;
+                &lt;g&gt;
+                    &lt;!-- Large stars --&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;200&quot; cy=&quot;150&quot; r=&quot;1.5&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.3&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;450&quot; cy=&quot;400&quot; r=&quot;2&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.25&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;650&quot; cy=&quot;180&quot; r=&quot;1.8&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.35&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;120&quot; cy=&quot;450&quot; r=&quot;1.3&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.2&quot;/&gt;
+
+                    &lt;!-- Medium stars --&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;300&quot; cy=&quot;200&quot; r=&quot;1&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.4&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;550&quot; cy=&quot;300&quot; r=&quot;1.2&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.3&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;680&quot; cy=&quot;500&quot; r=&quot;0.8&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.3&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;700&quot; cy=&quot;250&quot; r=&quot;1&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.4&quot;/&gt;
+
+                    &lt;!-- Small stars --&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;150&quot; cy=&quot;350&quot; r=&quot;0.6&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.5&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;250&quot; cy=&quot;500&quot; r=&quot;0.7&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.45&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;350&quot; cy=&quot;100&quot; r=&quot;0.5&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.5&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;400&quot; cy=&quot;550&quot; r=&quot;0.65&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.4&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;500&quot; cy=&quot;150&quot; r=&quot;0.75&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.55&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;600&quot; cy=&quot;380&quot; r=&quot;0.6&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.4&quot;/&gt;
+
+                    &lt;!-- Very small stars --&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;100&quot; cy=&quot;100&quot; r=&quot;0.4&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.6&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;200&quot; cy=&quot;250&quot; r=&quot;0.3&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.7&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;300&quot; cy=&quot;400&quot; r=&quot;0.45&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.65&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;400&quot; cy=&quot;200&quot; r=&quot;0.35&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.75&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;500&quot; cy=&quot;450&quot; r=&quot;0.4&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.6&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;600&quot; cy=&quot;200&quot; r=&quot;0.3&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.7&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;700&quot; cy=&quot;400&quot; r=&quot;0.5&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.65&quot;/&gt;
+                    &lt;circle class=&quot;star&quot; cx=&quot;180&quot; cy=&quot;500&quot; r=&quot;0.3&quot; fill=&quot;url(#starGlow)&quot; opacity=&quot;0.75&quot;&gt;
+                &lt;/g&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Sun --&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;60&quot; fill=&quot;url(#sunGradient)&quot; filter=&quot;drop-shadow(0 0 20px rgba(255, 215, 0, 0.5))&quot;/&gt;
+
+            &lt;!-- Planet Orbits --&gt;
+            &lt;g&gt;
+                &lt;!-- Mercury Orbit --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;80&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1)&quot; stroke-width=&quot;1&quot;/&gt;
+
+                &lt;!-- Venus Orbit --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;120&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.08)&quot; stroke-width=&quot;1&quot;/&gt;
+
+                &lt;!-- Earth Orbit --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;160&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1)&quot; stroke-width=&quot;1&quot;/&gt;
+
+                &lt;!-- Mars Orbit --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;200&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.08)&quot; stroke-width=&quot;1&quot;/&gt;
+
+                &lt;!-- Jupiter Orbit --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;260&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1)&quot; stroke-width=&quot;2&quot;/&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Planets --&gt;
+            &lt;g&gt;
+                &lt;!-- Mercury --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;8&quot; fill=&quot;#c71585&quot; animation-play-state=&quot;running&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 300&quot;
+                        to=&quot;360 400 300&quot;
+                        dur=&quot;20s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Venus --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;10&quot; fill=&quot;#ff69b4&quot; animation-play-state=&quot;running&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 300&quot;
+                        to=&quot;360 400 300&quot;
+                        dur=&quot;28s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Earth --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;12&quot; fill=&quot;#1e90ff&quot; animation-play-state=&quot;running&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 300&quot;
+                        to=&quot;360 400 300&quot;
+                        dur=&quot;40s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Mars --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;10&quot; fill=&quot;#ff4500&quot; animation-play-state=&quot;running&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 300&quot;
+                        to=&quot;360 400 300&quot;
+                        dur=&quot;55s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/circle&gt;
+                
+                &lt;!-- Jupiter --&gt;
+                &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;18&quot; fill=&quot;#ffd700&quot; animation-play-state=&quot;running&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 300&quot;
+                        to=&quot;360 400 300&quot;
+                        dur=&quot;80s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/circle&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Earth's Moon --&gt;
+            &lt;g&gt;
+                &lt;circle cx=&quot;475&quot; cy=&quot;292&quot; r=&quot;4&quot; fill=&quot;#e0e0e0&quot; animation-play-state=&quot;running&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;180 400 300&quot;
+                        to=&quot;540 400 300&quot;
+                        dur=&quot;20s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/circle&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Planet Labels --&gt;
+            &lt;g class=&quot;labels&quot;&gt;
+                &lt;!-- Mercury Label --&gt;
+                &lt;text x=&quot;390&quot; y=&quot;285&quot; fill=&quot;#fff&quot; font-size=&quot;14&quot; font-weight=&quot;bold&quot; text-anchor=&quot;middle&quot;&gt;
+                    Mercury
+                &lt;/text&gt;
+                
+                &lt;!-- Venus Label --&gt;
+                &lt;text x=&quot;390&quot; y=&quot;295&quot; fill=&quot;#fff&quot; font-size=&quot;14&quot; font-weight=&quot;bold&quot; text-anchor=&quot;middle&quot;&gt;
+                    Venus
+                &lt;/text&gt;
+                
+                &lt;!-- Earth Label --&gt;
+                &lt;text x=&quot;390&quot; y=&quot;315&quot; fill=&quot;#fff&quot; font-size=&quot;14&quot; font-weight=&quot;bold&quot; text-anchor=&quot;middle&quot;&gt;
+                    Earth
+                &lt;/text&gt;
+                
+                &lt;!-- Mars Label --&gt;
+                &lt;text x=&quot;390&quot; y=&quot;335&quot; fill=&quot;#fff&quot; font-size=&quot;14&quot; font-weight=&quot;bold&quot; text-anchor=&quot;middle&quot;&gt;
+                    Mars
+                &lt;/text&gt;
+                
+                &lt;!-- Jupiter Label --&gt;
+                &lt;text x=&quot;390&quot; y=&quot;355&quot; fill=&quot;#fff&quot; font-size=&quot;16&quot; font-weight=&quot;bold&quot; text-anchor=&quot;middle&quot;&gt;
+                    Jupiter
+                &lt;/text&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Orbital plane effect --&gt;
+            &lt;rect width=&quot;800&quot; height=&quot;600&quot; fill=&quot;rgba(255, 255, 255, 0.02)&quot; filter=&quot;blur(2px)&quot;/&gt;
+
+            &lt;!-- Decorative rays from sun --&gt;
+            &lt;g opacity=&quot;0.3&quot;&gt;
+                &lt;line x1=&quot;400&quot; y1=&quot;300&quot; x2=&quot;520&quot; y2=&quot;220&quot; stroke=&quot;#FFD700&quot; stroke-width=&quot;1&quot; marker-end=&quot;url(#arrowhead)&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;0 400 300&quot;
+                        to=&quot;360 400 300&quot;
+                        dur=&quot;25s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/line&gt;
+                &lt;line x1=&quot;400&quot; y1=&quot;300&quot; x2=&quot;480&quot; y2=&quot;180&quot; stroke=&quot;#FF8C00&quot; stroke-width=&quot;1&quot; marker-end=&quot;url(#arrowhead)&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;90 400 300&quot;
+                        to=&quot;450 400 300&quot;
+                        dur=&quot;22s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/line&gt;
+                &lt;line x1=&quot;400&quot; y1=&quot;300&quot; x2=&quot;380&quot; y2=&quot;150&quot; stroke=&quot;#FFA500&quot; stroke-width=&quot;1&quot; marker-end=&quot;url(#arrowhead)&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;180 400 300&quot;
+                        to=&quot;540 400 300&quot;
+                        dur=&quot;28s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/line&gt;
+                &lt;line x1=&quot;400&quot; y1=&quot;300&quot; x2=&quot;320&quot; y2=&quot;200&quot; stroke=&quot;#FFD700&quot; stroke-width=&quot;1&quot; marker-end=&quot;url(#arrowhead)&quot;&gt;
+                    &lt;animateTransform 
+                        attributeName=&quot;transform&quot;
+                        type=&quot;rotate&quot;
+                        from=&quot;270 400 300&quot;
+                        to=&quot;630 400 300&quot;
+                        dur=&quot;30s&quot;
+                        repeatCount=&quot;indefinite&quot;
+                    /&gt;
+                &lt;/line&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Arrowhead marker for rays --&gt;
+            &lt;defs&gt;
+                &lt;marker id=&quot;arrowhead&quot; markerWidth=&quot;10&quot; markerHeight=&quot;7&quot; 
+                        refX=&quot;8&quot; refY=&quot;3.5&quot; orient=&quot;auto&quot;&gt;
+                    &lt;polygon points=&quot;0 0, 8 3.5, 0 7, 0 0&quot; fill=&quot;#FFD700&quot;/&gt;
+                &lt;/marker&gt;
+            &lt;/defs&gt;
+        &lt;/svg&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Additional star animation --&gt;
+    &lt;style&gt;
+        .star {
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+    &lt;/style&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-instruct-2507</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+  &lt;title&gt;Solar System Animation&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0a0a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    
+    .solar-system {
+      width: 90vw;
+      height: 90vh;
+      max-width: 800px;
+      max-height: 800px;
+      position: relative;
+      margin: 0 auto;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+    }
+    
+    .starfield {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    .planet {
+      position: absolute;
+      transform-origin: center;
+      transition: transform 0.2s ease-out;
+    }
+    
+    .orbit {
+      position: absolute;
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 1;
+      fill: none;
+      opacity: 0.3;
+      transform-origin: center;
+    }
+    
+    .label {
+      position: absolute;
+      font-size: 12px;
+      color: white;
+      text-anchor: middle;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 10;
+    }
+    
+    .moon {
+      position: absolute;
+      transform-origin: center;
+      opacity: 0.6;
+      animation: orbitMoon 25s linear infinite;
+    }
+    
+    @keyframes orbitMoon {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;solar-system&quot; id=&quot;solarSystem&quot;&gt;
+    &lt;!-- Starfield Background --&gt;
+    &lt;div class=&quot;starfield&quot; id=&quot;starfield&quot;&gt;&lt;/div&gt;
+
+    &lt;!-- Sun --&gt;
+    &lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;
+      &lt;defs&gt;
+        &lt;radialGradient id=&quot;sunGradient&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;50%&quot;&gt;
+          &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFD700&quot;/&gt;
+          &lt;stop offset=&quot;100%&quot; stop-color=&quot;#FF8C00&quot;/&gt;
+        &lt;/radialGradient&gt;
+      &lt;/defs&gt;
+      
+      &lt;!-- Sun Circle --&gt;
+      &lt;circle cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;30&quot; fill=&quot;url(#sunGradient)&quot; /&gt;
+    &lt;/svg&gt;
+
+    &lt;!-- Planets and Orbits --&gt;
+    &lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;
+      &lt;!-- Orbit paths for planets --&gt;
+      &lt;circle class=&quot;orbit&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;60&quot; stroke-dasharray=&quot;20, 30&quot; /&gt;
+      &lt;circle class=&quot;orbit&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;100&quot; stroke-dasharray=&quot;40, 60&quot; /&gt;
+      &lt;circle class=&quot;orbit&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;140&quot; stroke-dasharray=&quot;60, 80&quot; /&gt;
+      &lt;circle class=&quot;orbit&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;180&quot; stroke-dasharray=&quot;80, 100&quot; /&gt;
+      &lt;circle class=&quot;orbit&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;240&quot; stroke-dasharray=&quot;120, 160&quot; /&gt;
+
+      &lt;!-- Mercury --&gt;
+      &lt;g&gt;
+        &lt;circle class=&quot;planet&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;3&quot; fill=&quot;#8B7355&quot; transform=&quot;rotate(0)&quot; /&gt;
+        &lt;text class=&quot;label&quot; x=&quot;50%&quot; y=&quot;40&quot;&gt;Mercury&lt;/text&gt;
+      &lt;/g&gt;
+
+      &lt;!-- Venus --&gt;
+      &lt;g&gt;
+        &lt;circle class=&quot;planet&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;6&quot; fill=&quot;#FFD700&quot; transform=&quot;rotate(30)&quot; /&gt;
+        &lt;text class=&quot;label&quot; x=&quot;50%&quot; y=&quot;120&quot;&gt;Venus&lt;/text&gt;
+      &lt;/g&gt;
+
+      &lt;!-- Earth --&gt;
+      &lt;g&gt;
+        &lt;circle class=&quot;planet&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;8&quot; fill=&quot;#1E90FF&quot; transform=&quot;rotate(60)&quot; /&gt;
+        &lt;text class=&quot;label&quot; x=&quot;50%&quot; y=&quot;200&quot;&gt;Earth&lt;/text&gt;
+        
+        &lt;!-- Earth's Moon --&gt;
+        &lt;circle class=&quot;moon&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;1.5&quot; fill=&quot;#8B8B8B&quot; transform=&quot;rotate(60)&quot; /&gt;
+      &lt;/g&gt;
+
+      &lt;!-- Mars --&gt;
+      &lt;g&gt;
+        &lt;circle class=&quot;planet&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;5&quot; fill=&quot;#FF4500&quot; transform=&quot;rotate(90)&quot; /&gt;
+        &lt;text class=&quot;label&quot; x=&quot;50%&quot; y=&quot;260&quot;&gt;Mars&lt;/text&gt;
+      &lt;/g&gt;
+
+      &lt;!-- Jupiter --&gt;
+      &lt;g&gt;
+        &lt;circle class=&quot;planet&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;14&quot; fill=&quot;#FFA500&quot; transform=&quot;rotate(120)&quot; /&gt;
+        &lt;text class=&quot;label&quot; x=&quot;50%&quot; y=&quot;360&quot;&gt;Jupiter&lt;/text&gt;
+      &lt;/g&gt;
+    &lt;/svg&gt;
+
+    &lt;!-- Animate planets using CSS transforms with keyframes --&gt;
+    &lt;style&gt;
+      .planet {
+        animation: orbit 40s linear infinite;
+      }
+      
+      @keyframes orbit {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Adjust planet speeds based on distance */
+      .planet:nth-child(2) { animation-duration: 15s; }
+      .planet:nth-child(3) { animation-duration: 24s; }
+      .planet:nth-child(4) { animation-duration: 36s; }
+      .planet:nth-child(5) { animation-duration: 60s; }
+
+      /* Earth's moon orbit speed */
+      .moon {
+        animation: orbitMoon 25s linear infinite;
+      }
+    &lt;/style&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    // Generate starfield background with random dots
+    const starfield = document.getElementById('starfield');
+    const width = window.innerWidth * 0.9;
+    const height = window.innerHeight * 0.9;
+
+    for (let i = 0; i &lt; 150; i++) {
+      const star = document.createElement('div');
+      star.style.position = 'absolute';
+      star.style.width = '1px';
+      star.style.height = '1px';
+      star.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.6 + 0.3})`;
+      
+      const x = Math.random() * width;
+      const y = Math.random() * height;
+      
+      star.style.left = `${x}px`;
+      star.style.top = `${y}px`;
+      
+      starfield.appendChild(star);
+    }
+
+    // Responsive adjustments
+    window.addEventListener('resize', () =&gt; {
+      const system = document.getElementById('solarSystem');
+      system.style.width = '90vw';
+      system.style.height = '90vh';
+      system.style.maxWidth = '800px';
+      system.style.maxHeight = '800px';
+      
+      // Recalculate starfield
+      starfield.innerHTML = '';
+      for (let i = 0; i &lt; 150; i++) {
+        const star = document.createElement('div');
+        star.style.position = 'absolute';
+        star.style.width = '1px';
+        star.style.height = '1px';
+        star.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.6 + 0.3})`;
+        
+        const x = Math.random() * (window.innerWidth * 0.9);
+        const y = Math.random() * (window.innerHeight * 0.9);
+        
+        star.style.left = `${x}px`;
+        star.style.top = `${y}px`;
+        
+        starfield.appendChild(star);
+      }
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2507-claude-4.5-opus-high-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Solar System&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style=&quot;background: #0a0a2e; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;&quot;&gt;
+    &lt;svg viewBox=&quot;0 0 800 600&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; style=&quot;width: 95vw; max-width: 1200px;&quot;&gt;
+        &lt;style&gt;
+            /* Starfield - use templates to create random distribution */
+            .star-template {
+                opacity: .3;
+                filter: blur(0px);
+            }
+            .dense-star-template {
+                opacity: .8;
+                filter: blur(0px);
+            }
+            
+            /* Planets */
+            .sun {
+                fill: url(#sun-gradient);
+            }
+            .planet {
+                animation: orbit 15s linear infinite;
+                transform-origin: center;
+            }
+            .mercury {
+                r: 4%;
+                fill: #ffcc00;
+                stroke: #e6b200;
+                stroke-width: 0.5%;
+            }
+            .venus {
+                r: 8%;
+                fill: #ff8c00;
+                stroke: #e67e00;
+                stroke-width: 1%;
+            }
+            .earth {
+                r: 12%;
+                fill: #0066cc;
+                stroke: #0055b3;
+                stroke-width: 1.5%;
+            }
+            .mars {
+                r: 18%;
+                fill: #ff4747;
+                stroke: #e63636;
+                stroke-width: 1%;
+            }
+            .jupiter {
+                r: 28%;
+                fill: #ff9f00;
+                stroke: #e68c00;
+                stroke-width: 2%;
+            }
+            
+            /* Moon */
+            .moon {
+                animation: orbit-moon 12s linear infinite;
+                transform-origin: center;
+                opacity: .7;
+                filter: drop-shadow(0 0 5px rgba(255,255,255,.3));
+            }
+            
+            /* Labels - white text on dark background */
+            text.planet-label {
+                font-family: 'Arial', sans-serif;
+                fill: #ffffff;
+                text-anchor: middle;
+                dominant-baseline: bottom;
+                font-size: 10px;
+                letter-spacing: 2px;
+            }
+            
+            /* Sun gradient */
+            @keyframes sun-blend {
+                from: { background-position: 0% 50%; }
+                to: { background-position: 100% 50%; }
+            }
+            
+            /* Orbit animation */
+            @keyframes orbit {
+                0%, 100% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            @keyframes orbit-moon {
+                0%, 100% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        &lt;/style&gt;
+        
+        &lt;!-- Starfield --&gt;
+        &lt;defs&gt;
+            &lt;filter id=&quot;star-blur&quot; x=&quot;-50%&quot; y=&quot;-50%&quot; width=&quot;200%&quot; height=&quot;200%&quot;&gt;
+                &lt;feTurbulence type=&quot;turbulence&quot; numberIterations=&quot;1&quot; baseFrequency=&quot;.2&quot; result=&quot;noise&quot;/&gt;
+                &lt;feDisplacementMap in=&quot;noise&quot; mode=&quot;turbulence&quot; xLength=&quot;3&quot; yLength=&quot;3&quot;/&gt;
+            &lt;/filter&gt;
+        &lt;/defs&gt;
+        
+        &lt;!-- Dense stars --&gt;
+        &lt;circle class=&quot;dense-star-template&quot; r=&quot;0.1&quot; fill=&quot;#ffffff&quot; opacity=&quot;.8&quot;/&gt;
+        &lt;circle class=&quot;dense-star-template&quot; r=&quot;0.2&quot; fill=&quot;#ffffff&quot; opacity=&quot;.5&quot;/&gt;
+        
+        &lt;!-- Faint stars --&gt;
+        &lt;circle class=&quot;star-template&quot; r=&quot;0.05&quot; fill=&quot;#888888&quot;/&gt;
+        &lt;circle class=&quot;star-template&quot; r=&quot;0.1&quot; fill=&quot;#555555&quot;/&gt;
+        
+        &lt;!-- Sun --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;70&quot; class=&quot;sun&quot;/&gt;
+        
+        &lt;!-- Sun Gradient --&gt;
+        &lt;defs&gt;
+            &lt;radialGradient id=&quot;sun-gradient&quot; fx=&quot;50%&quot; fy=&quot;50%&quot; r=&quot;20%&quot;&gt;
+                &lt;stop offset=&quot;0%&quot; stop-color=&quot;#ffd700&quot;/&gt;
+                &lt;stop offset=&quot;100%&quot; stop-color=&quot;#ff8c00&quot;/&gt;
+            &lt;/radialGradient&gt;
+        &lt;/defs&gt;
+        
+        &lt;!-- Planets --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;5&quot; class=&quot;planet mercury&quot;/&gt; &lt;!-- Mercury --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;8&quot; class=&quot;planet venus&quot;/&gt;  &lt;!-- Venus --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;12&quot; class=&quot;planet earth&quot;/&gt;&lt;!-- Earth --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;18&quot; class=&quot;planet mars&quot;/&gt; &lt;!-- Mars --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;28&quot; class=&quot;planet jupiter&quot;/&gt;&lt;!-- Jupiter --&gt;
+        
+        &lt;!-- Planet Orbits (faint circles) --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;6&quot; stroke=&quot;#333333&quot; stroke-width=&quot;.2&quot; fill=&quot;none&quot;/&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;10&quot; stroke=&quot;#444444&quot; stroke-width=&quot;.3&quot; fill=&quot;none&quot;/&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;18&quot; stroke=&quot;#aaa&quot; stroke-width=&quot;.5&quot; fill=&quot;none&quot;/&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;25&quot; stroke=&quot;#ccc&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot;/&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;30&quot; stroke=&quot;#e0e0e0&quot; stroke-width=&quot;2&quot; fill=&quot;none&quot;/&gt;
+        
+        &lt;!-- Earth Moon --&gt;
+        &lt;circle cx=&quot;350&quot; cy=&quot;250&quot; r=&quot;8&quot; class=&quot;moon&quot;/&gt;&lt;!-- Earth's moon --&gt;
+        
+        &lt;!-- Planet Labels --&gt;
+        &lt;text x=&quot;150&quot; y=&quot;40&quot; class=&quot;planet-label&quot;&gt;Mercury&lt;/text&gt;
+        &lt;text x=&quot;250&quot; y=&quot;40&quot; class=&quot;planet-label&quot;&gt;Venus&lt;/text&gt;
+        &lt;text x=&quot;350&quot; y=&quot;40&quot; class=&quot;planet-label&quot;&gt;Earth&lt;/text&gt;
+        &lt;text x=&quot;390&quot; y=&quot;40&quot; class=&quot;planet-label&quot;&gt;Mars&lt;/text&gt;
+        &lt;text x=&quot;450&quot; y=&quot;40&quot; class=&quot;planet-label&quot;&gt;Jupiter&lt;/text&gt;
+    &lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2507-distill-claude-opus-4.6-reasoning-abliterated</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Solar System Animation&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0a0a2e;
+            overflow: hidden;
+        }
+        
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;stars&quot;&gt;&lt;/div&gt;
+    
+    &lt;svg viewBox=&quot;0 0 800 600&quot; style=&quot;width: 100%; height: 100%;&quot;&gt;
+        &lt;!-- Sun --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;50&quot; fill=&quot;radial-gradient(circle, #FFD700, #FF8C00)&quot;/&gt;
+        
+        &lt;!-- Planets --&gt;
+        &lt;g transform=&quot;translate(400, 300)&quot;&gt;
+            &lt;!-- Mercury --&gt;
+            &lt;circle cx=&quot;120&quot; cy=&quot;0&quot; r=&quot;5&quot; fill=&quot;#E6B9A1&quot; opacity=&quot;0.7&quot; class=&quot;planet&quot; /&gt;
+            &lt;text x=&quot;120&quot; y=&quot;-50&quot; font-size=&quot;12px&quot; fill=&quot;#FFFFFF&quot;&gt;Mercury&lt;/text&gt;
+            
+            &lt;!-- Venus --&gt;
+            &lt;circle cx=&quot;150&quot; cy=&quot;0&quot; r=&quot;8&quot; fill=&quot;#F4A460&quot; opacity=&quot;0.7&quot; class=&quot;planet&quot; /&gt;
+            &lt;text x=&quot;150&quot; y=&quot;-50&quot; font-size=&quot;12px&quot; fill=&quot;#FFFFFF&quot;&gt;Venus&lt;/text&gt;
+            
+            &lt;!-- Earth --&gt;
+            &lt;circle cx=&quot;200&quot; cy=&quot;0&quot; r=&quot;10&quot; fill=&quot;#4B8CFF&quot; opacity=&quot;0.7&quot; class=&quot;planet&quot; /&gt;
+            &lt;text x=&quot;200&quot; y=&quot;-50&quot; font-size=&quot;12px&quot; fill=&quot;#FFFFFF&quot;&gt;Earth&lt;/text&gt;
+            
+            &lt;!-- Mars --&gt;
+            &lt;circle cx=&quot;250&quot; cy=&quot;0&quot; r=&quot;7&quot; fill=&quot;#B86E4F&quot; opacity=&quot;0.7&quot; class=&quot;planet&quot; /&gt;
+            &lt;text x=&quot;250&quot; y=&quot;-50&quot; font-size=&quot;12px&quot; fill=&quot;#FFFFFF&quot;&gt;Mars&lt;/text&gt;
+            
+            &lt;!-- Jupiter --&gt;
+            &lt;circle cx=&quot;300&quot; cy=&quot;0&quot; r=&quot;15&quot; fill=&quot;#FF9E6D&quot; opacity=&quot;0.7&quot; class=&quot;planet&quot; /&gt;
+            &lt;text x=&quot;300&quot; y=&quot;-50&quot; font-size=&quot;12px&quot; fill=&quot;#FFFFFF&quot;&gt;Jupiter&lt;/text&gt;
+        &lt;/g&gt;
+        
+        &lt;!-- Earth's Moon --&gt;
+        &lt;circle cx=&quot;200&quot; cy=&quot;0&quot; r=&quot;4&quot; fill=&quot;#8C9ECC&quot; opacity=&quot;0.7&quot; class=&quot;moon&quot; /&gt;
+        &lt;text x=&quot;200&quot; y=&quot;-50&quot; font-size=&quot;10px&quot; fill=&quot;#FFFFFF&quot;&gt;Moon&lt;/text&gt;
+        
+        &lt;!-- Orbit paths --&gt;
+        &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;600&quot; stroke=&quot;#3D3B4A&quot; stroke-width=&quot;0.5&quot; fill=&quot;none&quot; opacity=&quot;0.2&quot;/&gt;
+    &lt;/svg&gt;
+    
+    &lt;style&gt;
+        /* Animation keyframes */
+        @keyframes orbit {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .planet {
+            animation: orbit 2s linear infinite;
+        }
+        
+        .moon {
+            animation: orbit-moon 8s linear infinite;
+        }
+        
+        @keyframes orbit-moon {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    &lt;/style&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2509-genius-coder-ai-full</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Solar System Illustration&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        svg {
+            width: 100vw;
+            height: 100vh;
+            preserveAspectRatio=&quot;meet&quot;;
+            pointer-events: none;
+        }
+        .starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a2e;
+        }
+        .starfield::before,
+        .starfield::after {
+            content: &quot;&quot;;
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        .starfield::before {
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 1px 1px;
+            width: 100%;
+            height: 100%;
+        }
+        .starfield::after {
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 2px 2px;
+            width: 100%;
+            height: 100%;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;svg viewBox=&quot;0 0 100 100&quot;&gt;
+        &lt;defs&gt;
+            &lt;radialGradient id=&quot;sun-gradient&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;50%&quot; fx=&quot;50%&quot; fy=&quot;50%&quot;&gt;
+                &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFD700&quot;/&gt;
+                &lt;stop offset=&quot;100%&quot; stop-color=&quot;#FF8C00&quot;/&gt;
+            &lt;/radialGradient&gt;
+        &lt;/defs&gt;
+
+        &lt;!-- Starfield --&gt;
+        &lt;g class=&quot;starfield&quot;&gt;&lt;/g&gt;
+
+        &lt;!-- Sun --&gt;
+        &lt;circle cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;20&quot; fill=&quot;url(#sun-gradient)&quot;/&gt;
+
+        &lt;!-- Planets and orbits --&gt;
+        &lt;g transform=&quot;translate(50%, 50%)&quot;&gt;
+            &lt;!-- Mercury --&gt;
+            &lt;circle cx=&quot;10&quot; cy=&quot;0&quot; r=&quot;3&quot; fill=&quot;#e6d7a8&quot; stroke=&quot;#c9b48d&quot; stroke-width=&quot;0.2&quot;/&gt;
+            &lt;circle cx=&quot;10&quot; cy=&quot;0&quot; r=&quot;1&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1&quot; stroke-dasharray=&quot;3, 1&quot; transform=&quot;rotate(0deg)&quot;/&gt;
+            &lt;text x=&quot;-4&quot; y=&quot;-6&quot; text-anchor=&quot;middle&quot; font-size=&quot;8px&quot; fill=&quot;#e6d7a8&quot;&gt;Mercury&lt;/text&gt;
+
+            &lt;!-- Venus --&gt;
+            &lt;circle cx=&quot;25&quot; cy=&quot;0&quot; r=&quot;5&quot; fill=&quot;#ff9f9f&quot; stroke=&quot;#d37c7c&quot; stroke-width=&quot;0.2&quot;/&gt;
+            &lt;circle cx=&quot;25&quot; cy=&quot;0&quot; r=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1&quot; transform=&quot;rotate(0deg)&quot;/&gt;
+            &lt;text x=&quot;-3&quot; y=&quot;-6&quot; text-anchor=&quot;middle&quot; font-size=&quot;8px&quot; fill=&quot;#ff9f9f&quot;&gt;Venus&lt;/text&gt;
+
+            &lt;!-- Earth --&gt;
+            &lt;circle cx=&quot;40&quot; cy=&quot;0&quot; r=&quot;7&quot; fill=&quot;#5a9d9c&quot; stroke=&quot;#2e7b7b&quot; stroke-width=&quot;0.3&quot;/&gt;
+            &lt;circle cx=&quot;40&quot; cy=&quot;0&quot; r=&quot;1&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1&quot; transform=&quot;rotate(0deg)&quot;/&gt;
+            &lt;text x=&quot;-4&quot; y=&quot;-6&quot; text-anchor=&quot;middle&quot; font-size=&quot;8px&quot; fill=&quot;#5a9d9c&quot;&gt;Earth&lt;/text&gt;
+
+            &lt;!-- Mars --&gt;
+            &lt;circle cx=&quot;60&quot; cy=&quot;0&quot; r=&quot;8&quot; fill=&quot;#e3725b&quot; stroke=&quot;#b65f4b&quot; stroke-width=&quot;0.2&quot;/&gt;
+            &lt;circle cx=&quot;60&quot; cy=&quot;0&quot; r=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1&quot; transform=&quot;rotate(0deg)&quot;/&gt;
+            &lt;text x=&quot;-4&quot; y=&quot;-6&quot; text-anchor=&quot;middle&quot; font-size=&quot;8px&quot; fill=&quot;#e3725b&quot;&gt;Mars&lt;/text&gt;
+
+            &lt;!-- Jupiter --&gt;
+            &lt;circle cx=&quot;90&quot; cy=&quot;0&quot; r=&quot;15&quot; fill=&quot;#d3a9a9&quot; stroke=&quot;#9c7a7a&quot; stroke-width=&quot;0.4&quot;/&gt;
+            &lt;circle cx=&quot;90&quot; cy=&quot;0&quot; r=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;rgba(255, 255, 255, 0.1&quot; transform=&quot;rotate(0deg)&quot;/&gt;
+            &lt;text x=&quot;-6&quot; y=&quot;-6&quot; text-anchor=&quot;middle&quot; font-size=&quot;8px&quot; fill=&quot;#d3a9a9&quot;&gt;Jupiter&lt;/text&gt;
+
+            &lt;!-- Earth's moon --&gt;
+            &lt;circle cx=&quot;42&quot; cy=&quot;0&quot; r=&quot;1.5&quot; fill=&quot;#c7d3e9&quot; stroke=&quot;#b0c6e8&quot; stroke-width=&quot;0.1&quot; transform=&quot;rotate(0deg&quot;/&gt;
+        &lt;/g&gt;
+
+        &lt;!-- Animate sun and planets --&gt;
+        &lt;animateTransform
+            attributeName=&quot;transform&quot;
+            type=&quot;rotate&quot;
+            from=&quot;0&quot;
+            to=&quot;360&quot;
+            dur=&quot;4s&quot;
+            repeatCount=&quot;indefinite&quot;
+            fill=&quot;freeze&quot;/&gt;
+
+        &lt;!-- Animate Mercury (slowest) --&gt;
+        &lt;animateTransform
+            attributeName=&quot;transform&quot;
+            type=&quot;rotate&quot;
+            from=&quot;0&quot;
+            to=&quot;360&quot;
+            dur=&quot;12s&quot;
+            repeatCount=&quot;indefinite
+            keyTimes=&quot;0; 1&quot;
+            fill=&quot;freeze&quot;/&gt;
+
+        &lt;!-- Animate Venus --&gt;
+        &lt;animateTransform
+            attributeName=&quot;transform&quot;
+            type=&quot;rotate&quot;
+            from=&quot;0&quot;
+            to=&quot;360&quot;
+            dur=&quot;8s&quot;
+            repeatCount=&quot;indefinite
+            keyTimes=&quot;0; 1&quot;
+            fill=&quot;freeze&quot;/&gt;
+
+        &lt;!-- Animate Earth --&gt;
+        &lt;animateTransform
+            attributeName=&quot;transform&quot;
+            type=&quot;rotate&quot;
+            from=&quot;0&quot;
+            to=&quot;360&quot;
+            dur=&quot;24s&quot;
+            repeatCount=&quot;indefinite
+            keyTimes=&quot;0; 1&quot;
+            fill=&quot;freeze&quot;/&gt;
+
+        &lt;!-- Animate Mars --&gt;
+        &lt;animateTransform
+            attributeName=&quot;transform&quot;
+            type=&quot;rotate&quot;
+            from=&quot;0&quot;
+            to=&quot;360&quot;
+            dur=&quot;30s&quot;
+            repeatCount=&quot;indefinite
+            keyTimes=&quot;0; 1&quot;
+            fill=&quot;freeze&quot;/&gt;
+
+        &lt;!-- Animate Jupiter --&gt;
+        &lt;animateTransform
+            attributeName=&quot;transform&quot;
+            type=&quot;rotate&quot;
+            from=&quot;0&quot;
+            to=&quot;360&quot;
+            dur=&quot;48s&quot;
+            repeatCount=&quot;indefinite
+            keyTimes=&quot;0; 1&quot;
+            fill=&quot;freeze&quot;/&gt;
+    &lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-coder-next</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Animated Solar System SVG&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .solar-system-container {
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 800px;
+            max-height: 800px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .orbit-path {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.15);
+            stroke-width: 1;
+        }
+
+        .planet-label {
+            fill: #ffffff;
+            font-size: 14px;
+            text-anchor: middle;
+            pointer-events: none;
+            opacity: 0.8;
+            font-weight: bold;
+        }
+
+        .star {
+            fill: white;
+            opacity: 0.7;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;div class=&quot;solar-system-container&quot;&gt;
+        &lt;svg viewBox=&quot;-350 -350 700 700&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+            &lt;!-- Background Stars --&gt;
+            &lt;g id=&quot;stars&quot;&gt;
+                &lt;circle cx=&quot;-280&quot; cy=&quot;-150&quot; r=&quot;2&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.3;0.8;0.3&quot; dur=&quot;4s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;200&quot; cy=&quot;-250&quot; r=&quot;1.5&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.4;0.9;0.4&quot; dur=&quot;5s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;150&quot; cy=&quot;200&quot; r=&quot;3&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.6;0.2;0.6&quot; dur=&quot;6s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;-100&quot; cy=&quot;280&quot; r=&quot;2&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.5;0.9;0.5&quot; dur=&quot;3s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;300&quot; cy=&quot;100&quot; r=&quot;1&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.7;0.3;0.7&quot; dur=&quot;4.5s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;-250&quot; cy=&quot;50&quot; r=&quot;2.5&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.8;0.4;0.8&quot; dur=&quot;7s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;50&quot; cy=&quot;-300&quot; r=&quot;1.5&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.6;1;0.6&quot; dur=&quot;3.5s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;-320&quot; cy=&quot;-280&quot; r=&quot;4&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.5;0.3;0.5&quot; dur=&quot;8s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;280&quot; cy=&quot;-100&quot; r=&quot;2&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.9;0.5;0.9&quot; dur=&quot;5.5s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;0&quot; cy=&quot;320&quot; r=&quot;3&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.4;0.8;0.4&quot; dur=&quot;6.5s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;-150&quot; cy=&quot;-200&quot; r=&quot;2&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.7;0.5;0.7&quot; dur=&quot;4s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+                &lt;circle cx=&quot;320&quot; cy=&quot;250&quot; r=&quot;1&quot; class=&quot;star&quot;&gt;&lt;animate attributeName=&quot;opacity&quot; values=&quot;0.8;0.6;0.8&quot; dur=&quot;9s&quot; repeatCount=&quot;indefinite&quot;/&gt;&lt;/circle&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Sun --&gt;
+            &lt;defs&gt;
+                &lt;radialGradient id=&quot;sunGradient&quot;&gt;
+                    &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFD700&quot;/&gt;
+                    &lt;stop offset=&quot;100%&quot; stop-color=&quot;#FF8C00&quot;/&gt;
+                &lt;/radialGradient&gt;
+            &lt;/defs&gt;
+            
+            &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;40&quot; fill=&quot;url(#sunGradient)&quot;&gt;
+                &lt;animate attributeName=&quot;r&quot; values=&quot;40;42;40&quot; dur=&quot;5s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;animate attributeName=&quot;opacity&quot; values=&quot;1;0.95;1&quot; dur=&quot;8s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+            &lt;/circle&gt;
+            
+            &lt;!-- Sun Glow --&gt;
+            &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;45&quot; fill=&quot;none&quot; stroke=&quot;#FFD700&quot; stroke-width=&quot;2&quot; opacity=&quot;0.3&quot;&gt;
+                &lt;animate attributeName=&quot;stroke-dasharray&quot; values=&quot;0,100;100,0;0,100&quot; dur=&quot;6s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+            &lt;/circle&gt;
+
+            &lt;!-- Orbit Paths and Planets --&gt;
+            
+            &lt;!-- Mercury --&gt;
+            &lt;g&gt;
+                &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;90&quot; class=&quot;orbit-path&quot;/&gt;
+                &lt;circle cx=&quot;90&quot; cy=&quot;0&quot; r=&quot;8&quot; fill=&quot;#A5A5A5&quot;&gt;
+                    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot; from=&quot;0 0 0&quot; to=&quot;360 0 0&quot; dur=&quot;4s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                &lt;text x=&quot;95&quot; y=&quot;-120&quot; fill=&quot;#ffffff&quot; font-size=&quot;12&quot; text-anchor=&quot;middle&quot;&gt;Mercury&lt;/text&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Venus --&gt;
+            &lt;g&gt;
+                &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;140&quot; class=&quot;orbit-path&quot;/&gt;
+                &lt;circle cx=&quot;140&quot; cy=&quot;0&quot; r=&quot;12&quot; fill=&quot;#E6B800&quot;&gt;
+                    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot; from=&quot;0 0 0&quot; to=&quot;360 0 0&quot; dur=&quot;7s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                &lt;text x=&quot;150&quot; y=&quot;-170&quot; fill=&quot;#ffffff&quot; font-size=&quot;14&quot; text-anchor=&quot;middle&quot;&gt;Venus&lt;/text&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Earth --&gt;
+            &lt;g&gt;
+                &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;200&quot; class=&quot;orbit-path&quot;/&gt;
+                &lt;circle cx=&quot;200&quot; cy=&quot;0&quot; r=&quot;13&quot; fill=&quot;#4A90E2&quot;&gt;
+                    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot; from=&quot;0 0 0&quot; to=&quot;360 0 0&quot; dur=&quot;10s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+                    
+                    &lt;!-- Moon --&gt;
+                    &lt;circle cx=&quot;25&quot; cy=&quot;0&quot; r=&quot;4&quot; fill=&quot;#E8E8E8&quot;&gt;
+                        &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot; from=&quot;0 0 0&quot; to=&quot;360 0 0&quot; dur=&quot;1.5s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+                    &lt;/circle&gt;
+                &lt;/circle&gt;
+                &lt;text x=&quot;210&quot; y=&quot;-220&quot; fill=&quot;#ffffff&quot; font-size=&quot;14&quot; text-anchor=&quot;middle&quot;&gt;Earth&lt;/text&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Mars --&gt;
+            &lt;g&gt;
+                &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;260&quot; class=&quot;orbit-path&quot;/&gt;
+                &lt;circle cx=&quot;260&quot; cy=&quot;0&quot; r=&quot;10&quot; fill=&quot;#FF4500&quot;&gt;
+                    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot; from=&quot;0 0 0&quot; to=&quot;360 0 0&quot; dur=&quot;14s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                &lt;text x=&quot;270&quot; y=&quot;-280&quot; fill=&quot;#ffffff&quot; font-size=&quot;14&quot; text-anchor=&quot;middle&quot;&gt;Mars&lt;/text&gt;
+            &lt;/g&gt;
+
+            &lt;!-- Jupiter --&gt;
+            &lt;g&gt;
+                &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;340&quot; class=&quot;orbit-path&quot;/&gt;
+                &lt;circle cx=&quot;340&quot; cy=&quot;0&quot; r=&quot;25&quot; fill=&quot;#DAA520&quot;&gt;
+                    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;rotate&quot; from=&quot;0 0 0&quot; to=&quot;360 0 0&quot; dur=&quot;22s&quot; repeatCount=&quot;indefinite&quot;/&gt;
+                &lt;/circle&gt;
+                &lt;text x=&quot;350&quot; y=&quot;-370&quot; fill=&quot;#ffffff&quot; font-size=&quot;16&quot; text-anchor=&quot;middle&quot;&gt;Jupiter&lt;/text&gt;
+            &lt;/g&gt;
+
+        &lt;/svg&gt;
+    &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+  </div>
+
+  <div class="footer">
+    Generated by Eval Studio
+  </div>
+</body>
+</html>

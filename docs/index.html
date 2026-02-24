@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Studio — LLM Frontend Benchmark Results</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #09090b;
+      color: #e4e4e7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 24px 48px;
+    }
+
+    .hero .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3b82f6, #a855f7, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+
+    .hero .subtitle {
+      font-size: 1.15rem;
+      color: #a1a1aa;
+      max-width: 600px;
+      margin: 0 auto 16px;
+      line-height: 1.5;
+    }
+
+    .hero .meta {
+      font-size: 0.85rem;
+      color: #52525b;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+      padding: 0 48px 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #18181b;
+      transition: border-color 0.25s, transform 0.25s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-4px);
+    }
+
+    .card-visual {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      background: #000;
+    }
+
+    .card-visual iframe {
+      width: 200%;
+      height: 200%;
+      border: none;
+      transform: scale(0.5);
+      transform-origin: top left;
+      pointer-events: none;
+    }
+
+    .card-visual .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, #18181b);
+    }
+
+    .card-body {
+      padding: 20px 24px 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-body h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin-bottom: 8px;
+    }
+
+    .card-body .desc {
+      font-size: 0.85rem;
+      color: #71717a;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: #3b82f620;
+      color: #60a5fa;
+    }
+
+    .arrow {
+      font-size: 1.2rem;
+      color: #3f3f46;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .card:hover .arrow {
+      color: #3b82f6;
+      transform: translateX(4px);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.8rem;
+      color: #3f3f46;
+      border-top: 1px solid #18181b;
+    }
+
+    .footer a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 2rem; }
+      .grid { padding: 0 16px 48px; grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="logo">E</div>
+    <h1>Eval Studio</h1>
+    <div class="subtitle">
+      LLM Frontend Benchmark Results — comparing how local language models generate HTML, CSS, SVG, and interactive web components.
+    </div>
+    <div class="meta">6 benchmarks · 31 total runs · Updated February 2026</div>
+  </div>
+
+  <div class="grid">
+
+    <a href="svg-illustration.html" class="card">
+      <div class="card-visual">
+        <iframe src="svg-illustration.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
+        <div class="overlay"></div>
+      </div>
+      <div class="card-body">
+        <h2>SVG Illustration</h2>
+        <div class="desc">Animated solar system with orbiting planets, starfield background, and SVG animations. Tests complex SVG generation and CSS animation skills.</div>
+        <div class="card-footer">
+          <span class="badge">13 models</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="css-art-mondrian.html" class="card">
+      <div class="card-visual">
+        <iframe src="css-art-mondrian.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
+        <div class="overlay"></div>
+      </div>
+      <div class="card-body">
+        <h2>CSS Art Mondrian</h2>
+        <div class="desc">Piet Mondrian-inspired grid composition using pure CSS. Tests layout, color theory, and creative CSS usage.</div>
+        <div class="card-footer">
+          <span class="badge">5 models</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="interactive-counter.html" class="card">
+      <div class="card-visual">
+        <iframe src="interactive-counter.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
+        <div class="overlay"></div>
+      </div>
+      <div class="card-body">
+        <h2>Interactive Counter</h2>
+        <div class="desc">Functional counter with increment/decrement buttons and state management. Tests JavaScript interactivity and UI design.</div>
+        <div class="card-footer">
+          <span class="badge">5 models</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="hello-world.html" class="card">
+      <div class="card-visual">
+        <iframe src="hello-world.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
+        <div class="overlay"></div>
+      </div>
+      <div class="card-body">
+        <h2>Hello World</h2>
+        <div class="desc">A styled "Hello World" page. The simplest benchmark — tests basic HTML/CSS output and instruction following.</div>
+        <div class="card-footer">
+          <span class="badge">6 models</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="isotope-calendar.html" class="card">
+      <div class="card-visual">
+        <iframe src="isotope-calendar.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
+        <div class="overlay"></div>
+      </div>
+      <div class="card-body">
+        <h2>Isotope Calendar</h2>
+        <div class="desc">Interactive calendar component with date navigation. Tests complex layout, date logic, and UI state management.</div>
+        <div class="card-footer">
+          <span class="badge">1 model</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="mermaid-diagram.html" class="card">
+      <div class="card-visual">
+        <iframe src="mermaid-diagram.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
+        <div class="overlay"></div>
+      </div>
+      <div class="card-body">
+        <h2>Mermaid Diagram</h2>
+        <div class="desc">Flowchart or diagram rendered from Mermaid-style syntax. Tests structured visual output generation.</div>
+        <div class="card-footer">
+          <span class="badge">1 model</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    Built with <a href="https://github.com/ESJavadex/eval-studio">Eval Studio</a> — LLM Frontend Benchmarking Tool
+  </div>
+</body>
+</html>

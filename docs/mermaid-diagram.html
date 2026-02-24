@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mermaid Diagram — Eval Studio Showcase</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #09090b;
+      color: #e4e4e7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 48px 24px 32px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header .subtitle {
+      font-size: 0.95rem;
+      color: #71717a;
+    }
+
+    .header .meta {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #52525b;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 20px;
+      padding: 0 32px 48px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #18181b;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3f3f46;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #1c1c1f;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .model-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d4d4d8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .avg-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .card-iframe-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #000;
+    }
+
+    .card-iframe-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .scores {
+      padding: 10px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-top: 1px solid #27272a;
+    }
+
+    .scores.no-scores {
+      color: #52525b;
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 8px 16px;
+    }
+
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .score-label {
+      font-size: 0.7rem;
+      color: #71717a;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .score-bar-bg {
+      flex: 1;
+      height: 4px;
+      background: #27272a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .score-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .score-val {
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 24px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .score-avg {
+      text-align: right;
+      font-size: 0.7rem;
+      color: #71717a;
+      font-weight: 600;
+      margin-top: 2px;
+      padding-top: 4px;
+      border-top: 1px solid #27272a;
+    }
+
+    .score-avg span {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.75rem;
+      color: #3f3f46;
+      border-top: 1px solid #18181b;
+    }
+
+    @media (max-width: 1200px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; padding: 0 16px 32px; }
+      .header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Mermaid Diagram</h1>
+    <div class="subtitle">Eval Studio — LLM Frontend Benchmark Showcase</div>
+    <div class="meta">1 model · Exported February 24, 2026</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-instruct-2507</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+  &lt;title&gt;Mermaid Diagrams&lt;/title&gt;
+  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js&quot;&gt;&lt;/script&gt;
+  &lt;style&gt;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .diagram-container {
+      background-color: #1a1a2e;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+      border: 1px solid #333;
+    }
+    .diagram-container h2 {
+      margin-top: 0;
+      font-size: 1.6em;
+      color: #ffffff;
+      border-bottom: 2px solid #4a4a9e;
+      padding-bottom: 10px;
+    }
+    pre {
+      background-color: #1e1e30;
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 14px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      color: #dcdcdc;
+    }
+    .diagram-container code {
+      font-family: 'Courier New', monospace;
+      background-color: transparent;
+      color: inherit;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      h1, h2 {
+        font-size: 1.4em;
+      }
+      .diagram-container {
+        padding: 20px;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;!-- Flowchart Diagram --&gt;
+    &lt;div class=&quot;diagram-container&quot;&gt;
+      &lt;h2&gt;Software Deployment Pipeline&lt;/h2&gt;
+      &lt;pre class=&quot;mermaid&quot;&gt;
+flowchart TD
+    A[Developer pushes code] --&gt; B[CI runs tests]
+    B --&gt;|Pass| C{Tests pass?}
+    B --&gt;|Fail| D[Notify developer\n(Loop back to A)]
+    C --&gt; E[Build Docker image]
+    E --&gt; F[Push to registry]
+    F --&gt; G[Deploy to staging]
+    G --&gt; H[Run E2E tests]
+    H --&gt;|Pass| I[Deploy to production]
+    H --&gt;|Fail| J[Notify team\n(Loop back to G)]
+    style A fill:#3a3a6e,stroke:#000,color:white
+    style B fill:#4a4a9e,stroke:#000,color:white
+    style C fill:#ff5722,stroke:#000,color:white
+    style D fill:#ff5722,stroke:#000,color:white
+    style E fill:#3a3a6e,stroke:#000,color:white
+    style F fill:#4a4a9e,stroke:#000,color:white
+    style G fill:#3a3a6e,stroke:#000,color:white
+    style H fill:#3a3a6e,stroke:#000,color:white
+    style I fill:#2e7d32,stroke:#000,color:white
+    style J fill:#ff5722,stroke:#000,color:white
+  &lt;/pre&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Sequence Diagram --&gt;
+    &lt;div class=&quot;diagram-container&quot;&gt;
+      &lt;h2&gt;Authentication Flow&lt;/h2&gt;
+      &lt;pre class=&quot;mermaid&quot;&gt;
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant AuthService
+    participant Database
+    participant TokenStore
+
+    User-&gt;&gt;Frontend: Sends login request (email, password)
+    Frontend-&gt;&gt;AuthService: Forward credentials
+    AuthService-&gt;&gt;Database: Validate user credentials
+    alt Valid credentials
+        Database--&gt;&gt;AuthService: Credentials verified
+        AuthService-&gt;&gt;TokenStore: Generate JWT token
+        TokenStore--&gt;&gt;AuthService: Returns token
+        AuthService--&gt;&gt;Frontend: Return JWT token
+        Frontend--&gt;&gt;User: Show login success
+    else Invalid credentials
+        Database--&gt;&gt;AuthService: Credentials invalid
+        AuthService-&gt;&gt;Frontend: Return error message
+        Frontend--&gt;&gt;User: Display &quot;Invalid email or password&quot;
+    end
+  &lt;/pre&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Entity Relationship Diagram --&gt;
+    &lt;div class=&quot;diagram-container&quot;&gt;
+      &lt;h2&gt;E-Commerce Database Schema&lt;/h2&gt;
+      &lt;pre class=&quot;mermaid&quot;&gt;
+erDiagram
+    USER ||--o{ ORDER : &quot;places&quot;
+    USER ||--o{ ORDER_ITEM : &quot;has&quot;
+    PRODUCT ||--o{ ORDER_ITEM : &quot;in&quot;
+    ORDER ||--o{ ORDER_ITEM : &quot;contains&quot;
+
+    USER {
+        string id PK
+        string name
+        string email
+    }
+
+    ORDER {
+        int id PK
+        int user_id FK
+        decimal total
+        string status
+    }
+
+    PRODUCT {
+        int id PK
+        string name
+        decimal price
+        int stock
+    }
+
+    ORDER_ITEM {
+        int order_id FK
+        int product_id FK
+        int quantity
+    }
+  &lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    mermaid.initialize({
+      theme: 'dark',
+      securityLevel: 'loose'
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+  </div>
+
+  <div class="footer">
+    Generated by Eval Studio
+  </div>
+</body>
+</html>

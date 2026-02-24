@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isotope Calendar — Eval Studio Showcase</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #09090b;
+      color: #e4e4e7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 48px 24px 32px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header .subtitle {
+      font-size: 0.95rem;
+      color: #71717a;
+    }
+
+    .header .meta {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #52525b;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 20px;
+      padding: 0 32px 48px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #18181b;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3f3f46;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #1c1c1f;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .model-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d4d4d8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .avg-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .card-iframe-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #000;
+    }
+
+    .card-iframe-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .scores {
+      padding: 10px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-top: 1px solid #27272a;
+    }
+
+    .scores.no-scores {
+      color: #52525b;
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 8px 16px;
+    }
+
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .score-label {
+      font-size: 0.7rem;
+      color: #71717a;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .score-bar-bg {
+      flex: 1;
+      height: 4px;
+      background: #27272a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .score-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .score-val {
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 24px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .score-avg {
+      text-align: right;
+      font-size: 0.7rem;
+      color: #71717a;
+      font-weight: 600;
+      margin-top: 2px;
+      padding-top: 4px;
+      border-top: 1px solid #27272a;
+    }
+
+    .score-avg span {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.75rem;
+      color: #3f3f46;
+      border-top: 1px solid #18181b;
+    }
+
+    @media (max-width: 1200px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; padding: 0 16px 32px; }
+      .header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Isotope Calendar</h1>
+    <div class="subtitle">Eval Studio — LLM Frontend Benchmark Showcase</div>
+    <div class="meta">1 model · Exported February 24, 2026</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+        <div class="card-header">
+          <span class="model-name">lfm2.5-1.2b-thinking-claude-4.6-opus-heretic-uncensored-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;think&gt; Okay, let's tackle this problem. I need to create an Isotope Calendar system using only pure HTML, CSS, and JavaScript without any external dependencies. The requirements are quite specific, so I should break it down step by step.
+
+First, the conversion function: take a date like February 20, 2026, compute its day-of-year (1-365), then map that to the Isotope Calendar's months. Since month 13 has 29 days instead of 28, and each 28-day month starts on Monday, I need to calculate the correct offset for month 13.
+
+Wait, how do you convert a day number into the calendar? Let me think: The total days in each month are fixed except for month 13. Since months 1-12 have 28 days (4 weeks), and month 13 has 29. But since it's 365 days, let's see:
+
+Total days = 365. The first 12 months contribute 12*28=336 days. So the remaining days are 365 - 336 = 29, which is for February 20 (assuming that's day 20 of month 1? Wait no, maybe I'm getting confused here). Wait, perhaps better to approach this step by step.
+
+The function needs to take an Earth date and convert it into the Isotope Calendar. Let me think: The user inputs a date like &quot;2026-02-20&quot;. First, parse that into year, month, day.
+
+Compute day_of_year = (year - 1900)*365 + (month -1)*30 + day - 1? Wait no, maybe better to compute the actual day of the year correctly. Alternatively, since I need to calculate it manually without libraries, perhaps:
+
+Wait, for any given date, day_of_year is calculated as:
+
+day = (year % 100) * 365 + (month % 12)*30 + day -1? Not sure. Wait maybe better formula: The standard way to compute day of year from a Gregorian calendar date:
+
+Let me recall the formula for day of year:
+
+For dates before March 1, it's (year-1900)*365 + (month-1)*30 + day - 1. But if after February, then add 31*(number of months passed) etc. Hmm maybe better to use a standard method here. Alternatively, since I need to compute the day_of_year manually for any given date, perhaps:
+
+Let me think of an example: For January 1st, 2026 is day 1 (since Jan has 28 days). So day_of_year = 1. February 20 would be in month 2, so 28 + 20 -1? Wait no, wait the formula for Gregorian calendar's day of year:
+
+Wait perhaps it's easier to compute as follows: For a given date (year, month, day):
+
+day_of_year = ((year % 100) * 365) + ((month - 1) * 30) + (day - 1). But this might not be accurate. Alternatively, maybe use the following method for Gregorian calendar:
+
+The formula is:
+
+day_of_year = day + (31*(month-1)/12) + (30*(month-2)/13) + ((year - year % 100) / 4) - ((year - year % 100) / 400) - ((month - 2)/12) + 1
+
+Wait maybe I'm overcomplicating. Alternatively, perhaps the user expects a simplified approach given that month 13 has 29 days and each 28-day months start on Monday. Since this is getting too complex for manual calculation, maybe we can find a way to compute it step by step without relying on libraries.
+
+Alternatively, since I need to write code in my head, perhaps the key points are:
+
+The month starts on Monday. So for any given date, the first day of the month must be a Monday. Therefore, if the current day is not a Monday, we have to adjust by moving days back or forward until it's a Monday. For example, if the desired day is Tuesday (day 2), then subtract one day.
+
+Wait maybe I should structure this as follows: To convert an Earth date into Isotope Calendar:
+
+1. Calculate total days since January 1, 1900 (or some base?), but perhaps better to compute the day of year from the given date.
+
+Alternatively, let's think of the conversion steps:
+
+The goal is to map any Earth date to an Isotope Calendar date. Let me outline the steps for converting a given Earth date into Isotope Calendar:
+
+First, determine which month and day it is in the calendar. Since months 1-12 have 28 days (4 weeks), each starting on Monday. The first day of each month must be a Monday. So if the user inputs a date like January 20, 2026 (which is a Tuesday?), we need to adjust so that the first day of the month is a Monday.
+
+Wait perhaps the process is:
+
+Given an Earth date (year, month, day), compute its day_of_year (1-based). Then, determine which month it falls into based on cumulative days. The key points are:
+
+- Month 13 has 29 days instead of 28.
+- Each 28-day month starts on Monday. So the first day of each month must be a Monday. Therefore, if the given date is not already starting on a Monday, we need to adjust it by adding or subtracting days until the first day of the month is a Monday.
+
+For example: Suppose the user inputs &quot;2026-02-20&quot; (February 20). Let's see what day that is in Gregorian calendar. February 20, 2026: since February has 28 days (since it's not a leap year?), wait 2026 is a leap year (divisible by 4 and not by 100 unless also by 400; 2026/4=506, so yes). Wait 2026 divided by 4 is 506.5? No, 2026 ÷4 = 506.5 → no, wait 4×506=2024, remainder 2. So it's not a leap year. Wait 2026 mod 4 is 2, so February has 28 days.
+
+Wait let me check: 2026 divided by 4 is 506*4 = 2024; 2026-2024=2 → remainder 2 → not divisible by 4. So February has 28 days. Wait but the user said month13 has 29, so perhaps I need to think differently.
+
+Wait maybe better to compute day_of_year for a given date:
+
+Let me pick an example: suppose the input is &quot;2026-02-20&quot;. Let's see what that day is in Gregorian calendar.
+
+Using formula: For dates after February 28 (since Feb has 28 days), so let's calculate day of year:
+
+Assuming it's a leap year? Wait no, 2024 was a leap year but 2026 divided by 4 gives remainder 2 → not divisible by 4. So February has 28 days.
+
+Wait perhaps better to use an online calculator or formula here. Alternatively, let me proceed with the algorithm:
+
+The key steps for converting Earth date (year, month, day) into Isotope Calendar:
+
+1. Compute total_day_of_year = (year % 100)*365 + (month -1)*30 + day - 1? Not sure. Alternatively, perhaps use this formula from Wikipedia's Gregorian calendar page:
+
+The day of the year is calculated as follows:
+
+day = (year % 100) * 365 + (month - 1) * 30 + (day - 1). But if that gives a value greater than 365? Not sure. Alternatively, perhaps better to use this method:
+
+Wait here's a standard formula for day of year from Gregorian calendar date (year, month, day):
+
+If the date is before March 1, it's (year-1900)*365 + (month -1)*30 + day -1. But if after February, then add 31*(number of months passed) etc. This might be too time-consuming. Let me try to find a better way.
+
+Alternatively, perhaps I can compute the total days since January 1, 1900:
+
+day_of_year = (year - 1900)*365 + (month -1)*30 + day -1. But this would give values up to 365*(year-1900) + ... but maybe not accurate for all dates. For example, if the date is January 1, 1900:
+
+day_of_year = (0)*365 + 0 + 1 -1 = 0? No, that can't be right. Hmm perhaps I need to look up a correct formula. Alternatively, let me proceed with an example. Let's say the user inputs &quot;2026-02-20&quot;.
+
+Suppose we want day_of_year for this date:
+
+Assuming it's in February 2026 (non-leap year). The calculation would be:
+
+(2026 - 1900) * 365 = 126*365 = let's see, but perhaps better to compute via another method. Alternatively, maybe I can proceed with the following approach for manual calculation:
+
+The user wants a function that takes an Earth date and returns the corresponding Isotope Calendar date. Let me try to outline steps without libraries:
+
+First, determine if it's month 13 or not. If not, then check which month it is. For months 1-12, each has 28 days starting on Monday. The first day of the month must be a Monday. So for example, if the desired date is February 20 (2026), let's see:
+
+February 20 is in month 2. Let me check what day of week it was. If I can't compute exactly without a calculator, perhaps proceed with an algorithm that ensures the first day of each month starts on Monday. So for any given date, adjust the day to be a Monday by adding or subtracting days until the first day is a Monday.
+
+Suppose the user inputs &quot;2026-02-20&quot;. Let's see: February 20, 2026. Let me check what day that was. Since I can't compute exactly here, perhaps assume that it's Tuesday (so need to subtract one day). But maybe proceed with code logic.
+
+The key steps for the conversion function:
+
+1. Calculate total days since January 1, 1900 (or another base?), but let's say from a specific date. Alternatively, compute the day of year as follows:
+
+Let me try to write pseudocode:
+
+function isotope_calendar(date) {
+    const y = parseInt(date.year);
+    const m = parseInt(date.month);
+    const d = parseInt(date.day);
+
+    // Compute day of year
+    let day_of_year = (y - 1900)*365 + (m-1)*30 + d -1;
+    if (is_leap(y)) {
+        day_of_year += (y %4 ==0 &amp;&amp; y%100 !=0 || y%400==0);
+    }
+
+    // Now determine which month it's in
+    let months = [&quot;January&quot;, &quot;February&quot;, ..., &quot;December&quot;];
+    const month_index = m -1;
+    let start_day = day_of_year - (months[month_index].length * 30 + days_in_month);
+
+    // Find the first day of the month that is a Monday
+    for (let i=0; i&lt;7; i++) {
+        const day = start_day + i;
+        if ((i %7 ==0 &amp;&amp; day%7 ===1) || 
+            (i%7==0 &amp;&amp; day%7==2) || ... ) // Wait, perhaps better to compute the first day of the month as Monday.
+
+    Alternatively, find the offset needed so that the first day is a Monday. Let me think: The first day of each month must be a Monday. So if the current day_of_year corresponds to a certain date, we need to adjust it such that the first day of the month is Monday. 
+
+    For example, suppose the given date's day_of_year is D. To find the start_day:
+
+    Let target_first_day = Monday (0). The current first day is (D mod7). We can compute how many days to add or subtract to reach a Monday.
+
+    So desired_delta = (Monday - (current_day_of_year %7)) %7 → but maybe better:
+
+    Let target_first_day = 0 (Monday). The current day of the month is D mod7. To get from current first day to Monday, need delta = (0 - (D%7)) mod7. Wait perhaps this is getting too complicated. Maybe an easier way: compute the desired starting day as Monday, so if the current date's day_of_year corresponds to a certain offset, adjust it by adding or subtracting days until the first day of the month is a Monday.
+
+    Once that's done, then the start_day becomes Monday. Then check if the month has 28 or 29 days (if m==13). For months 1-12: 28 days, so if the starting day isn't Monday, adjust by adding/subtracting days to reach next Monday.
+
+    Once the first day of the month is a Monday, then compute the remaining days in the month. Since each 28-day month starts on Monday, the last day would be (start_day + (days_in_month -1)) mod7? Wait perhaps this is getting too involved. Maybe I should proceed with code logic steps:
+
+    Once start_day is adjusted to a Monday, then check if it's month13. If yes, set days_in_month =29 else 28. Then the day of the month for that month would be (start_day + (days_in_month -1)) mod7 → but need to ensure it wraps around properly.
+
+    Once all these are done, then compute the current date's day in this calendar:
+
+    The total days since Jan 1 is day_of_year. The first day of month m is start_day (Monday). So the offset from start_day would be (start_day - D) mod7 → but perhaps better to calculate the end day as (start_day + (days_in_month-1)) %7 ?
+
+    This is getting too time-consuming. Maybe I'll proceed with writing code that handles these steps, even if it's a bit involved.
+
+2. The visual interface: A grid of 4x7 days. Each row represents a month? Wait the Isotope Calendar has months 1-12 (28 days) and month13 as extra month (29). So each month is either 28 or 29 days, starting on Monday. The grid must be a perfect 4x7? No, wait there are 12 regular months plus an extra month (month13), so total 13 months. But the user wants a 4x7 grid with no gaps at the start of the month. Wait perhaps each month is represented as a row in the grid, and since it's 13 months, but arranged into 4 rows? Not sure yet.
+
+Wait maybe the grid is structured such that there are four columns (months) and seven days per column? Or perhaps the user wants a single row with 28-day months except month13 which has 29. The exact visualization might be tricky without seeing it, but since I need to create an HTML file with inline CSS and JS, perhaps the grid is a 4x7 layout where each month's block is either 28 or 29 days, starting on Monday.
+
+3. The counter: Days remaining until end of year. Since months have varying lengths (12*28 +29 = 365), so total days in all months except month13 are 12*28=336 plus 29 → 365? Wait no: 12*28 is 336, plus 29 gives 365. So the counter would be (total_remaining_days - current_day).
+
+Putting this together into a single HTML file with inline CSS and JS. Need to avoid external libraries, so all styles must be in a style tag or within a div? Wait no, since it's one HTML file, I can't have multiple style tags unless nested properly. Alternatively, use a &lt;style&gt; block inside the head.
+
+The challenge is to write everything inline without any external resources. Let me outline:
+
+- The HTML structure will be a single file with embedded CSS and JS.
+- Use a grid layout for the calendar (4 columns?), but since it's 13 months, perhaps each month is a row in a table-like structure, but using flex or grid. Since inline styles are needed, maybe use divs with flexbox.
+- The counter will be a variable that updates based on current date.
+- Visual markers: today's day highlighted, and the countdown timer.
+
+Now, writing all this into one HTML file with embedded CSS and JS. Need to ensure no external resources, so everything is self-contained.
+
+Let me draft the code step by step, ensuring it fits in a single file without any external dependencies.
+&lt;/think&gt;
+```html
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Isotope Calendar&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a2e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calendar-container {
+            width: 400px;
+            max-width: 800px;
+            background-color: #1a1a2e;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .month {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .day {
+            margin: 10px 0;
+            color: white;
+        }
+
+        .today-highlight {
+            background-color: #ffa500;
+        }
+
+        .counter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    &lt;/" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+  </div>
+
+  <div class="footer">
+    Generated by Eval Studio
+  </div>
+</body>
+</html>
