@@ -584,6 +584,19 @@ export default function Home() {
   const canRunAll = selectedModels.size === 1 && benchmarks.length > 0;
   const canTestAll = selectedModels.size >= 1 && !!selectedBenchmark;
 
+  // Determine exportable benchmark: from selection or from results
+  const exportBenchmarkId =
+    selectedBenchmark ??
+    (results.length > 0 && new Set(results.map((r) => r.benchmarkId)).size === 1
+      ? results[0].benchmarkId
+      : null);
+  const canExport = !!exportBenchmarkId && results.length > 0 && !running;
+
+  const exportHtml = () => {
+    if (!exportBenchmarkId) return;
+    window.open(`/api/export-html?benchmarkId=${encodeURIComponent(exportBenchmarkId)}`, "_blank");
+  };
+
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100">
       {/* Sidebar */}
@@ -703,6 +716,15 @@ export default function Home() {
                     "RUN BENCHMARK"
                   )}
                 </button>
+
+                {canExport && (
+                  <button
+                    onClick={exportHtml}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-600"
+                  >
+                    EXPORT HTML
+                  </button>
+                )}
               </div>
             </div>
           </div>
