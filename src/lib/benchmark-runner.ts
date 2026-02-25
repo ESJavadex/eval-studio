@@ -59,7 +59,7 @@ export async function callModel(
       },
     ],
     temperature: 0.3,
-    max_tokens: 16384,
+    max_tokens: 65536,
     stream: true,
   };
 
@@ -208,7 +208,7 @@ export async function* callModelStreaming(
       },
     ],
     temperature: 0.3,
-    max_tokens: 16384,
+    max_tokens: 65536,
     stream: true,
   };
 
