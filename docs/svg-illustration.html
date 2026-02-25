@@ -191,7 +191,7 @@
   <div class="header">
     <h1>Svg Illustration</h1>
     <div class="subtitle">Eval Studio — LLM Frontend Benchmark Showcase</div>
-    <div class="meta">12 models · Exported February 24, 2026</div>
+    <div class="meta">13 models · Exported February 25, 2026</div>
   </div>
 
   <div class="grid">
@@ -1361,6 +1361,169 @@ I'll now complete the SVG construction by adding star fields for each planetary 
   &lt;div class=&quot;commentary&quot;&gt; 
   &lt;!-- Earth should have a tiny moon orbiting around it --&gt;
   &lt;!-- ... --&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen--qwen3.5-35b-a3b</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Animated Solar System&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a2e; /* Dark background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        svg {
+            width: 95vw;
+            height: 95vh;
+            max-width: 800px;
+            max-height: 600px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Animation Keyframes */
+        
+        @keyframes rotateMercury { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotateVenus { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotateEarth { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotateMars { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotateJupiter { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Moon Animation */
+        @keyframes rotateMoon { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Planet Container Classes - These handle the orbit around the Sun */
+        .orbit-mercury { animation: rotateMercury 4s linear infinite; transform-origin: center; }
+        .orbit-venus { animation: rotateVenus 7s linear infinite; transform-origin: center; }
+        .orbit-earth { animation: rotateEarth 10s linear infinite; transform-origin: center; }
+        .orbit-mars { animation: rotateMars 15s linear infinite; transform-origin: center; }
+        .orbit-jupiter { animation: rotateJupiter 25s linear infinite; transform-origin: center; }
+
+        /* Moon Container Class - Handles orbit around Earth */
+        .moon-orbit-container { 
+            animation: rotateMoon 3s linear infinite; 
+            transform-origin: center;
+        }
+
+        /* Labels should not rotate with the planet to remain readable, or we can make them static text elements positioned absolutely relative to the SVG viewbox. 
+           Here I will position them statically in the SVG coordinates for better control over placement */
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;svg viewBox=&quot;0 0 800 600&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+        &lt;!-- Definitions --&gt;
+        &lt;defs&gt;
+            &lt;!-- Sun Gradient --&gt;
+            &lt;radialGradient id=&quot;sunGradient&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; r=&quot;50%&quot;&gt;
+                &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#FFFFE0; stop-opacity:1&quot; /&gt; &lt;!-- Bright center --&gt;
+                &lt;stop offset=&quot;40%&quot; style=&quot;stop-color:#FFD700; stop-opacity:1&quot; /&gt; &lt;!-- Yellow --&gt;
+                &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#FF8C00; stop-opacity:1&quot; /&gt; &lt;!-- Orange edge --&gt;
+            &lt;/radialGradient&gt;
+
+            &lt;!-- Jupiter Gradient (Stripes) --&gt;
+            &lt;linearGradient id=&quot;jupiterGradient&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;100%&quot;&gt;
+                &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#C9A678&quot; /&gt;
+                &lt;stop offset=&quot;25%&quot; style=&quot;stop-color:#E3B48D&quot; /&gt;
+                &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#C9A678&quot; /&gt;
+                &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#8F6B45&quot; /&gt;
+            &lt;/linearGradient&gt;
+
+            &lt;!-- Glow Filter --&gt;
+            &lt;filter id=&quot;glow&quot;&gt;
+                &lt;feGaussianBlur stdDeviation=&quot;2.5&quot; result=&quot;coloredBlur&quot;/&gt;
+                &lt;feMerge&gt;
+                    &lt;feMergeNode in=&quot;coloredBlur&quot;/&gt;
+                    &lt;feMergeNode in=&quot;SourceGraphic&quot;/&gt;
+                &lt;/feMerge&gt;
+            &lt;/filter&gt;
+        &lt;/defs&gt;
+
+        &lt;!-- Starfield Background --&gt;
+        &lt;g fill=&quot;#ffffff&quot; opacity=&quot;0.6&quot;&gt;
+            &lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;1&quot; /&gt;
+            &lt;circle cx=&quot;700&quot; cy=&quot;80&quot; r=&quot;1.5&quot; /&gt;
+            &lt;circle cx=&quot;200&quot; cy=&quot;400&quot; r=&quot;1&quot; /&gt;
+            &lt;circle cx=&quot;600&quot; cy=&quot;500&quot; r=&quot;1.2&quot; /&gt;
+            &lt;circle cx=&quot;750&quot; cy=&quot;300&quot; r=&quot;0.8&quot; /&gt;
+            &lt;circle cx=&quot;100&quot; cy=&quot;100&quot; r=&quot;1&quot; /&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;60&quot; r=&quot;1.2&quot; /&gt;
+            &lt;circle cx=&quot;750&quot; cy=&quot;500&quot; r=&quot;1&quot; /&gt;
+            &lt;circle cx=&quot;30&quot; cy=&quot;300&quot; r=&quot;1.5&quot; /&gt;
+            &lt;circle cx=&quot;500&quot; cy=&quot;100&quot; r=&quot;0.8&quot; /&gt;
+            &lt;circle cx=&quot;650&quot; cy=&quot;200&quot; r=&quot;1&quot; /&gt;
+            &lt;circle cx=&quot;150&quot; cy=&quot;550&quot; r=&quot;1.2&quot; /&gt;
+            &lt;circle cx=&quot;700&quot; cy=&quot;450&quot; r=&quot;1&quot; /&gt;
+            &lt;circle cx=&quot;350&quot; cy=&quot;500&quot; r=&quot;1.5&quot; /&gt;
+            &lt;circle cx=&quot;60&quot; cy=&quot;500&quot; r=&quot;1&quot; /&gt;
+        &lt;/g&gt;
+
+        &lt;!-- Orbit Paths (Faint Circles) --&gt;
+        &lt;g stroke=&quot;#ffffff&quot; fill=&quot;none&quot; opacity=&quot;0.2&quot;&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;80&quot; /&gt;   &lt;!-- Mercury --&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;120&quot; /&gt;  &lt;!-- Venus --&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;160&quot; /&gt;  &lt;!-- Earth --&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;200&quot; /&gt;  &lt;!-- Mars --&gt;
+            &lt;circle cx=&quot;400&quot; cy=&quot;300&quot; r=&quot;280&quot; /&gt;  &lt;!-- Jupiter --&gt;
+        &lt;/g&gt;
+
+        &lt;!-- Sun --&gt;
+        &lt;g transform=&quot;translate(400, 300)&quot;&gt;
+            &lt;circle r=&quot;65&quot; fill=&quot;#FFD700&quot; opacity=&quot;0.5&quot; filter=&quot;url(#glow)&quot; /&gt;
+            &lt;circle r=&quot;50&quot; fill=&quot;url(#sunGradient)&quot; filter=&quot;url(#glow)&quot; /&gt;
+        &lt;/g&gt;
+
+        &lt;!-- Mercury --&gt;
+        &lt;g class=&quot;orbit-mercury&quot;&gt;
+            &lt;text x=&quot;480&quot; y=&quot;305&quot; font-size=&quot;12&quot; fill=&quot;#fff&quot; text-anchor=&quot;middle&quot; opacity=&quot;0.7&quot;&gt;Mercury&lt;/text&gt;
+            &lt;circle cx=&quot;480&quot; cy=&quot;300&quot; r=&quot;6&quot; fill=&quot;#A9A9A9&quot; /&gt;
+        &lt;/g&gt;
+
+        &lt;!-- Venus --&gt;
+        &lt;g class=&quot;orbit-venus&quot;&gt;
+            &lt;text x=&quot;520&quot; y=&quot;420&quot; font-size=&quot;12&quot; fill=&quot;#fff&quot; text-anchor=&quot;middle&quot; opacity=&quot;0.7&quot;&gt;Venus&lt;/text&gt;
+            &lt;circle cx=&quot;520&quot; cy=&quot;300&quot; r=&quot;9&quot; fill=&quot;#E6BE8A&quot; /&gt;
+        &lt;/g&gt;
+
+        &lt;!-- Earth &amp; Moon System --&gt;
+        &lt;g class=&quot;orbit-earth&quot;&gt;
+            &lt;text x=&quot;570&quot; y=&quot;305&quot; font-size=&quot;12&quot; fill=&quot;#fff&quot; text-anchor=&quot;middle&quot; opacity=&quot;0.7&quot;&gt;Earth&lt;/text&gt;
+            
+            &lt;!-- Group for Earth's position relative to Sun (offset by 160px) --&gt;
+            &lt;g transform=&quot;translate(160, 0)&quot;&gt; 
+                &lt;!-- Moon Orbit Container attached to Earth center --&gt;
+                &lt;g class=&quot;moon-orbit-container&quot; transform-origin=&quot;center&quot;&gt;
+                    &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;25&quot; fill=&quot;none&quot; stroke=&quot;#fff&quot; opacity=&quot;0.3&quot; /&gt;
+                    &lt;circle cx=&quot;25&quot; cy=&quot;0&quot; r=&quot;4&quot; fill=&quot;#FFF&quot; /&gt; &lt;!-- Moon --&gt;
+                &lt;/g&gt;
+
+                &lt;!-- Earth Body --&gt;
+                &lt;circle cx=&quot;0&quot; cy=&quot;0&quot; r=&quot;10&quot; fill=&quot;#4682B4&quot;&gt;
+                    &lt;animate attributeName=&quot;fill&quot; values=&quot;#4682B4;#5F9EA0;#4682B4&quot; dur=&quot;10s&quot; repeatCount=&quot;indefinite&quot; /&gt;
+                &lt;/circle&gt;
+            &lt;/g&gt;
+        &lt;/g&gt;
+
+        &lt;!-- Mars --&gt;
+        &lt;g class=&quot;orbit-mars&quot;&gt;
+            &lt;text x=&quot;600&quot; y=&quot;510&quot; font-size=&quot;12&quot; fill=&quot;#fff&quot; text-anchor=&quot;middle&quot; opacity=&quot;0.7&quot;&gt;Mars&lt;/text&gt;
+            &lt;circle cx=&quot;600&quot; cy=&quot;300&quot; r=&quot;8&quot; fill=&quot;#CD" sandbox="allow-scripts" loading="lazy"></iframe>
         </div>
         <div class="scores no-scores">Not scored</div>
       </div>

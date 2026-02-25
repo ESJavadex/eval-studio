@@ -1,3 +1,92 @@
+#!/bin/bash
+# Export all benchmark results to docs/ for GitHub Pages
+# Usage: ./scripts/export-site.sh [base-url]
+#
+# Requires the dev or production server to be running.
+
+BASE_URL="${1:-http://localhost:3333}"
+DOCS_DIR="$(cd "$(dirname "$0")/.." && pwd)/docs"
+
+echo "Exporting site to $DOCS_DIR from $BASE_URL ..."
+
+# Fetch benchmark results to get model counts
+RESULTS=$(curl -sf "$BASE_URL/api/results")
+if [ $? -ne 0 ]; then
+  echo "ERROR: Could not reach $BASE_URL/api/results — is the server running?"
+  exit 1
+fi
+
+mkdir -p "$DOCS_DIR"
+
+# Get benchmark IDs and model counts
+BENCHMARKS=$(echo "$RESULTS" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+for k in sorted(data.keys()):
+    print(f'{k}\t{len(data[k])}')
+")
+
+TOTAL_MODELS=0
+BENCH_COUNT=0
+
+# Export each benchmark
+while IFS=$'\t' read -r bench_id model_count; do
+  echo "  Exporting $bench_id ($model_count models)..."
+  curl -sf "$BASE_URL/api/export-html?benchmarkId=$bench_id" -o "$DOCS_DIR/$bench_id.html"
+  if [ $? -ne 0 ]; then
+    echo "    WARN: Failed to export $bench_id"
+    continue
+  fi
+  size=$(wc -c < "$DOCS_DIR/$bench_id.html")
+  echo "    -> $size bytes"
+  TOTAL_MODELS=$((TOTAL_MODELS + model_count))
+  BENCH_COUNT=$((BENCH_COUNT + 1))
+done <<< "$BENCHMARKS"
+
+echo ""
+echo "Generating index.html ($BENCH_COUNT benchmarks, $TOTAL_MODELS total runs)..."
+
+# Benchmark metadata for the index page
+DESCRIPTIONS=$(cat <<'DESCEOF'
+svg-illustration|SVG Illustration|Animated solar system with orbiting planets, starfield background, and SVG animations. Tests complex SVG generation and CSS animation skills.
+css-art-mondrian|CSS Art Mondrian|Piet Mondrian-inspired grid composition using pure CSS. Tests layout, color theory, and creative CSS usage.
+interactive-counter|Interactive Counter|Functional counter with increment/decrement buttons and state management. Tests JavaScript interactivity and UI design.
+hello-world|Hello World|A styled "Hello World" page. The simplest benchmark — tests basic HTML/CSS output and instruction following.
+isotope-calendar|Isotope Calendar|Interactive calendar component with date navigation. Tests complex layout, date logic, and UI state management.
+mermaid-diagram|Mermaid Diagram|Flowchart or diagram rendered from Mermaid-style syntax. Tests structured visual output generation.
+DESCEOF
+)
+
+# Build card HTML
+CARDS_HTML=""
+while IFS=$'\t' read -r bench_id model_count; do
+  # Look up title and description
+  LINE=$(echo "$DESCRIPTIONS" | grep "^$bench_id|" || echo "$bench_id|$(echo $bench_id | sed 's/-/ /g; s/\b\(.\)/\u\1/g')|Benchmark results")
+  TITLE=$(echo "$LINE" | cut -d'|' -f2)
+  DESC=$(echo "$LINE" | cut -d'|' -f3)
+  MODELS_LABEL="$model_count model"
+  [ "$model_count" != "1" ] && MODELS_LABEL="${model_count} models"
+
+  CARDS_HTML="${CARDS_HTML}
+    <a href=\"${bench_id}.html\" class=\"card\">
+      <div class=\"card-visual\">
+        <iframe src=\"${bench_id}.html\" loading=\"lazy\" sandbox=\"allow-scripts\" tabindex=\"-1\"></iframe>
+        <div class=\"overlay\"></div>
+      </div>
+      <div class=\"card-body\">
+        <h2>${TITLE}</h2>
+        <div class=\"desc\">${DESC}</div>
+        <div class=\"card-footer\">
+          <span class=\"badge\">${MODELS_LABEL}</span>
+          <span class=\"arrow\">&rarr;</span>
+        </div>
+      </div>
+    </a>"
+done <<< "$BENCHMARKS"
+
+MONTH=$(LC_TIME=en_US.UTF-8 date +"%B %Y")
+
+cat > "$DOCS_DIR/index.html" <<INDEXEOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -287,7 +376,7 @@
     <div class="subtitle">
       LLM Frontend Benchmark Results — comparing how local language models generate HTML, CSS, SVG, and interactive web components.
     </div>
-    <div class="meta">6 benchmarks · 45 total runs · Updated February 2026</div>
+    <div class="meta">${BENCH_COUNT} benchmarks · ${TOTAL_MODELS} total runs · Updated ${MONTH}</div>
     <a href="https://github.com/ESJavadex/eval-studio" class="gh-link" target="_blank" rel="noopener">
       <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       View on GitHub
@@ -333,91 +422,7 @@
   <h2 class="section-title">Benchmark Results</h2>
 
   <div class="grid">
-
-    <a href="css-art-mondrian.html" class="card">
-      <div class="card-visual">
-        <iframe src="css-art-mondrian.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
-        <div class="overlay"></div>
-      </div>
-      <div class="card-body">
-        <h2>CSS Art Mondrian</h2>
-        <div class="desc">Piet Mondrian-inspired grid composition using pure CSS. Tests layout, color theory, and creative CSS usage.</div>
-        <div class="card-footer">
-          <span class="badge">6 models</span>
-          <span class="arrow">&rarr;</span>
-        </div>
-      </div>
-    </a>
-    <a href="hello-world.html" class="card">
-      <div class="card-visual">
-        <iframe src="hello-world.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
-        <div class="overlay"></div>
-      </div>
-      <div class="card-body">
-        <h2>Hello World</h2>
-        <div class="desc">A styled "Hello World" page. The simplest benchmark — tests basic HTML/CSS output and instruction following.</div>
-        <div class="card-footer">
-          <span class="badge">8 models</span>
-          <span class="arrow">&rarr;</span>
-        </div>
-      </div>
-    </a>
-    <a href="interactive-counter.html" class="card">
-      <div class="card-visual">
-        <iframe src="interactive-counter.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
-        <div class="overlay"></div>
-      </div>
-      <div class="card-body">
-        <h2>Interactive Counter</h2>
-        <div class="desc">Functional counter with increment/decrement buttons and state management. Tests JavaScript interactivity and UI design.</div>
-        <div class="card-footer">
-          <span class="badge">5 models</span>
-          <span class="arrow">&rarr;</span>
-        </div>
-      </div>
-    </a>
-    <a href="isotope-calendar.html" class="card">
-      <div class="card-visual">
-        <iframe src="isotope-calendar.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
-        <div class="overlay"></div>
-      </div>
-      <div class="card-body">
-        <h2>Isotope Calendar</h2>
-        <div class="desc">Interactive calendar component with date navigation. Tests complex layout, date logic, and UI state management.</div>
-        <div class="card-footer">
-          <span class="badge">12 models</span>
-          <span class="arrow">&rarr;</span>
-        </div>
-      </div>
-    </a>
-    <a href="mermaid-diagram.html" class="card">
-      <div class="card-visual">
-        <iframe src="mermaid-diagram.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
-        <div class="overlay"></div>
-      </div>
-      <div class="card-body">
-        <h2>Mermaid Diagram</h2>
-        <div class="desc">Flowchart or diagram rendered from Mermaid-style syntax. Tests structured visual output generation.</div>
-        <div class="card-footer">
-          <span class="badge">1 model</span>
-          <span class="arrow">&rarr;</span>
-        </div>
-      </div>
-    </a>
-    <a href="svg-illustration.html" class="card">
-      <div class="card-visual">
-        <iframe src="svg-illustration.html" loading="lazy" sandbox="allow-scripts" tabindex="-1"></iframe>
-        <div class="overlay"></div>
-      </div>
-      <div class="card-body">
-        <h2>SVG Illustration</h2>
-        <div class="desc">Animated solar system with orbiting planets, starfield background, and SVG animations. Tests complex SVG generation and CSS animation skills.</div>
-        <div class="card-footer">
-          <span class="badge">13 models</span>
-          <span class="arrow">&rarr;</span>
-        </div>
-      </div>
-    </a>
+${CARDS_HTML}
   </div>
 
   <div class="footer">
@@ -425,3 +430,9 @@
   </div>
 </body>
 </html>
+INDEXEOF
+
+echo ""
+echo "Done! Exported $BENCH_COUNT benchmarks ($TOTAL_MODELS total model runs) to $DOCS_DIR/"
+echo "Files:"
+ls -lh "$DOCS_DIR"/*.html | awk '{print "  " $NF " (" $5 ")"}'

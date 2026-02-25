@@ -42,7 +42,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(1, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
       padding: 0 32px 48px;
       max-width: 1800px;
@@ -191,241 +191,3275 @@
   <div class="header">
     <h1>Isotope Calendar</h1>
     <div class="subtitle">Eval Studio — LLM Frontend Benchmark Showcase</div>
-    <div class="meta">1 model · Exported February 24, 2026</div>
+    <div class="meta">12 models · Exported February 25, 2026</div>
   </div>
 
   <div class="grid">
     <div class="card">
         <div class="card-header">
+          <span class="model-name">glm-4.6v-flash</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;think&gt;用户现在需要创建一个关于火星殖民地的Isotope日历系统，包含转换函数、可视化界面和交互功能。首先得仔细分析需求。
+
+首先，理解Isotope Calendar的规则：
+- 年有13个月。
+- 前12个月每月28天（4周），共336天。
+- 第13个月（Extra Month）29天，总计365天。
+- 每周7天：Mon到Sun，Day 1是周一。
+
+然后任务分三部分：
+
+1. 转换函数：接收地球日期（如2026年2月20日），计算day of year（1-365），然后映射到Isotope日历的日期。需要手动计算，不能使用date库。
+
+首先实现dayOfYear计算：对于给定的Earth日期（year, month, day），计算从当年1月1日到该日的天数。比如2026年2月20日，先确定各个月的天数（注意闰年？但这里规则是固定365天，所以可能不考虑闰年？不过通常地球年份有闰年，但题目中Earth日期可能是任意，需要处理闰年的情况吗？看任务描述，用户输入的Earth date比如February 20,2026。首先计算day of year时需要考虑月份的天数。比如1月31天（非闰年），2月28或29（2026是非闰年，所以二月28天）。然后计算dayOfYear = sum(前month-1天的天数) + 当前日。
+
+然后映射到Isotope日历：总共有365天，其中前12个月每月28天（336天），第13个月29天。所以对于给定的dayOfYear（1-365）：
+
+如果dayOfYear &lt;= 336: 属于前12个月。
+   设monthIndex = Math.floor((dayOfYear - 1) / 28)
+   dayInMonth = (dayOfYear - 1) % 28 + 1
+   然后需要确定该月的起始日是周一吗？题目说Day 1 of Month 1 is always Monday。那前12个月每个月从周一开始，28天即4周，所以每个月结束时的星期几可以计算：比如Month 1 Day 1是Mon（第1天），那么Day 28就是周日（因为7天一周）。然后Month 2 Day 1应该是周一吗？不对，因为Month 1有28天，从Mon开始，到Sun结束。那Month 2的Day 1应该是下一个周一，即第29天是周一？等一下，计算：Month 1有28天（Days 1-28），Day 1=Mon, Day 28=Sun. 然后Month 2从Day 29开始，所以Day 29是Mon吗？不对，因为Day 28是Sun，然后Day 29就是Monday。对，所以每个月的第一天都是周一。
+
+那对于dayOfYear &lt;=336的情况：
+monthNumber = (dayOfYear -1) /28 +1 （因为前12个月）
+dayInMonth = dayOfYear % 28
+
+然后对于第13个月（Extra Month）:
+如果dayOfYear &gt;336 且 &lt;=365: 
+   monthNumber=13
+   dayInMonth = dayOfYear - 336
+
+现在，转换函数需要返回{month: number, day: number}。
+
+2. 视觉界面：显示当前月份的网格（4x7），标记今天的日期，计数器显示剩余天数到年底。
+
+3. 交互：用户输入地球日期，更新日历。
+
+现在开始编写代码结构：
+
+HTML部分：
+- 包含一个date input元素。
+- 显示日历的div（grid）。
+- 显示today marker和days remaining的span。
+
+CSS部分：使用Tailwind风格的类或者自定义样式。因为是dark theme，所以背景深色，文字浅色。
+
+JavaScript部分：
+- 定义转换函数：convertEarthToIsotope(year, month, day)
+- 计算dayOfYear
+- 映射到Isotope日历。
+- 更新日历显示（生成4x7的grid）。
+- 处理today的标记（高亮当前日期）。
+- 计算剩余天数到年底：对于给定的Isotope date，计算从该月该日到第13个月结束的天数？或者整个年的剩余天数。比如如果当前是Month 1 Day X，那么总共有365 - dayOfYear_of_current_date 天剩余。
+
+现在逐步实现：
+
+首先，dayOfYear函数：
+function getEarthDayOfYear(year, month, day) {
+    // 计算各个月份的总天数
+    const monthDays = [31,28,31,30,31,30,31,31,30,31,30,31]; // 非闰年
+    if (isLeapYear(year)) { // 判断是否为闰年：能被4整除但不能被100整除，或者能被400整除
+        monthDays[1] = 29;
+    }
+    let dayOfYear = 0;
+    for(let i=0;i&lt;month-1;i++) {
+        dayOfYear += monthDays[i];
+    }
+    dayOfYear += day;
+    return dayOfYear;
+}
+
+function isLeapYear(year) {
+    if ((year % 4 === 0 &amp;&amp; year % 100 !== 0) || year % 400 === 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+然后convertEarthToIsotope函数：
+function convertEarthToIsotope(earthYear, earthMonth, earthDay) {
+    const dayOfYear = getEarthDayOfYear(earthYear, earthMonth, earthDay);
+    if (dayOfYear &lt; 1 || dayOfYear &gt; 365) return {month:0, day:0}; // 错误处理
+
+    let isotopeMonth;
+    let isotopeDay;
+
+    if (dayOfYear &lt;= 336) {
+        const monthIndex = Math.floor((dayOfYear - 1) / 28);
+        isotopeMonth = monthIndex + 1; // 1-12
+        isotopeDay = dayOfYear % 28;
+    } else { // dayOfYear &gt;336
+        isotopeMonth = 13;
+        const remainingDays = dayOfYear - 336;
+        isotopeDay = remainingDays;
+    }
+
+    return {
+        month: isotopeMonth,
+        day: isotopeDay
+    };
+}
+
+然后，计算剩余天数到年底：
+function daysRemainingToYearEnd(isoDate) {
+    // isoDate是对象 {month, day}
+    let totalDaysInYear = 365; // 非闰年，但这里Isotope Calendar固定365天，所以总共有365天
+    if (isLeapYear(2026)) { // 但Isotope是否考虑地球的闰年？题目中Earth date是输入，所以需要根据当前年份判断。
+        // 实际上，Isotope Calendar的年固定为365天（非闰年），但计算剩余天数时，应该基于当前地球年份的日历结构？
+        // 或者，对于Isotope日期，计算从该日到年底的天数：比如Month 1 Day X，那么总共有 (12*28 +29) - dayOfYear_of_current_date
+        const dayOfYear = getEarthDayOfYear(earthYear, earthMonth, earthDay); // 这里需要传递当前地球年份？或者使用转换后的日期对应的地球日期？
+        // 更好的方式：先计算当前Isotope日期对应的地球日（通过逆向转换），然后计算剩余天数。
+        // 但为了简化，假设Isotope年固定365天，所以从当前isoDate的day到365的天数。
+
+        const daysInMonths = [28,28,... (12 times), 29]; // 前12个月每月28，第13月29
+        let totalDaysPassed = 0;
+        for(let i=1;i&lt;isoDate.month;i++) {
+            if(i &lt; 13) { // 前12个月
+                totalDaysPassed += 28;
+            } else {
+                totalDaysPassed += 29; // 第13月
+            }
+        }
+        totalDaysPassed += isoDate.day;
+
+        return Math.max(0, 365 - totalDaysPassed);
+    }
+}
+
+然后，生成日历网格：
+根据当前月份（isotopeMonth）和日期（isoDay），计算该月的起始日是周一吗？因为每个月的第一天都是周一。所以对于给定的monthNumber (1-13)，day 1是Monday。
+
+那么，要显示的grid是4行7列（28个单元格）。需要填充该月的所有天数，并标记当前日期。
+
+实现一个函数：renderCalendar(isoMonth, isoDay) {
+    const calendarGrid = document.getElementById('calendar-grid');
+    // 清空grid
+    while (calendarGrid.firstChild) {
+        calendarGrid.removeChild(calendarGrid.firstChild);
+    }
+
+    // 计算该月第一天是星期几（从1开始，Mon=1）
+    // Month 1 Day 1 是 Monday, 所以星期索引为1 (如果用0-based的话)
+    const firstDayOfWeek = 1; // Mon
+
+    // 该月的总天数：根据monthNumber
+    let monthLength;
+    if(isoMonth ===13) {
+        monthLength=29;
+    } else {
+        monthLength=28;
+    }
+
+    // 填充grid
+    for(let day=1;day&lt;=monthLength;day++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell';
+        cell.textContent = day;
+
+        if(day === isoDay) { // 标记今天
+            cell.classList.add('today');
+        }
+
+        calendarGrid.appendChild(cell);
+    }
+}
+
+然后，处理日期输入变化：当用户选择地球日期时，调用转换函数，更新日历显示。
+
+现在整合到HTML文件中：
+
+结构：
+- &lt;!DOCTYPE html&gt;
+- &lt;html lang=&quot;en&quot;&gt;
+- &lt;head&gt;包含title, meta charset等。
+- &lt;style&gt;定义CSS样式（dark theme）。
+- &lt;body&gt;包含input元素、calendar grid div、today counter等。
+- &lt;script&gt;包含JavaScript代码。
+
+现在编写具体代码：
+
+首先，HTML结构：
+```html
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Mars Colony - Isotope Calendar&lt;/title&gt;
+    &lt;style&gt;
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1a1a1a;
+            --today-bg: #3b82f6;
+            --today-text: white;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        input[type=&quot;date&quot;] {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid #333;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .calendar-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        #calendar-grid {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(7, minmax(40px, 1fr));
+            gap: 6px;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .month-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .calendar-cell {
+            background-color: var(--bg-color);
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+        }
+        
+        .today {
+            background-color: var(--today-bg);
+            color: var(--today-text);
+        }
+        
+        #year-end-counter {
+            font-size: 16px;
+            padding: 10px 15px;
+            border-radius: 6px;
+            background-color: var(--card-bg);
+            margin-top: 20px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;h1&gt;Mars Colony - Isotope Calendar&lt;/h1&gt;
+        
+        &lt;div class=&quot;controls&quot;&gt;
+            &lt;label for=&quot;earth-date&quot;&gt;Select Earth Date:&lt;/label&gt;
+            &lt;input type=&quot;date&quot; id=&quot;earth-date&quot;&gt;
+        &lt;/div&gt;
+        
+        &lt;div class=&quot;calendar-container&quot;&gt;
+            &lt;div class=&quot;month-name&quot; id=&quot;current-month&quot;&gt;&lt;/div&gt;
+            &lt;div id=&quot;calendar-grid&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;div id=&quot;year-end-counter&quot;&gt;Days remaining until end of year: --&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Helper function to check if a year is a leap year
+        function isLeapYear(year) {
+            return (year % 4 === 0 &amp;&amp; year % 100 !== 0) || year % 400 === 0;
+        }
+
+        // Function to calculate day of year for Earth date
+        function getEarthDayOfYear(year, month, day) {
+            const monthDays = [31,28,29,31,30,31,30,31,31,30,31,30]; // January to December
+            if (isLeapYear(year)) {
+                monthDays[1] = 29; // February is 29 days in leap year
+            }
+            
+            let dayOfYear = 0;
+            for (let i = 0; i &lt; month - 1; i++) {
+                dayOfYear += monthDays[i];
+            }
+            dayOfYear += day;
+            
+            return dayOfYear;
+        }
+
+        // Convert Earth date to Isotope Calendar date
+        function convertEarthToIsotope(earthYear, earthMonth, earthDay) {
+            const dayOfYear = getEarthDayOfYear(earthYear, earthMonth, earthDay);
+            
+            if (dayOfYear &lt; 1 || dayOfYear &gt; 365) return { month: 0, day: 0 };
+            
+            let isotopeMonth;
+            let isotopeDay;
+
+            // Map to Isotope months
+            if (dayOfYear &lt;= 336) {
+                const monthIndex = Math.floor((dayOfYear - 1) / 28);
+                isotopeMonth = monthIndex + 1; // 1-12
+                isotopeDay = dayOfYear % 28;
+            } else {
+                isotopeMonth = 13;
+                const remainingDays = dayOfYear - 336;
+                isotopeDay = remainingDays;
+            }
+
+            return { month: isotopeMonth, day: isotopeDay };
+        }
+
+        // Function to render the calendar grid
+        function renderCalendar(isoMonth, isoDay) {
+            const grid = document.getElementById('calendar-grid');
+            if (!grid) return;
+
+            // Clear existing cells
+            while (grid.firstChild) {
+                grid.removeChild(grid.firstChild);
+            }
+
+            // Determine month name and length
+            let monthName;
+            switch(isoMonth) {
+                case 1: monthName = &quot;Isotope Month 1&quot;; break;
+                case 2: monthName = &quot;Isotope Month 2&quot;; break;
+                case 3: monthName = &quot;Isotope Month 3&quot;; break;
+                case 4: monthName = &quot;Isotope Month 4&quot;; break;
+                case 5: monthName = &quot;Isotope Month 5&quot;; break;
+                case 6: monthName = &quot;Isotope Month 6&quot;; break;
+                case 7: monthName = &quot;Isotope Month 7&quot;; break;
+                case 8: monthName = &quot;Isotope Month 8&quot;; break;
+                case 9: monthName = &quot;Isotope Month 9&quot;; break;
+                case 10: monthName = &quot;Isotope Month 10&quot;; break;
+                case 11: monthName = &quot;Isotope Month 11&quot;; break;
+                case 12: monthName = &quot;Isotope Month 12&quot;; break;
+                case 13: 
+                    if (isoDay &lt;= 29)" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">glm-4.7-flash-claude-opus-4.5-high-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="Let me break down this problem:
+
+1. I need to create an Isotope Calendar for a Mars colony
+2. It has 13 months:
+   - Months 1-12: 28 days each (perfect weeks)
+   - Month 13 (&quot;Extra Month&quot;): 29 days
+   - Total: 365 days
+
+3. The week structure is preserved (Mon-Sun)
+
+4. January 1, 2026 (Earth) = Isotope Calendar Month 1, Day 1 (Monday)
+
+5. I need to convert Earth dates to Isotope Calendar dates by:
+   - Calculating the day-of-year (1-365)
+   - Mapping that to the corresponding date in the Isotope Calendar
+
+Let me think about the mapping:
+
+For days 1-336 (12 months × 28 days):
+- If day_of_year ≤ 28: Month 1, Day = day_of_year
+- If day_of_year ≤ 56: Month 2, Day = day_of_year - 28
+- If day_of_year ≤ 84: Month 3, Day = day_of_year - 56
+- ...
+- If day_of_year ≤ 308: Month 12, Day = day_of_year - 308
+- If day_of_year &gt; 308 (and ≤ 336): Month 13, Day = day_of-year - 308
+
+Wait, let me recalculate:
+- Months 1-12 each have 28 days → 12 × 28 = 336 days
+- Days 337-365 (29 days) are in Month 13
+
+So:
+- If day_of_year ≤ 336: 
+  - month = ceil(day_of_year / 28)
+  - day = ((day_of_year - 1) % 28) + 1
+  
+For the remaining days, I'll map to Month 13. When the year exceeds 336, the date falls into the extra month. The day will range from 1 to 29, representing its position within this final month.
+
+I'll verify the calendar's alignment by checking January 2026. Starting on a Monday, the year progresses systematically through its 365-day structure, with each month following a precise 28 or 29-day pattern.
+
+The Isotope Calendar maintains consistent weekly progression, ensuring no weekday disruptions across the entire year. I'll focus on implementing date conversion logic that accurately tracks monthly transitions and daily movements.
+
+My implementation will involve creating a robust mapping system that seamlessly translates Earth dates to the unique Mars colony calendar format, carefully tracking month boundaries and remaining days.
+
+The interface design requires careful attention to visual clarity, using CSS grid to create an intuitive calendar representation with color-coded sections for regular and extra months. I'll prioritize clean, informative display of date progression and current state.
+
+I'm strategically planning how to highlight today's date and track days remaining in the calendar year, ensuring users can quickly grasp the current temporal position within the Isotope Calendar system。
+
+The grid layout will dynamically render month segments, with special visual treatment for the extra month. I'll use a dark theme with precise color mappings to distinguish different calendar regions, creating a sophisticated visualization of time's progression.
+
+My implementation approach involves carefully tracking day offsets, month transitions, and remaining year calculations. By precisely mapping Earth dates to Isotope Calendar positions, I can accurately calculate monthly placement and grid coordinates.
+
+The next step involves developing clear rendering logic for displaying date information, focusing on precise coordinate translation and visual representation of calendar progression.
+```&lt;/think&gt;Looking at this problem, I need to carefully map Earth dates to the Isotope Calendar by computing day-of-year values manually, then translating to the 13-month structure with perfect weeks." sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">gpt-oss-20b</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Isotope Calendar&lt;/title&gt;
+&lt;style&gt;
+  body{margin:0;padding:20px;background:#111;color:white;font-family:sans-serif;}
+  .wrapper{max-width:600px;margin:auto;text-align:center;}
+  h2{margin-bottom:4px;}
+  #remaining{font-size:1.1rem;margin-top:8px;}
+  input[type=date]{padding:6px;border-radius:6px;background:#222;color:white;border:none;margin-top:12px;}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:14px;}
+  .cell{background:#222;padding:10px;border-radius:6px;font-size:0.9rem;}
+  .highlight{background:#444;}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;wrapper&quot;&gt;
+  &lt;h2 id=&quot;monthTitle&quot;&gt;Month 1&lt;/h2&gt;
+  &lt;div id=&quot;calendar&quot; class=&quot;grid&quot;&gt;&lt;/div&gt;
+  &lt;p id=&quot;remaining&quot;&gt;Days remaining until end of year: 364&lt;/p&gt;
+  &lt;input type=&quot;date&quot; id=&quot;dateInput&quot;&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(function(){
+  const monthLengths = [31,28,31,30,31,30,31,31,30,31,30,31];
+  function isLeap(year){return (year%4===0 &amp;&amp; year%100!==0)||year%400===0;}
+  function dayOfYear(date){
+    let m=date.getMonth(), d=date.getDate();
+    let len=monthLengths.slice();
+    if(isLeap(date.getFullYear()))len[1]=29;
+    return len.slice(0,m).reduce((a,b)=&gt;a+b,0)+d;
+  }
+  function toIsotope(day){
+    if(day&lt;=336){let month=Math.ceil(day/28); let dayInMonth=((day-1)%28)+1; return{month,dayInMonth};}
+    else{return{month:13,dayInMonth:day-336};}
+  }
+  function render(month,dayInMonth){
+    const cal=document.getElementById('calendar');
+    cal.innerHTML='';
+    const days= month===13?29:28;
+    for(let i=1;i&lt;=days;i++){
+      let c=document.createElement('div');c.className='cell';c.textContent=i;
+      if(i===dayInMonth)c.classList.add('highlight');
+      cal.appendChild(c);
+    }
+  }
+  function update(date){
+    const d=new Date(date);
+    const doy=dayOfYear(d);
+    const {month,dayInMonth}=toIsotope(doy);
+    document.getElementById('monthTitle').textContent='Month '+month;
+    render(month,dayInMonth);
+    document.getElementById('remaining').textContent='Days remaining until end of year: '+(365-doy);
+  }
+  const inp=document.getElementById('dateInput');
+  inp.valueAsDate=new Date();
+  inp.addEventListener('change',e=&gt;update(e.target.value));
+  update(inp.value);
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
           <span class="model-name">lfm2.5-1.2b-thinking-claude-4.6-opus-heretic-uncensored-distill</span>
           
         </div>
         <div class="card-iframe-wrapper">
-          <iframe srcdoc="&lt;think&gt; Okay, let's tackle this problem. I need to create an Isotope Calendar system using only pure HTML, CSS, and JavaScript without any external dependencies. The requirements are quite specific, so I should break it down step by step.
-
-First, the conversion function: take a date like February 20, 2026, compute its day-of-year (1-365), then map that to the Isotope Calendar's months. Since month 13 has 29 days instead of 28, and each 28-day month starts on Monday, I need to calculate the correct offset for month 13.
-
-Wait, how do you convert a day number into the calendar? Let me think: The total days in each month are fixed except for month 13. Since months 1-12 have 28 days (4 weeks), and month 13 has 29. But since it's 365 days, let's see:
-
-Total days = 365. The first 12 months contribute 12*28=336 days. So the remaining days are 365 - 336 = 29, which is for February 20 (assuming that's day 20 of month 1? Wait no, maybe I'm getting confused here). Wait, perhaps better to approach this step by step.
-
-The function needs to take an Earth date and convert it into the Isotope Calendar. Let me think: The user inputs a date like &quot;2026-02-20&quot;. First, parse that into year, month, day.
-
-Compute day_of_year = (year - 1900)*365 + (month -1)*30 + day - 1? Wait no, maybe better to compute the actual day of the year correctly. Alternatively, since I need to calculate it manually without libraries, perhaps:
-
-Wait, for any given date, day_of_year is calculated as:
-
-day = (year % 100) * 365 + (month % 12)*30 + day -1? Not sure. Wait maybe better formula: The standard way to compute day of year from a Gregorian calendar date:
-
-Let me recall the formula for day of year:
-
-For dates before March 1, it's (year-1900)*365 + (month-1)*30 + day - 1. But if after February, then add 31*(number of months passed) etc. Hmm maybe better to use a standard method here. Alternatively, since I need to compute the day_of_year manually for any given date, perhaps:
-
-Let me think of an example: For January 1st, 2026 is day 1 (since Jan has 28 days). So day_of_year = 1. February 20 would be in month 2, so 28 + 20 -1? Wait no, wait the formula for Gregorian calendar's day of year:
-
-Wait perhaps it's easier to compute as follows: For a given date (year, month, day):
-
-day_of_year = ((year % 100) * 365) + ((month - 1) * 30) + (day - 1). But this might not be accurate. Alternatively, maybe use the following method for Gregorian calendar:
-
-The formula is:
-
-day_of_year = day + (31*(month-1)/12) + (30*(month-2)/13) + ((year - year % 100) / 4) - ((year - year % 100) / 400) - ((month - 2)/12) + 1
-
-Wait maybe I'm overcomplicating. Alternatively, perhaps the user expects a simplified approach given that month 13 has 29 days and each 28-day months start on Monday. Since this is getting too complex for manual calculation, maybe we can find a way to compute it step by step without relying on libraries.
-
-Alternatively, since I need to write code in my head, perhaps the key points are:
-
-The month starts on Monday. So for any given date, the first day of the month must be a Monday. Therefore, if the current day is not a Monday, we have to adjust by moving days back or forward until it's a Monday. For example, if the desired day is Tuesday (day 2), then subtract one day.
-
-Wait maybe I should structure this as follows: To convert an Earth date into Isotope Calendar:
-
-1. Calculate total days since January 1, 1900 (or some base?), but perhaps better to compute the day of year from the given date.
-
-Alternatively, let's think of the conversion steps:
-
-The goal is to map any Earth date to an Isotope Calendar date. Let me outline the steps for converting a given Earth date into Isotope Calendar:
-
-First, determine which month and day it is in the calendar. Since months 1-12 have 28 days (4 weeks), each starting on Monday. The first day of each month must be a Monday. So if the user inputs a date like January 20, 2026 (which is a Tuesday?), we need to adjust so that the first day of the month is a Monday.
-
-Wait perhaps the process is:
-
-Given an Earth date (year, month, day), compute its day_of_year (1-based). Then, determine which month it falls into based on cumulative days. The key points are:
-
-- Month 13 has 29 days instead of 28.
-- Each 28-day month starts on Monday. So the first day of each month must be a Monday. Therefore, if the given date is not already starting on a Monday, we need to adjust it by adding or subtracting days until the first day of the month is a Monday.
-
-For example: Suppose the user inputs &quot;2026-02-20&quot; (February 20). Let's see what day that is in Gregorian calendar. February 20, 2026: since February has 28 days (since it's not a leap year?), wait 2026 is a leap year (divisible by 4 and not by 100 unless also by 400; 2026/4=506, so yes). Wait 2026 divided by 4 is 506.5? No, 2026 ÷4 = 506.5 → no, wait 4×506=2024, remainder 2. So it's not a leap year. Wait 2026 mod 4 is 2, so February has 28 days.
-
-Wait let me check: 2026 divided by 4 is 506*4 = 2024; 2026-2024=2 → remainder 2 → not divisible by 4. So February has 28 days. Wait but the user said month13 has 29, so perhaps I need to think differently.
-
-Wait maybe better to compute day_of_year for a given date:
-
-Let me pick an example: suppose the input is &quot;2026-02-20&quot;. Let's see what that day is in Gregorian calendar.
-
-Using formula: For dates after February 28 (since Feb has 28 days), so let's calculate day of year:
-
-Assuming it's a leap year? Wait no, 2024 was a leap year but 2026 divided by 4 gives remainder 2 → not divisible by 4. So February has 28 days.
-
-Wait perhaps better to use an online calculator or formula here. Alternatively, let me proceed with the algorithm:
-
-The key steps for converting Earth date (year, month, day) into Isotope Calendar:
-
-1. Compute total_day_of_year = (year % 100)*365 + (month -1)*30 + day - 1? Not sure. Alternatively, perhaps use this formula from Wikipedia's Gregorian calendar page:
-
-The day of the year is calculated as follows:
-
-day = (year % 100) * 365 + (month - 1) * 30 + (day - 1). But if that gives a value greater than 365? Not sure. Alternatively, perhaps better to use this method:
-
-Wait here's a standard formula for day of year from Gregorian calendar date (year, month, day):
-
-If the date is before March 1, it's (year-1900)*365 + (month -1)*30 + day -1. But if after February, then add 31*(number of months passed) etc. This might be too time-consuming. Let me try to find a better way.
-
-Alternatively, perhaps I can compute the total days since January 1, 1900:
-
-day_of_year = (year - 1900)*365 + (month -1)*30 + day -1. But this would give values up to 365*(year-1900) + ... but maybe not accurate for all dates. For example, if the date is January 1, 1900:
-
-day_of_year = (0)*365 + 0 + 1 -1 = 0? No, that can't be right. Hmm perhaps I need to look up a correct formula. Alternatively, let me proceed with an example. Let's say the user inputs &quot;2026-02-20&quot;.
-
-Suppose we want day_of_year for this date:
-
-Assuming it's in February 2026 (non-leap year). The calculation would be:
-
-(2026 - 1900) * 365 = 126*365 = let's see, but perhaps better to compute via another method. Alternatively, maybe I can proceed with the following approach for manual calculation:
-
-The user wants a function that takes an Earth date and returns the corresponding Isotope Calendar date. Let me try to outline steps without libraries:
-
-First, determine if it's month 13 or not. If not, then check which month it is. For months 1-12, each has 28 days starting on Monday. The first day of the month must be a Monday. So for example, if the desired date is February 20 (2026), let's see:
-
-February 20 is in month 2. Let me check what day of week it was. If I can't compute exactly without a calculator, perhaps proceed with an algorithm that ensures the first day of each month starts on Monday. So for any given date, adjust the day to be a Monday by adding or subtracting days until the first day is a Monday.
-
-Suppose the user inputs &quot;2026-02-20&quot;. Let's see: February 20, 2026. Let me check what day that was. Since I can't compute exactly here, perhaps assume that it's Tuesday (so need to subtract one day). But maybe proceed with code logic.
-
-The key steps for the conversion function:
-
-1. Calculate total days since January 1, 1900 (or another base?), but let's say from a specific date. Alternatively, compute the day of year as follows:
-
-Let me try to write pseudocode:
-
-function isotope_calendar(date) {
-    const y = parseInt(date.year);
-    const m = parseInt(date.month);
-    const d = parseInt(date.day);
-
-    // Compute day of year
-    let day_of_year = (y - 1900)*365 + (m-1)*30 + d -1;
-    if (is_leap(y)) {
-        day_of_year += (y %4 ==0 &amp;&amp; y%100 !=0 || y%400==0);
-    }
-
-    // Now determine which month it's in
-    let months = [&quot;January&quot;, &quot;February&quot;, ..., &quot;December&quot;];
-    const month_index = m -1;
-    let start_day = day_of_year - (months[month_index].length * 30 + days_in_month);
-
-    // Find the first day of the month that is a Monday
-    for (let i=0; i&lt;7; i++) {
-        const day = start_day + i;
-        if ((i %7 ==0 &amp;&amp; day%7 ===1) || 
-            (i%7==0 &amp;&amp; day%7==2) || ... ) // Wait, perhaps better to compute the first day of the month as Monday.
-
-    Alternatively, find the offset needed so that the first day is a Monday. Let me think: The first day of each month must be a Monday. So if the current day_of_year corresponds to a certain date, we need to adjust it such that the first day of the month is Monday. 
-
-    For example, suppose the given date's day_of_year is D. To find the start_day:
-
-    Let target_first_day = Monday (0). The current first day is (D mod7). We can compute how many days to add or subtract to reach a Monday.
-
-    So desired_delta = (Monday - (current_day_of_year %7)) %7 → but maybe better:
-
-    Let target_first_day = 0 (Monday). The current day of the month is D mod7. To get from current first day to Monday, need delta = (0 - (D%7)) mod7. Wait perhaps this is getting too complicated. Maybe an easier way: compute the desired starting day as Monday, so if the current date's day_of_year corresponds to a certain offset, adjust it by adding or subtracting days until the first day of the month is a Monday.
-
-    Once that's done, then the start_day becomes Monday. Then check if the month has 28 or 29 days (if m==13). For months 1-12: 28 days, so if the starting day isn't Monday, adjust by adding/subtracting days to reach next Monday.
-
-    Once the first day of the month is a Monday, then compute the remaining days in the month. Since each 28-day month starts on Monday, the last day would be (start_day + (days_in_month -1)) mod7? Wait perhaps this is getting too involved. Maybe I should proceed with code logic steps:
-
-    Once start_day is adjusted to a Monday, then check if it's month13. If yes, set days_in_month =29 else 28. Then the day of the month for that month would be (start_day + (days_in_month -1)) mod7 → but need to ensure it wraps around properly.
-
-    Once all these are done, then compute the current date's day in this calendar:
-
-    The total days since Jan 1 is day_of_year. The first day of month m is start_day (Monday). So the offset from start_day would be (start_day - D) mod7 → but perhaps better to calculate the end day as (start_day + (days_in_month-1)) %7 ?
-
-    This is getting too time-consuming. Maybe I'll proceed with writing code that handles these steps, even if it's a bit involved.
-
-2. The visual interface: A grid of 4x7 days. Each row represents a month? Wait the Isotope Calendar has months 1-12 (28 days) and month13 as extra month (29). So each month is either 28 or 29 days, starting on Monday. The grid must be a perfect 4x7? No, wait there are 12 regular months plus an extra month (month13), so total 13 months. But the user wants a 4x7 grid with no gaps at the start of the month. Wait perhaps each month is represented as a row in the grid, and since it's 13 months, but arranged into 4 rows? Not sure yet.
-
-Wait maybe the grid is structured such that there are four columns (months) and seven days per column? Or perhaps the user wants a single row with 28-day months except month13 which has 29. The exact visualization might be tricky without seeing it, but since I need to create an HTML file with inline CSS and JS, perhaps the grid is a 4x7 layout where each month's block is either 28 or 29 days, starting on Monday.
-
-3. The counter: Days remaining until end of year. Since months have varying lengths (12*28 +29 = 365), so total days in all months except month13 are 12*28=336 plus 29 → 365? Wait no: 12*28 is 336, plus 29 gives 365. So the counter would be (total_remaining_days - current_day).
-
-Putting this together into a single HTML file with inline CSS and JS. Need to avoid external libraries, so all styles must be in a style tag or within a div? Wait no, since it's one HTML file, I can't have multiple style tags unless nested properly. Alternatively, use a &lt;style&gt; block inside the head.
-
-The challenge is to write everything inline without any external resources. Let me outline:
-
-- The HTML structure will be a single file with embedded CSS and JS.
-- Use a grid layout for the calendar (4 columns?), but since it's 13 months, perhaps each month is a row in a table-like structure, but using flex or grid. Since inline styles are needed, maybe use divs with flexbox.
-- The counter will be a variable that updates based on current date.
-- Visual markers: today's day highlighted, and the countdown timer.
-
-Now, writing all this into one HTML file with embedded CSS and JS. Need to ensure no external resources, so everything is self-contained.
-
-Let me draft the code step by step, ensuring it fits in a single file without any external dependencies.
-&lt;/think&gt;
-```html
-&lt;!DOCTYPE html&gt;
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
     &lt;meta charset=&quot;UTF-8&quot;&gt;
     &lt;title&gt;Isotope Calendar&lt;/title&gt;
     &lt;style&gt;
         body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #1a1a2e;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e2a3c;
             color: white;
+            line-height: 1.6;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2a7f4d;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .date-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #4a6b9c;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .date-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(74, 144, 238, 0.2);
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .month-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .month-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .day-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #4a6b9c;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        .day-marker:hover {
+            background: #5a8d7e;
+        }
+        .counter {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.4rem;
+            color: #2a7f4d;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;h1&gt;Isotope Calendar&lt;/h1&gt;
+        
+        &lt;label for=&quot;date-input&quot;&gt;Enter Earth Date:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;date-input&quot; placeholder=&quot;e.g., 2026-02-20&quot;&gt;
+        &lt;button onclick=&quot;calculateCalendar()&quot;&gt;Calculate&lt;/button&gt;
+
+        &lt;div class=&quot;grid-container&quot;&gt;
+            &lt;!-- Month Grid --&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;1&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;2&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;3&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;4&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;5&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;6&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;7&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;8&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;9&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;10&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;11&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;month-card&quot; data-month=&quot;12&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Day Marker --&gt;
+        &lt;div class=&quot;day-marker&quot; id=&quot;today&quot;&gt;Today&lt;/div&gt;
+
+        &lt;div class=&quot;counter&quot;&gt;
+            Days remaining: 365 - (current_day)
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        function calculateCalendar() {
+            const dateInput = document.getElementById('date-input');
+            const today = new Date(dateInput.value);
+            const year = parseInt(today.getFullYear(), 10);
+            let monthIndex = -1;
+            let daysLeft = 365;
+
+            // Calculate day of year
+            if (year &lt; 1900) {
+                daysLeft = (year + 1) * 365;
+            } else if (year &gt; 2000) {
+                daysLeft = Math.floor((year - 1900) * 365);
+            }
+
+            // Find the month index and remaining days
+            for (let i = 0; i &lt; 12; i++) {
+                const dayOfMonth = Math.max(1, year % 100 + 1);
+                if (dayOfMonth &gt; daysLeft) break;
+                daysLeft -= dayOfMonth;
+                if (daysLeft &lt;= 0) {
+                    monthIndex = i;
+                    break;
+                }
+            }
+
+            // Calculate remaining days in current month
+            let remainingDays = daysLeft - 1; // subtract today
+            if (monthIndex === -1) {
+                monthIndex = 1;
+                remainingDays = Math.floor((year + 1) / 100);
+                dayOfMonth = 28;
+            }
+
+            const isExtra = monthIndex === 13;
+            let monthName = &quot;January&quot;;
+            if (monthIndex &gt;= 1 &amp;&amp; monthIndex &lt;= 12) {
+                monthName = `${'January' + (monthIndex - 1).toString(36)}`;
+            }
+            if (isExtra) {
+                monthName = 'Extra Month';
+                daysInMonth = 29;
+            }
+
+            // Calculate remaining days in the current month
+            const startDay = dayOfMonth - 1; // convert to zero-based index
+            let endDay = dateInput.value + 28 || (monthIndex === 13 ? 29 : daysInMonth);
+            if (endDay &gt; 365) {
+                endDay = 365;
+            }
+
+            const monthStartDate = new Date(year, monthIndex - 1, 1);
+            const todayDate = new Date(dateInput.value);
+            const calendarDate = new Date(todayDate.getFullYear(), year, dateInput.value + 28 || (monthIndex === 13 ? 29 : daysInMonth));
+            if (calendarDate &gt; monthStartDate) {
+                calendarDate.setDate(monthStartDate.getDate() + remainingDays);
+            }
+
+            // Update counter
+            const currentDay = new Date().getFullYear() + 1;
+            const currentCalendarDate = new Date(currentDay, year, dateInput.value);
+            let daysLeft = 365 - (currentCalendarDate - calendarDate).getTime();
+            document.getElementById('daysRemaining').textContent = daysLeft;
+
+            // Update day marker
+            document.getElementById('today').textContent = `Today: ${dateInput.value}`;
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Isotope Calendar&lt;/title&gt;
+&lt;style&gt;
+  body{background:#111;color:#eee;font-family:Arial,Helvetica,sans-serif;}
+  #calendar-widget{max-width:600px;margin:auto;padding:20px;background:#222;border-radius:8px;}
+  h2{margin-bottom:10px;text-align:center;font-size:1.5rem;}
+  #earth-date{width:100%;padding:6px;margin-bottom:12px;border:none;border-radius:4px;background:#333;color:#eee;}
+  #grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+  .cell{background:#333;color:#eee;padding:10px;text-align:center;border-radius:4px;}
+  .today{background:#555;}
+  .cell:hover{background:#444;}
+  #days-remaining{text-align:center;margin-top:12px;font-size:1rem;}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;calendar-widget&quot;&gt;
+  &lt;h2 id=&quot;month-header&quot;&gt;&lt;/h2&gt;
+  &lt;input type=&quot;date&quot; id=&quot;earth-date&quot;/&gt;
+  &lt;div id=&quot;grid&quot;&gt;&lt;/div&gt;
+  &lt;p id=&quot;days-remaining&quot;&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+const earthMonthLengths=[31,28,31,30,31,30,31,31,30,31,30,31];
+function getDayOfYear(date){
+  const year=date.getFullYear();
+  const monthIndex=date.getMonth(); //0-based
+  const day=date.getDate();
+  const daysBefore=earthMonthLengths.slice(0,monthIndex).reduce((a,b)=&gt;a+b,0);
+  return {year:year,month:monthIndex+1,day:day,dayOfYear:daysBefore+day};
+}
+function convertToIsotope(dayOfYear){
+  const isoMonth=Math.floor((dayOfYear-1)/28)+1;
+  const isoDay=dayOfYear-(isoMonth-1)*28;
+  return {month:isoMonth,day:isoDay};
+}
+function updateCalendar(){
+  const input=document.getElementById('earth-date');
+  const dateStr=input.value; // &quot;YYYY-MM-DD&quot;
+  const dObj=new Date(dateStr);
+  const eInfo=getDayOfYear(dObj);
+  const isoInfo=convertToIsotope(eInfo.dayOfYear);
+  document.getElementById('month-header').textContent=`Month ${isoInfo.month}, ${eInfo.year}`;
+  const daysInMonth=(isoInfo.month===13?29:28);
+  const grid=document.getElementById('grid');
+  grid.innerHTML='';
+  for(let i=1;i&lt;=daysInMonth;i++){
+    const cell=document.createElement('div');cell.className='cell';
+    if(i===isoInfo.day)cell.classList.add('today');
+    cell.textContent=i;
+    grid.appendChild(cell);
+  }
+  const daysRemaining=365-eInfo.dayOfYear;
+  document.getElementById('days-remaining').textContent=`Days remaining until end of year: ${daysRemaining}`;
+}
+document.addEventListener('DOMContentLoaded',()=&gt;{
+  const input=document.getElementById('earth-date');
+  input.value=new Date().toISOString().slice(0,10);
+  updateCalendar();
+  input.addEventListener('change',updateCalendar);
+});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-14b-claude-4.5-opus-high-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Isotope Calendar - Mars Colony Time System&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f1a2c 0%, #16274a 50%, #0f1a2c 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d8ff, #00ffda);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #b8c6d6;
+        }
+
+        .card {
+            background: rgba(17, 25, 43, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        input[type=&quot;date&quot;] {
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: none;
+            background: #1a2b4d;
+            color: #fff;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        input[type=&quot;date&quot;]:focus {
+            outline: none;
+            background: #263b67;
+        }
+
+        .btn-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #00d8ff, #00ffda);
+            color: #fff !important;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 216, 255, 0.4);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .day-label {
+            font-weight: bold;
+            color: #64748b;
+            text-align: center;
+            padding: 10px 5px;
+        }
+
+        .day-cell {
+            padding: 15px 10px;
+            border-radius: 12px;
+            background: rgba(30, 41, 59, 0.8);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .day-cell:hover {
+            transform: scale(1.05);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .today {
+            background: linear-gradient(135deg, #00d8ff, #00ffda) !important;
+            color: #fff !important;
+            border: 3px solid rgba(0, 216, 255, 0.7);
+        }
+
+        .day-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .day-details {
+            font-size: 0.85rem;
+            color: #c0d6ff;
+        }
+
+        .month-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .month-title {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #00d8ff, #00ffda);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .month-subtitle {
+            color: #b8c6d6;
+            font-size: 1rem;
+        }
+
+        .stats-card {
+            background: rgba(22, 31, 54, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00d8ff, #00ffda);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #b8c6d6;
+            font-size: 1rem;
+        }
+
+        .copy-button {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            padding: 15px 30px;
+            background: linear-gradient(90deg, #ff6b6b, #ee4e4e);
+            color: white !important;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Earth Date Formatting */
+        function formatEarthDate(date) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} (${days[date.getDay()]})`;
+        }
+
+        /* Isotope Date Formatting */
+        function formatIsotopeDate(date) {
+            const months = [
+                'Month 1', 'Month 2', 'Month 3', 'Month 4',
+                'Month 5', 'Month 6', 'Month 7', 'Month 8',
+                'Month 9', 'Month 10', 'Month 11', 'Month 12',
+                'Extra Month'
+            ];
+            return `${date.day} ${months[date.month - 1]}`;
+        }
+
+        /* Calculate day of year manually */
+        function getDayOfYear(date) {
+            const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            
+            // Leap year calculation
+            function isLeapYear(year) {
+                return year % 4 === 0 &amp;&amp; (year % 100 !== 0 || year % 400 === 0);
+            }
+            
+            let dayOfYear = date.getDate();
+            for (let i = 0; i &lt; date.getMonth(); i++) {
+                dayOfYear += daysInMonth[i];
+                if (i === 1 &amp;&amp; isLeapYear(date.getFullYear())) {
+                    dayOfYear += 1;
+                }
+            }
+            
+            return dayOfYear;
+        }
+
+        /* Convert Earth date to Isotope date */
+        function earthToIsotope(earthDate) {
+            const dayOfYear = getDayOfYear(earthDate);
+            
+            // Calculate month and day
+            const month = Math.floor((dayOfYear - 1) / 28) + 1;
+            let dayInMonth = ((dayOfYear - 1) % 28) + 1;
+            
+            // Special handling for Month 13 (Extra Month)
+            if (month === 13) {
+                // Check if day is valid
+                if (dayInMonth &gt; 29) {
+                    return null; // Invalid date
+                }
+                // If it's the last day of Year 1 (Earth Day 365), wrap to start of next year
+                if (dayOfYear === 365 &amp;&amp; earthDate.getFullYear() === START_YEAR) {
+                    return { month: 1, day: 1, year: currentYear + 1 };
+                }
+            } else if (dayOfYear === 365) {
+                // Last day of Earth year - starts new Isotope cycle
+                return { month: 1, day: 1, year: currentYear + 1 };
+            }
+            
+            return { month, day: dayInsystem, year: currentYear };
+        }
+
+        /* Convert back to Earth date for validation */
+        function isotopeToEarth(isotopeDate) {
+            // Calculate first day of Isotope year (Earth's January 1, START_YEAR)
+            const startOfYear = new Date(START_YEAR, 0, 1);
+            
+            // Calculate offset
+            let daysOffset = 0;
+            for (let i = 1; i &lt; isotopeDate.month; i++) {
+                daysOffset += i === 13 ? 29 : 28;
+            }
+            daysOffset += isotopeDate.day - 1;
+            
+            return new Date(startOfYear);
+        }
+
+        /* Validate date range */
+        function isValidIsotopeDate(date) {
+            if (!date || typeof date !== 'object') return false;
+            return date.month &gt;= 1 &amp;&amp; date.month &lt;= 13 &amp;&amp;
+                   (date.month &lt; 13 ? date.day &gt;= 1 &amp;&amp; date.day &lt;= 28 :
+                    date.day &gt;= 1 &amp;&amp; date.day &lt;= 29);
+        }
+
+        /* Format date display */
+        function formatDateDisplay(date) {
+            if (!date) return 'Invalid Date';
+            const months = [
+                'Jan', 'Feb', 'Mar', 'Apr',
+                'May', 'Jun', 'Jul', 'Aug',
+                'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        }
+
+        /* Get current Earth date */
+        function getCurrentEarthDate() {
+            return new Date();
+        }
+
+        /* Get current Isotope date */
+        function getIsotopeDate() {
+            const earthDate = getCurrentEarthDate();
+            return earthToIsotope(earthDate);
+        }
+
+        /* Format Isotope date for display */
+        function formatIsotopeDisplay(date) {
+            if (!date) return 'Invalid Date';
+            return `${date.day} ${date.month === 13 ? 'Extra Month' : `Month ${date.month}`}`;
+        }
+
+        /* Calculate days remaining in year */
+        function getDaysRemaining(isotopeDate) {
+            // Total days in year
+            const totalDays = 12 * 28 + 29;
+            
+            // Current day in year
+            let currentDay = 0;
+            for (let i = 1; i &lt; isotopeDate.month; i++) {
+                currentDay += i === 13 ? 29 : 28;
+            }
+            currentDay += isotopeDate.day;
+            
+            return totalDays - currentDay;
+        }
+
+        /* Generate calendar grid data */
+        function generateCalendarGrid(month, year) {
+            // Get first day of month (Earth's date for Isotope Month 1 Day 1)
+            const monthStartDate = new Date(START_YEAR, 0, 1);
+            
+            // Calculate first day of requested month
+            let daysOffset = 0;
+            for (let i = 1; i &lt; month; i++) {
+                daysOffset += i === 13 ? 29 : 28;
+            }
+            
+            const firstDayOfWeek = (monthStartDate.getDay() + daysOffset) % 7;
+            
+            // Days in current month
+            const daysInMonth = month === 13 ? 29 : 28;
+            
+            return {
+                firstDay: firstDayOfWeek,
+                days: daysInMonth,
+                currentYear: year
+            };
+        }
+
+        /* Render calendar grid */
+        function renderCalendar(gridData, isotopeDate) {
+            const container = document.getElementById('calendar-grid');
+            container.innerHTML = '';
+            
+            // Day labels
+            const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            dayLabels.forEach(label =&gt; {
+                const labelEl = document.createElement('div');
+                labelEl.className = 'day-label';
+                labelEl.textContent = label;
+                container.appendChild(labelEl);
+            });
+            
+            // Empty cells at beginning of month
+            for (let i = 0; i &lt; gridData.firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'day-cell';
+                container.appendChild(emptyCell);
+            }
+            
+            // Fill in days
+            for (let day = 1; day &lt;= gridData.days; day++) {
+                const cell = document.createElement('div');
+                cell.className = `day-cell ${isotopeDate &amp;&amp; day === isotopeDate.day &amp;&amp; gridData.currentYear === isotopeDate.year ? 'today' : ''}`;
+                
+                // Day number
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                
+                // Day details (Earth date)
+                const earthDate = isotopeToEarth({ month: gridData.currentYear === currentYear ? month : 1, day: day });
+                const dayDetails = document.createElement('div');
+                dayDetails.className = 'day-details';
+                dayDetails.textContent = formatEarthDate(earthDate);
+                
+                cell.appendChild(dayNumber);
+                cell.appendChild(dayDetails);
+                container.appendChild(cell);
+            }
+        }
+
+        /* Render month header */
+        function renderMonthHeader(isotopeDate) {
+            const header = document.getElementById('month-header');
+            if (!isotopeDate) return;
+            
+            header.innerHTML = `
+                &lt;h2 class=&quot;month-title&quot;&gt;${formatIsotopeDisplay(isotopeDate)}&lt;/h2&gt;
+                &lt;p class=&quot;month-subtitle&quot;&gt;Year ${isotopeDate.year}&lt;/p&gt;
+            `;
+        }
+
+        /* Render stats card */
+        function renderStats(isotopeDate) {
+            const daysRemaining = getDaysRemaining(isotopeDate);
+            
+            document.getElementById('stats-card').innerHTML = `
+                &lt;div class=&quot;stat-item&quot;&gt;
+                    &lt;span class=&quot;stat-value&quot;&gt;${daysRemaining}&lt;/span&gt;
+                    &lt;span class=&quot;stat-label&quot;&gt;Days remaining until end of year&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;stat-item&quot;&gt;
+                    &lt;span class=&quot;stat-value&quot;&gt;${isotopeDate.month === 13 ? '29' : '28'}&lt;/span&gt;
+                    &lt;span class=&quot;stat-label&quot;&gt;Days in current month&lt;/span&gt;
+                &lt;/div&gt;
+            `;
+        }
+
+        /* Handle date input change */
+        function handleDateChange() {
+            const input = document.getElementById('date-input');
+            let selectedDateStr = input.value;
+            
+            if (!selectedDateStr) {
+                // Use current date if none selected
+                selectedDateStr = getCurrentEarthDate().toISOString().split('T')[0];
+                input.value = selectedDateStr;
+            }
+            
+            try {
+                const earthDate = new Date(selectedDateStr);
+                if (isNaN(earthDate.getTime())) {
+                    throw new Error('Invalid date');
+                }
+                
+                // Convert to Isotope date
+                isotopeDate = earthToIsotope(earthDate);
+                currentYear = isotopeDate.year;
+                month = isotopeDate.month;
+                day = isotopeDate.day;
+                
+                renderMonthHeader(isotopeDate);
+                renderCalendar(generateCalendarGrid(month, currentYear), isotopeDate);
+                renderStats(isotopeDate);
+            } catch (error) {
+                console.error('Error processing date:', error);
+                alert('Please enter a valid Earth date');
+            }
+        }
+
+        /* Initialize */
+        let isotopeDate = earthToIsotope(getCurrentEarthDate());
+        let currentYear = isotopeDate.year;
+        let month = isotopeDate.month;
+        let day = isotopeDate.day;
+
+        // Set default date to today
+        document.getElementById('date-input').value = getCurrentEarthDate().toISOString().split('T')[0];
+        
+        renderMonthHeader(isotopeDate);
+        renderCalendar(generateCalendarGrid(month, currentYear), isotopeDate);
+        renderStats(isotopeDate);
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;header&gt;
+            &lt;h1&gt;Isotope Calendar 🌍➡️🪐&lt;/h1&gt;
+            &lt;p&gt;The Mars Colony's Chronological System&lt;/p&gt;
+        &lt;/header&gt;
+
+        &lt;div class=&quot;card&quot;&gt;
+            &lt;div class=&quot;input-section&quot;&gt;
+                &lt;input type=&quot;date&quot; id=&quot;date-input&quot; onchange=&quot;handleDateChange()&quot; /&gt;
+                &lt;button onclick=&quot;handleDateChange()&quot;&gt;Convert &amp; Show Calendar&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;btn-container&quot;&gt;
+                &lt;button onclick=&quot;document.getElementById('date-input').value = '' &amp;&amp; handleDateChange()&quot;&gt;Reset to Today&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;card&quot;&gt;
+            &lt;div class=&quot;month-header&quot; id=&quot;month-header&quot;&gt;
+                &lt;h2 class=&quot;month-title&quot;&gt;Loading...&lt;/h2&gt;
+                &lt;p class=&quot;month-subtitle&quot;&gt;Year calculation&lt;/p&gt;
+            &lt;/div&gt;
+            
+            &lt;div class=&quot;calendar-grid&quot; id=&quot;calendar-grid&quot;&gt;
+                &lt;!-- Days will be inserted here --&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;card stats-card&quot; id=&quot;stats-card&quot;&gt;
+            &lt;h3&gt;Quick Stats 📊&lt;/h3&gt;
+            &lt;div class=&quot;stat-item&quot;&gt;
+                &lt;span class=&quot;stat-value&quot;&gt;152&lt;/span&gt;
+                &lt;span class=&quot;stat-label&quot;&gt;Days passed this year (example)&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-item&quot;&gt;
+                &lt;span class=&quot;stat-value&quot;&gt;213&lt;/span&gt;
+                &lt;span class=&quot;stat-label&quot;&gt;Days remaining until end of year&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;card&quot;&gt;
+            &lt;h3&gt;How It Works 📖&lt;/h3&gt;
+            &lt;ol&gt;
+                &lt;li&gt;&lt;strong&gt;Year Structure:&lt;/strong&gt; 12 months × 28 days + 1 month × 29 days = 365 days&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;Month Start:&lt;/strong&gt; Every month begins on Monday (no gaps)&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;Key Mapping:&lt;/strong&gt; Earth Day 1 = Isotope Month 1, Day 1&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;Leap Year:&lt;/strong&gt; This system doesn't account for leap years - every year has 365 days&lt;/li&gt;
+            &lt;/ol&gt;
+        &lt;/div&gt;
+
+        &lt;button class=&quot;copy-button&quot; onclick=&quot;navigator.clipboard.writeText(`Isotope Date: ${formatIsotopeDisplay(isotopeDate)}\nEarth Date: ${formatEarthDate(getCurrentEarthDate())}`)&quot;&gt;
+            Copy Both Dates 📋
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-14b-claude-sonnet-4.5-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Isotope Mars Calendar&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #1f2947 100%);
+            color: #f8fafc;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 20px;
         }
 
-        .calendar-container {
-            width: 400px;
-            max-width: 800px;
-            background-color: #1a1a2e;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .container {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #f87171;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats {
+            display: flex;
             gap: 20px;
-            margin-top: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .month {
-            background-color: #2a2a2a;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 1.5rem;
+        .stat-card {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 200px;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .day {
-            margin: 10px 0;
-            color: white;
-        }
-
-        .today-highlight {
-            background-color: #ffa500;
-        }
-
-        .counter {
-            font-size: 2.5rem;
+        .stat-value {
+            font-size: 2rem;
             font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .date-input {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            margin-bottom: 30px;
+        }
+
+        input[type=&quot;date&quot;] {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 2px solid #374151;
+            border-radius: 8px;
+            background: #1f2937;
+            color: #f8fafc;
+            min-width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        input[type=&quot;date&quot;]:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #ec4899 0%, #f59e0b 100%);
+            border: none;
+            border-radius: 8px;
+            color: #1a202c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(113, 113, 194, 0.4);
+        }
+
+        .result {
+            margin-bottom: 30px;
+            padding: 15px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .date-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 60px);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .day-header {
             text-align: center;
+            font-weight: bold;
+            color: #60a5fa;
+            padding: 10px 5px;
+            background: linear-gradient(135deg, #1e293b 0%, #1f2937 100%);
+            border-radius: 8px;
+        }
+
+        .day-label {
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+
+        .day-number {
+            width: 60px;
+            height: 60px;
+            background: #2d3749;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px;
+        }
+
+        .day-number:hover {
+            transform: scale(1.03);
+            background: #3b82f6;
+        }
+
+        .day-number.active,
+        .day-number.today {
+            background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+            color: #1a202c;
+            transform: scale(1.05);
+        }
+
+        .day-number.active::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 10px;
+            height: 10px;
+            background-red: #f87171;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(248, 113, 113, 0.5);
+        }
+
+        .day-number.today::before {
+            content: '📍';
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+
+        .day-number[data-day] {
+            background: #3b82f6;
+            color: #1a202c;
+        }
+
+        .empty {
+            list-style: none;
+            color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(7, 50px);
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;h1&gt;ISOString Mars Calendar&lt;/h1&gt;
+        
+        &lt;div class=&quot;stats&quot;&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;stat-value&quot; id=&quot;isoDate&quot;&gt;Loading...&lt;/div&gt;
+                &lt;div class=&quot;stat-label&quot;&gt;Isotope Date&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;stat-value&quot; id=&quot;earthDate&quot;&gt;Loading...&lt;/div&gt;
+                &lt;div class=&quot;stat-label&quot;&gt;Earth Date&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;stat-value&quot; id=&quot;daysRemaining&quot;&gt;0&lt;/div&gt;
+                &lt;div class=&quot;stat-label&quot;&gt;Days Remaining&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;date-input&quot;&gt;
+            &lt;input type=&quot;date&quot; id=&quot;earthDatePicker&quot; value=&quot;2026-02-20&quot;&gt;
+            &lt;button onclick=&quot;convertDate()&quot;&gt;Convert&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;result active&quot; id=&quot;result&quot;&gt;
+            &lt;div class=&quot;date-display&quot; id=&quot;isoDisplay&quot;&gt;Month 1, Day 1&lt;/div&gt;
+            
+            &lt;div class=&quot;calendar-grid&quot; id=&quot;calendarGrid&quot;&gt;
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Sun&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;7&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Mon&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;1&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Tue&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;2&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Wed&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;3&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Thu&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;4&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Fri&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;5&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Sat&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;6&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Isotope Calendar conversion
+        function earthDateToIsotope(y, m, d) {
+            // Calculate day of year (1-based)
+            const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            
+            if (isLeapYear(y)) {
+                monthDays[1] = 29;
+            }
+            
+            let dayOfYear = d;
+            for (let i = 0; i &lt; m - 1; i++) {
+                dayOfYear += monthDays[i];
+            }
+
+            // Convert to Isotope dates
+            const isoMonth = Math.floor((dayOfYear - 1) / 28) + 1;
+            const isoDay = ((dayOfYear - 1) % 28) + 1;
+
+            return { isoMonth, isoDay, dayOfYear };
+        }
+
+        // Leap year calculation (Earth years)
+        function isLeapYear(year) {
+            return (year % 4 === 0 &amp;&amp; year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        // Calculate days remaining in Isotope year
+        function daysRemainingInIsotopeYear(dayOfYear) {
+            return 365 - dayOfYear;
+        }
+
+        // Create calendar grid
+        function createCalendarGrid(isoMonth, isoDay, totalDays) {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = `
+                &lt;div class=&quot;day-header&quot;&gt;
+                    &lt;span class=&quot;day-label&quot;&gt;Sun&lt;/span&gt;
+                    &lt;span class=&quot;day-number&quot;&gt;7&lt;/span&gt;
+                &lt;/div&gt;
+            `;
+
+            // Calculate first day of month (0 = Sunday, 6 = Saturday)
+            const firstDayOfWeek = ((isoDay - 1) + 28 * (isoMonth - 1)) % 7;
+            
+            // Add empty cells at beginning
+            for (let i = 0; i &lt; firstDayOfWeek; i++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'day-header empty';
+                grid.appendChild(dayEl);
+            }
+
+            // Add actual days
+            for (let day = 1; day &lt;= totalDays; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'day-header';
+                
+                const numberDiv = document.createElement('span');
+                numberDiv.className = 'day-number';
+                
+                if (day === isoDay) {
+                    numberDiv.classList.add('active', 'today');
+                }
+                
+                if (day === isoDay &amp;&amp; isoMonth === 13) {
+                    numberDiv.dataset.day = true;
+                }
+
+                numberDiv.textContent = day;
+                dayEl.appendChild(numberDiv);
+                grid.appendChild(dayEl);
+            }
+        }
+
+        // Convert Earth date to Isotope Calendar
+        function convertDate() {
+            const datePicker = document.getElementById('earthDatePicker');
+            const isoDisplay = document.getElementById('isoDisplay');
+            const isoDate = document.getElementById('isoDate');
+            const earthDate = document.getElementById('earthDate');
+            const daysRemaining = document.getElementById('daysRemaining');
+
+            // Parse date
+            const dateStr = datePicker.value;
+            if (!dateStr) return;
+
+            const [yearStr, monthStr, dayStr] = dateStr.split('-');
+            const y = parseInt(yearStr);
+            const m = parseInt(monthStr);
+            const d = parseInt(dayStr);
+
+            // Validate date
+            if (isNaN(y) || isNaN(m) || isNaN(d)) {
+                alert('Please select a valid date');
+                return;
+            }
+
+            // Calculate Isotope date
+            const iso = earthDateToIsotope(y, m, d);
+            
+            // Calculate days remaining
+            const remaining = daysRemainingInIsotopeYear(iso.dayOfYear);
+
+            // Update displays
+            isoDisplay.textContent = `${iso.isoMonth}, Day ${iso.isoDay}`;
+            isoDate.textContent = `${iso.isoMonth}, Day ${iso.isoDay}`;
+            earthDate.textContent = `${dateStr}`;
+            daysRemaining.textContent = remaining;
+
+            // Create calendar grid
+            createCalendarGrid(iso.isoMonth, iso.isoDay, iso.isoMonth === 13 ? 29 : 28);
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            convertDate();
+        };
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-instruct-2507</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+  &lt;title&gt;Isotope Calendar&lt;/title&gt;
+  &lt;style&gt;
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #e2e8f0;
+      --accent: #6366f1;
+      --border: #334155;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--accent);
+      font-size: 1.8rem;
+    }
+    .input-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    input {
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      font-size: 1rem;
+      width: 200px;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+      background-color: var(--card-bg);
+      padding: 16px;
+      border-radius: 10px;
+    }
+    .day-header {
+      font-weight: bold;
+      text-align: center;
+      color: var(--accent);
+      font-size: 0.9rem;
+      padding: 8px 0;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+    }
+    .day-cell {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      padding: 8px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .day-cell.today {
+      background-color: var(--accent);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+    .day-cell:hover {
+      background-color: rgba(99, 102, 241, 0.1);
+    }
+    .info-bar {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #9ca3af;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+    }
+    .month-name {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+    @media (max-width: 600px) {
+      .input-group {
+        flex-direction: column;
+        align-items: center;
+      }
+      input {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;h1&gt;Isotope Calendar&lt;/h1&gt;
+
+    &lt;div class=&quot;input-group&quot;&gt;
+      &lt;input type=&quot;text&quot; id=&quot;earth-date-input&quot; placeholder=&quot;MM/DD/YYYY&quot; /&gt;
+      &lt;button onclick=&quot;convertDate()&quot;&gt;Convert&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;month-name&quot; id=&quot;current-month&quot;&gt;Month 1 - January&lt;/div&gt;
+    
+    &lt;div class=&quot;calendar-grid&quot; id=&quot;calendar-grid&quot;&gt;&lt;/div&gt;
+
+    &lt;div class=&quot;info-bar&quot;&gt;
+      Days remaining until end of year: &lt;span id=&quot;days-remaining&quot;&gt;0&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    // Earth calendar to Isotope Calendar conversion logic
+    function convertEarthToIsotope(dateStr) {
+      const [month, day, year] = dateStr.split('/').map(Number);
+      
+      // Validate input
+      if (!month || !day || !year) return { error: &quot;Invalid date format. Use MM/DD/YYYY.&quot; };
+      
+      if (month &lt; 1 || month &gt; 12 || day &lt; 1 || day &gt; 31) {
+        return { error: &quot;Invalid date range.&quot; };
+      }
+
+      // Days in each Earth month
+      const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      
+      // Adjust for leap year (February)
+      let dayOfYear = 0;
+      let isLeapYear = (year % 4 === 0 &amp;&amp; (year % 100 !== 0 || year % 400 === 0));
+      if (isLeapYear) daysInMonth[1] = 29;
+
+      // Calculate day of year
+      for (let i = 0; i &lt; month - 1; i++) {
+        dayOfYear += daysInMonth[i];
+      }
+      dayOfYear += day;
+
+      // Convert to Isotope Calendar
+      const totalDaysPerYear = 365;
+      
+      // Month calculation: first 12 months have 28 days each, so:
+      let isotopeMonth = Math.floor((dayOfYear - 1) / 28) + 1; // Day 1 of year → month 1
+      const dayInMonth = (dayOfYear - 1) % 28 + 1;
+
+      // Month 13 if needed
+      if (isotopeMonth &gt; 12) {
+        isotopeMonth = 13;
+        // Adjust day to be within 1-29 for month 13
+        const adjustedDay = (dayOfYear - 1) % 28 + 1;
+        if (adjustedDay &gt; 29) {
+          return { error: &quot;Date exceeds year limit.&quot; };
+        }
+      }
+
+      // Ensure day is valid within the month
+      if (isotopeMonth &lt;= 12 &amp;&amp; dayInMonth &gt; 28) {
+        return { error: &quot;Invalid date in Isotope Calendar.&quot; };
+      }
+
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      
+      // Month 13 name
+      if (isotopeMonth === 13) {
+        return { month: &quot;Extra Month&quot;, day: dayInMonth, year: year, isotopeMonth: 13 };
+      }
+
+      return {
+        month: monthNames[month - 1],
+        day: dayInMonth,
+        isotopeMonth: isotopeMonth,
+        year: year
+      };
+    }
+
+    // Calculate days remaining in the Isotope Calendar year (from current date to end)
+    function calculateDaysRemaining(dayOfYear) {
+      const totalDays = 365;
+      return totalDays - dayOfYear + 1;
+    }
+
+    // Update calendar display based on input
+    function convertDate() {
+      const input = document.getElementById('earth-date-input').value.trim();
+      
+      if (!input) {
+        alert(&quot;Please enter a valid date (MM/DD/YYYY).&quot;);
+        return;
+      }
+      
+      try {
+        const result = convertEarthToIsotope(input);
+        
+        if (result.error) {
+          alert(result.error);
+          return;
+        }
+
+        // Update UI
+        document.getElementById('current-month').textContent = `Month ${result.isotopeMonth} - ${result.month}`;
+        
+        // Build calendar grid
+        const grid = document.getElementById('calendar-grid');
+        grid.innerHTML = '';
+
+        // Day headers (Mon to Sun)
+        const dayHeaders = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        dayHeaders.forEach(day =&gt; {
+          const headerCell = document.createElement('div');
+          headerCell.className = 'day-header';
+          headerCell.textContent = day;
+          grid.appendChild(headerCell);
+        });
+
+        // Generate days for the current month
+        let currentDay = 1;
+        
+        // Determine if it's a regular month (1-12) or Extra Month (13)
+        const isExtraMonth = result.isotopeMonth === 13;
+        const daysInMonth = isExtraMonth ? 29 : 28;
+
+        // Fill the grid with day cells
+        for (let i = 0; i &lt; 4 * 7; i++) {
+          const cell = document.createElement('div');
+          cell.className = 'day-cell';
+          
+          if (i &lt; daysInMonth) {
+            const dayNum = currentDay;
+            currentDay++;
+            
+            // Highlight today's date
+            if (dayNum === result.day) {
+              cell.classList.add('today');
+            }
+            
+            cell.textContent = dayNum;
+          } else {
+            cell.textContent = '';
+          }
+
+          grid.appendChild(cell);
+        }
+
+        // Update days remaining
+        const dayOfYear = (result.isotopeMonth - 1) * 28 + (result.day - 1); // Day of year in Isotope Calendar
+        document.getElementById('days-remaining').textContent = calculateDaysRemaining(dayOfYear);
+
+      } catch (e) {
+        alert(&quot;Error processing date: &quot; + e.message);
+      }
+    }
+
+    // Initialize with today's date (as a default)
+    function initializeToday() {
+      const now = new Date();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const year = now.getFullYear();
+      
+      document.getElementById('earth-date-input').value = `${month}/${day}/${year}`;
+      convertDate();
+    }
+
+    // Run on load
+    window.onload = initializeToday;
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2507-claude-4.5-opus-high-reasoning-distill</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Isotope Calendar Converter&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot; style=&quot;max-width: 900px; margin: 0 auto;&quot;&gt;
+        &lt;!-- Form Section --&gt;
+        &lt;form id=&quot;dateForm&quot; style=&quot;background: rgba(28, 31, 34, 0.7); 
+                                    border-radius: 16px;
+                                    padding: 24px;
+                                    margin-bottom: 24px;
+                                    backdrop-filter: blur(10px);
+                                    background-blend-mode: overlay;&quot;&gt;
+            &lt;h2 style=&quot;color: #b8babe; margin-bottom: 16px;&quot;&gt;Earth Date Converter&lt;/h2&gt;
+            &lt;label style=&quot;display: block; color: #aaa; margin-bottom: 8px;&quot;&gt;Year (1-9999)&lt;/label&gt;
+            &lt;input type=&quot;number&quot; id=&quot;year&quot; min=&quot;1&quot; max=&quot;9999&quot; value=&quot;2026&quot; 
+                   style=&quot;padding: 10px 14px; 
+                          background: rgba(38, 41, 47, 0.7);
+                          border: 2px solid rgba(58, 63, 73, 0.5);
+                          border-radius: 10px;
+                          color: #fff;
+                          font-size: 1rem;
+                          transition: all 0.3s ease;
+                          width: 100%;
+                          margin-bottom: 16px;&quot;&gt;
+            
+            &lt;label style=&quot;display: block; color: #aaa; margin-bottom: 8px;&quot;&gt;Month (1-12)&lt;/label&gt;
+            &lt;input type=&quot;number&quot; id=&quot;month&quot; min=&quot;1&quot; max=&quot;12&quot; value=&quot;2&quot;
+                   style=&quot;padding: 10px 14px;
+                          background: rgba(38, 41, 47, 0.7);
+                          border: 2px solid rgba(58, 63, 73, 0.5);
+                          border-radius: 10px;
+                          color: #fff;
+                          font-size: 1rem;
+                          transition: all 0.3s ease;
+                          width: 100%;
+                          margin-bottom: 16px;&quot;&gt;
+            
+            &lt;label style=&quot;display: block; color: #aaa; margin-bottom: 8px;&quot;&gt;Day (1-31)&lt;/label&gt;
+            &lt;input type=&quot;number&quot; id=&quot;day&quot; min=&quot;1&quot; max=&quot;31&quot; value=&quot;20&quot;
+                   style=&quot;padding: 10px 14px;
+                          background: rgba(38, 41, 47, 0.7);
+                          border: 2px solid rgba(58, 63, 73, 0.5);
+                          border-radius: 10px;
+                          color: #fff;
+                          font-size: 1rem;
+                          transition: all 0.3s ease;
+                          width: 100%;
+                          margin-bottom: 16px;&quot;&gt;
+            
+            &lt;button type=&quot;submit&quot; 
+                    style=&quot;padding: 12px 28px;
+                           background: #5fbae9;
+                           color: #003366;
+                           border: none;
+                           border-radius: 12px;
+                           font-size: 1rem;
+                           font-weight: 500;
+                           cursor: pointer;
+                           transition: all 0.3s ease;
+                           width: 100%;
+                           margin-top: 8px;&quot;&gt;
+                Convert to Isotope Calendar
+            &lt;/button&gt;
+        &lt;/form&gt;
+
+        &lt;div class=&quot;result-section&quot; id=&quot;result&quot;&gt;&lt;/div&gt;
+
+        &lt;!-- Calendar Widget --&gt;
+        &lt;div class=&quot;calendar-widget&quot;&gt;
+            &lt;h3 style=&quot;color: #b8babe; margin-bottom: 12px;&quot;&gt;Isotope Calendar&lt;/h3&gt;
+            
+            &lt;div class=&quot;calendar-header&quot;&gt;
+                &lt;div class=&quot;month-year&quot; id=&quot;displayMonthYear&quot;&gt;March 2026&lt;/div&gt;
+                
+                &lt;div class=&quot;controls&quot;&gt;
+                    &lt;button type=&quot;button&quot; class=&quot;prev-month&quot; onclick=&quot;changeMonth(-1)&quot;&gt;←&lt;/button&gt;
+                    &lt;button type=&quot;button&quot; class=&quot;next-month&quot; onclick=&quot;changeMonth(1)&quot;&gt;→&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            
+            &lt;div class=&quot;visualization&quot; id=&quot;visualization&quot;&gt;
+                &lt;p style=&quot;color: #aaa; font-size: 0.9em;&quot;&gt;Visualizing the year structure:&lt;/p&gt;
+                &lt;div style=&quot;display: flex; flex-wrap: wrap; gap: 4px;&quot;&gt;
+                    &lt;!-- Month bars will be dynamically generated --&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            
+            &lt;h4 style=&quot;color: #7a808c; margin-top: 12px;&quot;&gt;Current month:&lt;/h4&gt;
+            
+            &lt;div class=&quot;days-container&quot; id=&quot;daysContainer&quot;&gt;
+                &lt;!-- Days will be dynamically rendered --&gt;
+            &lt;/div&gt;
+            
+            &lt;div class=&quot;days-remaining&quot;&gt;
+                &lt;span id=&quot;daysRemaining&quot;&gt;312&lt;/span&gt;
+                &lt;span class=&quot;description&quot;&gt;Days remaining until end of year&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Isotope Calendar Conversion Implementation
+
+        // Configuration
+        const CALENDAR_CONFIG = {
+            months: 13,
+            standardMonthDays: 28,
+            leapYearDays: 366,
+            yearStartDay: 'Monday',
+            weekDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        };
+
+        // Current date for demonstration
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth() + 1;
+        let currentDay = currentDate.getDate();
+
+        // ========
+        // CONVERSION FUNCTION
+        // ========
+
+        /**
+         * Manual Earth date to Isotope Calendar conversion
+         * 
+         * Calculation steps:
+         * 1. Calculate day-of-year (1-365 or 366)
+         * 2. Map to Isotope Calendar months:
+         *    - Months 1-12: always 28 days each
+         *    - Month 13: 29 days (always has the extra day)
+         * 3. Determine month and remaining days
+         * 
+         * Formula:
+         *   Let doy = day-of-year (1-based)
+         *   
+         *   If doy &lt;= 365:
+         *     month = Math.floor((doy - 1) / 28) + 1
+         *     remainingInYear = doy - 28 * (month - 1) - 1
+         *     
+         *   If doy == 366 (leap year):
+         *     month = 13
+         *     remainingInYear = 366 - 365 = 1 (but actually calculated differently)
+         * 
+         * Correction for Month 13:
+         *   After 365 days:
+         *     month = (365 - 1) // 28 + 1 = 364 // 28 + 1 = 13
+         *     dayInMonth = 365 % 28 + 1 = 28 + 1? Let's recalculate properly.
+         */
+
+        function convertEarthToIsotope(year, month, day) {
+            // Validate date
+            if (month &lt; 1 || month &gt; 12 || day &lt; 1) {
+                return null;
+            }
+
+            let doy = calculateDayOfYear(year, month, day);
+
+            // Map to Isotope Calendar
+            return {
+                year: year,
+                month: getIsotopeMonth(doy),
+                day: getIsotopeDay(doy, month),
+                dayOfWeek: getDayOfWeek(doy),
+                isLeapYear: isLeapYear(year),
+                remainingInYear: calculateRemainingDays(doy)
+            };
+        }
+
+        function calculateDayOfYear(year, month, day) {
+            const months = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30];
+            
+            let doy = 0;
+            
+            // January to previous month
+            for (let m = 1; m &lt; month - 1; m++) {
+                doy += months[m];
+            }
+            
+            // Add current day
+            doy += day;
+            
+            return doy;
+        }
+
+        function getIsotopeMonth(doy) {
+            if (doy &lt;= 0) return 1;
+            
+            // Standard year: 365 days
+            const standardYearDays = 365;
+            
+            // Calculate month: (doy-1) // 28 + 1
+            return Math.floor((doy - 1) / 28) + 1;
+        }
+
+        function getIsotopeDay(doy, month) {
+            const startOfYear = 1;
+            const standardMonthDays = 28;
+            
+            if (month === 13) {
+                // Month 13: check if year is leap
+                const leapYearStart = 365;
+                return doy - leapYearStart;
+            }
+            
+            // Regular months
+            return doy - startOfYear + 1;
+        }
+
+        function getDayOfWeek(doy) {
+            // January 1 is always Monday (day 0 = Monday)
+            return (doy - 1) % 7;
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 &amp;&amp; year % 100 !== 0) || year % 400 === 0;
+        }
+
+        function calculateRemainingDays(doy) {
+            const yearLength = isLeapYear(currentYear) ? 366 : 365;
+            return yearLength - doy + 1;
+        }
+
+        // ========
+        // CALENDAR RENDERING
+        // ========
+
+        let currentDoy = calculateDayOfYear(currentYear, currentMonth, currentDay);
+        let currentDateObj = convertEarthToIsotope(currentYear, currentMonth, currentDay);
+
+        function renderCalendar(data) {
+            const daysContainer = document.getElementById('daysContainer');
+            daysContainer.innerHTML = '';
+
+            // Build grid
+            const firstDayOfMonth = data.day;
+            const monthStartWeek = getWeekNumber(data.day);
+
+            // Create grid rows
+            for (let week = 0; week &lt; 4; week++) {
+                const row = document.createElement('div');
+                row.className = 'calendar-week';
+                
+                for (let day = 0; day &lt; 7; day++) {
+                    let cell = document.createElement('div');
+                    cell.className = `calendar-cell ${day &lt; monthStartWeek ? 'before-month' : ''}`;
+                    
+                    // Current day marker
+                    if (data.day === firstDayOfMonth &amp;&amp; week === 0 &amp;&amp; day === getDayInWeek(firstDayOfMonth)) {
+                        cell.innerHTML = '&lt;span class=&quot;current-day&quot;&gt;●&lt;/span&gt;';
+                        cell.style.backgroundColor = '#4f5d7a';
+                        cell.style.borderRadius = '8px';
+                    } else {
+                        cell.innerHTML = '';
+                    }
+                    
+                    // Day number
+                    const dayNum = calculateDay(number);
+                    if (dayNum &gt; 0) {
+                        cell.textContent = dayNum;
+                    }
+                    
+                    // Day of week label (bottom row)
+                    if (week === 3) {
+                        const weekday = CALENDAR_CONFIG.weekDays[day];
+                        cell.innerHTML = `&lt;span style=&quot;position: relative; z-index: 10;&quot;&gt;${weekday}&lt;/span&gt;`;
+                        cell.style.alignSelf = 'center';
+                    }
+                    
+                    row.appendChild(cell);
+                }
+                
+                daysContainer.appendChild(row);
+            }
+
+            // Update display
+            const monthName = getMonthName(data.month);
+            document.querySelector('.month-year').textContent = `${monthName} ${data.year}`;
+            
+            // Remaining days
+            document.getElementById('daysRemaining').textContent = data.remainingInYear;
+        }
+
+        function calculateDay(number) {
+            // Handle gap days before the actual month
+            const gapDays = number - 1;
+            if (gapDays &gt; 0) return '';
+            
+            // Calculate actual day
+            return number;
+        }
+
+        function getMonthName(month) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[month - 1];
+        }
+
+        function getDayInWeek(dayNumber) {
+            // Day 1 = Monday (index 0)
+            return (dayNumber - 1) % 7;
+        }
+
+        function getWeekNumber(dayNumber) {
+            return Math.floor((dayNumber - 1) / 7);
+        }
+
+        // ========
+        // INTERACTIVITY
+        // ========
+
+        function changeMonth(delta) {
+            const currentMonthNum = parseInt(document.getElementById('month').value) || 1;
+            const newMonth = currentMonthNum + delta;
+            
+            // Validate new month
+            if (newMonth &lt; 1) {
+                document.getElementById('month').value = 12;
+            } else if (newMonth &gt; 12) {
+                document.getElementById('month').value = 1;
+            } else {
+                document.getElementById('month').value = newMonth;
+            }
+            
+            // Update day input to match current date
+            updateDayInput();
+            
+            // Render new calendar
+            renderCalendar(currentDateObj);
+        }
+
+        function updateDayInput() {
+            const year = parseInt(document.getElementById('year').value) || currentYear;
+            const month = parseInt(document.getElementById('month').value) || currentMonth;
+            const day = calculateDayOfMonth(year, month);
+            
+            document.getElementById('day').value = day;
+        }
+
+        function calculateDayOfMonth(year, month) {
+            // Calculate days passed
+            const months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            let daysPassed = 0;
+            
+            for (let m = 1; m &lt; month; m++) {
+                months[m-1] = isLeapYear(year) &amp;&amp; m === 2 ? 29 : months[m-1];
+                daysPassed += months[m-1];
+            }
+            
+            return daysPassed + 1;
+        }
+
+        // ========
+        // INITIALIZATION
+        // ========
+
+        // Set default date
+        document.getElementById('year').value = currentYear;
+        document.getElementById('month').value = currentMonth;
+        document.getElementById('day').value = currentDay;
+
+        // Event listeners
+        document.getElementById('year').addEventListener('change', updateDayInput);
+        document.getElementById('month').addEventListener('change', updateDayInput);
+        document.getElementById('day').addEventListener('change', renderCalendar);
+
+        // Initial rendering
+        renderCalendar(currentDateObj);
+
+        // Visualization bar
+        const visContainer = document.querySelector('.visualization &gt; div');
+        for (let i = 1; i &lt;= 12; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'vis-cell';
+            if (i === 12) cell.style.backgroundColor = '#4f5d7a';
+            visContainer.appendChild(cell);
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;/think&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2507-distill-claude-opus-4.6-reasoning-abliterated</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Isotope Calendar Converter&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            background-color: #0a192f;
+            color: #e6f0ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #1a2c4d;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input[type=&quot;date&quot;] {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #4a5c7d;
+            background-color: #1e304f;
+            color: white;
+            font-size: 1rem;
+        }
+        input[type=&quot;date&quot;]:focus {
+            outline: none;
+            border-color: #6b8bbf;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
             margin-top: 20px;
         }
-    &lt;/" sandbox="allow-scripts" loading="lazy"></iframe>
+        .day-cell {
+            background-color: #1a2c4d;
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            min-height: 30px;
+            transition: all 0.2s ease;
+        }
+        .day-cell.today {
+            background-color: #4a5c7d;
+            border-left: 3px solid #6b8bbf;
+            font-weight: bold;
+        }
+        .days-remaining {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;h1&gt;Isotope Calendar Converter&lt;/h1&gt;
+        
+        &lt;div class=&quot;input-group&quot;&gt;
+            &lt;label for=&quot;earth-date&quot;&gt;Earth Date:&lt;/label&gt;
+            &lt;input type=&quot;date&quot; id=&quot;earth-date&quot;&gt;
+        &lt;/div&gt;
+
+        &lt;div id=&quot;calendar-container&quot;&gt;&lt;/div&gt;
+        &lt;div id=&quot;days-remaining&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Earth date to Isotope Calendar conversion function
+        function convertToIsotope(earthDate) {
+            // Parse the input date string into year, month, day
+            const [year, month, day] = earthDate.split('-').map(Number);
+            
+            // Calculate day of year (1-365)
+            let doy = 0;
+            // Months with 31 days: Jan, Mar, May, Jul, Aug, Oct, Dec
+            const monthsDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            
+            // Calculate days passed in previous months
+            for (let i = 0; i &lt; month - 1; i++) {
+                doy += monthsDays[i];
+            }
+            
+            // Add current day
+            doy += day;
+            
+            // Map to Isotope Calendar: 12 months of 28 days, then 29 days for Month 13
+            const isotopeMonth = Math.floor((doy - 1) / 28) + 1; // Months are 1-13
+            
+            // Calculate day in current month (0-28)
+            const isotopeDay = ((doy - 1) % 28) + 1;
+            
+            return { isotopeMonth, isotopeDay };
+        }
+
+        // Render calendar grid
+        function renderCalendar(earthDate) {
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = '';
+            
+            if (!earthDate) return;
+            
+            const { isotopeMonth, isotopeDay } = convertToIsotope(earthDate);
+            
+            // Create a 4x7 grid (28 days)
+            for (let i = 0; i &lt; 4; i++) {
+                const row = document.createElement('div');
+                row.className = 'row';
+                
+                for (let j = 0; j &lt; 7; j++) {
+                    // Calculate day index in the month
+                    const dayIndex = i * 7 + j;
+                    
+                    // Day of week: Monday=0, Sunday=6
+                    const dayOfWeek = dayIndex % 7;
+                    
+                    // Calculate actual date in Earth calendar (for display)
+                    const earthDay = dayIndex + 1;
+                    
+                    // Determine if this is today's day
+                    const isToday = earthDay === isotopeDay;
+                    
+                    // Create cell element
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    
+                    // Add today highlight
+                    if (isToday) {
+                        cell.classList.add('today');
+                    }
+                    
+                    // Add day number and Earth date
+                    cell.textContent = `${earthDay}`;
+                }
+                
+                container.appendChild(row);
+            }
+        }
+
+        // Calculate days remaining in year
+        function calculateDaysRemaining(earthDate) {
+            const { isotopeMonth, isotopeDay } = convertToIsotope(earthDate);
+            
+            // Total days in Isotope Calendar year: 365
+            const totalDays = 365;
+            const currentDayInYear = (isotopeMonth - 1) * 28 + isotopeDay;
+            
+            return totalDays - currentDayInYear;
+        }
+
+        // Event listeners
+        document.getElementById('earth-date').addEventListener('change', function() {
+            const earthDate = this.value;
+            renderCalendar(earthDate);
+            const daysRemaining = calculateDaysRemaining(earthDate);
+            document.getElementById('days-remaining').textContent = `Days remaining: ${daysRemaining}`;
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-4b-thinking-2509-genius-coder-ai-full</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;title&gt;Isotope Calendar&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0a192f;
+      color: #e6e6ff;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .container {
+      border-radius: 12px;
+      background: rgba(15, 25, 45);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      padding: 1rem;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #2d4a6b;
+      padding-bottom: 0.5rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      color: #8c9eff;
+    }
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    input[type=&quot;date&quot;] {
+      padding: 0.5rem;
+      border-radius: 6px;
+      background-color: #1a2e4f;
+      color: white;
+      border: 1px solid #3d5b7c;
+      width: 180px;
+    }
+    .today-marker {
+      font-weight: bold;
+      color: #ff9e80;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.2rem;
+      margin-top: 0.5rem;
+    }
+    .day-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: 6px;
+      background-color: #1a2e4f;
+      text-align: center;
+      padding: 0.3rem;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+    .day-cell:hover {
+      background-color: rgba(150, 198, 255, 0.2);
+    }
+    .today-day {
+      background-color: #ff9e80;
+      font-weight: bold;
+    }
+    .days-remaining {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      background-color: rgba(45, 73, 120);
+      color: #a9c8ff;
+      font-size: 1.2rem;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;h1&gt;Isotope Calendar Viewer&lt;/h1&gt;
+    &lt;div class=&quot;input-group&quot;&gt;
+      &lt;label for=&quot;earth-date&quot;&gt;Earth Date:&lt;/label&gt;
+      &lt;input type=&quot;date&quot; id=&quot;earth-date&quot; value=&quot;2026-02-20&quot; /&gt;
+    &lt;/div&gt;
+
+    &lt;div id=&quot;calendar&quot;&gt;&lt;/div&gt;
+    &lt;p class=&quot;days-remaining&quot;&gt;Days remaining: &lt;span id=&quot;days-left&quot;&gt;358&lt;/span&gt;&lt;/p&gt;
+
+    &lt;script&gt;
+      // Helper to compute day-of-year (1-based) for given year
+      function getDayOfYear(year, month, day) {
+        const daysPerMonth = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        let totalDays = day;
+        for (let m = 1; m &lt; month; m++) {
+          totalDays += daysPerMonth[m];
+          if (m === 2 &amp;&amp; isLeapYear(year)) totalDays++;
+        }
+        return totalDays;
+      }
+
+      // Leap year check
+      function isLeapYear(year) {
+        return (year % 4 === 0 &amp;&amp; year % 100 !== 0) || (year % 400 === 0);
+      }
+
+      // Convert Earth date to Isotope Calendar date
+      function earthToIsotope(dateStr) {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const dayOfYear = getDayOfYear(year, month, day);
+
+        let isotopeDay = dayOfYear;
+        for (let m = 1; m &lt; 13; m++) {
+          if (m === 13) break;
+          if (m &lt;= 12) {
+            isotopeDay -= 28;
+          } else {
+            isotopeDay -= 29;
+          }
+        }
+
+        return { month: Math.floor((isotopeDay - 1) / 28 + 1, 0), day: (isotopeDay - 1) % 28 + 1 };
+      }
+
+      // Convert Isotope date to Earth date
+      function isotopeToEarth(month, day) {
+        let year = 2026;
+        let totalDays = day - 1;
+        for (let m = 1; m &lt; month; m++) {
+          if (m === 13) totalDays += 29;
+          else totalDays += 28;
+        }
+        const daysPerMonth = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        let monthIndex = 0;
+        for (let m = 1; m &lt;= 12; m++) {
+          if (m === 1) {
+            monthIndex = 1;
+            break;
+          }
+          daysPerMonth[m] += isLeapYear(year);
+          if (totalDays &gt;= daysPerMonth[m]) {
+            totalDays -= daysPerMonth[m];
+            monthIndex++;
+          } else {
+            return [year, m, totalDays + 1];
+          }
+        }
+        return [year, monthIndex, totalDays + 1];
+      }
+
+      // Update calendar
+      function updateCalendar() {
+        const earthDate = new Date(document.getElementById('earth-date').value);
+        const earthYear = earthDate.getFullYear();
+        const earthMonth = earthDate.getMonth() + 1;
+        const earthDay = earthDate.getDate();
+
+        const isotope = earthToIsotope(earthYear.toString() + '-' + String(earthMonth).padStart(2, '0') + '-' + String(earthDay.padStart(2, '0');
+        document.getElementById('calendar').innerHTML = '';
+
+        // Compute days remaining in year
+        const daysLeft = 365 - isotope.dayOfYear;
+        document.getElementById('days-left').textContent = daysLeft;
+
+        // Render grid for current month
+        const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        let currentMonth = isotope.month;
+        const daysInMonth = currentMonth === 13 ? 29 : 28;
+
+        // Render grid
+        for (let i = 1; i &lt;= daysInMonth; i++) {
+          const cell = document.createElement('div');
+          cell.className = 'day-cell';
+          cell.textContent = i;
+          if (i === isotope.day) cell.classList.add('today-day');
+
+          // Highlight today in the grid
+          const earthToday = new Date();
+          const todayIso = earthToIsotope(earthToday.getFullYear(), earthToday.getMonth() + 1, earthToday.getDate());
+          cell.addEventListener('click', () =&gt; {
+            document.getElementById('earth-date').value = isotopeToEarth(todayIso.month, todayIso.day).join('-');
+          });
+
+          document.getElementById('calendar').appendChild(cell);
+        }
+      }
+
+      // Initialize
+      updateCalendar();
+
+      // Handle input change
+      document.getElementById('earth-date').addEventListener('change', updateCalendar);
+
+      // Set today's marker on load
+      const earthToday = new Date();
+      const todayIso = earthToIsotope(earthToday.getFullYear(), earthToday.getMonth() + 1, earthToday.getDate());
+      document.querySelector('.day-cell[data-isotope-day=&quot;' + todayIso.day + '&quot;]').classList.add('today-marker');
+    &lt;/script&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
+        </div>
+        <div class="scores no-scores">Not scored</div>
+      </div>
+<div class="card">
+        <div class="card-header">
+          <span class="model-name">qwen3-coder-next</span>
+          
+        </div>
+        <div class="card-iframe-wrapper">
+          <iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Mars Colony Isotope Calendar&lt;/title&gt;
+    &lt;style&gt;
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-mars: #fb923c; /* Mars Orange */
+            --accent-cyber: #06b6d4; /* Tech Cyan */
+            --grid-border: #334155;
+            --today-highlight: #fbbf24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent-mars);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        input[type=&quot;date&quot;] {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--grid-border);
+            background-color: #0f172a;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .calendar-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--grid-border);
+        }
+
+        .info-box {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: block;
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-cyber);
+        }
+
+        .calendar-grid-container {
+            background-color: #0f172a;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--grid-border);
+        }
+
+        .weekdays-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .weekdays-header div {
+            padding: 0.5rem 0;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            background-color: #2d3748;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .day-cell:hover {
+            background-color: #4a5568;
+        }
+
+        .day-cell.today {
+            background-color: var(--today-highlight);
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+            transform: scale(1.1);
+        }
+
+        .day-cell.extra-month {
+            color: var(--accent-mars);
+            font-style: italic;
+        }
+
+        .month-header {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .extra-month-indicator {
+            background-color: var(--accent-mars);
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;header&gt;
+            &lt;h1&gt;ISOTOPE CALENDAR&lt;/h1&gt;
+            &lt;div class=&quot;subtitle&quot;&gt;Mars Colony Chronological System&lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;div class=&quot;controls&quot;&gt;
+            &lt;label for=&quot;dateInput&quot;&gt;Select Date:&lt;/label&gt;
+            &lt;input type=&quot;date&quot; id=&quot;dateInput&quot;&gt;
+            &lt;button onclick=&quot;resetToToday()&quot; style=&quot;padding: 10px 20px; background-color: var(--accent-cyber); color: #0f172a; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;&quot;&gt;Reset to Today&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;calendar-info&quot;&gt;
+            &lt;div class=&quot;info-box&quot;&gt;
+                &lt;span class=&quot;info-label&quot;&gt;Current Month&lt;/span&gt;
+                &lt;span class=&quot;info-value&quot; id=&quot;currentMonthName&quot;&gt;Loading...&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;info-box&quot;&gt;
+                &lt;span class=&quot;info-label&quot;&gt;Day of Month&lt;/span&gt;
+                &lt;span class=&quot;info-value&quot; id=&quot;currentDayNumber&quot;&gt;--&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;info-box&quot;&gt;
+                &lt;span class=&quot;info-label&quot;&gt;Days Remaining&lt;/span&gt;
+                &lt;span class=&quot;info-value&quot; id=&quot;daysRemaining&quot;&gt;--&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;month-header&quot; id=&quot;calendarMonthHeader&quot;&gt;
+            &lt;span id=&quot;headerMonthName&quot;&gt;January&lt;/span&gt; &lt;span id=&quot;headerYear&quot;&gt;2026&lt;/span&gt;
+            &lt;span id=&quot;extraIndicator&quot; class=&quot;extra-month-indicator&quot; style=&quot;display: none;&quot;&gt;EXTRA MONTH&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;calendar-grid-container&quot;&gt;
+            &lt;div class=&quot;weekdays-header&quot;&gt;
+                &lt;div&gt;Mon&lt;/div&gt;
+                &lt;div&gt;Tue&lt;/div&gt;
+                &lt;div&gt;Wed&lt;/div&gt;
+                &lt;div&gt;Thu&lt;/div&gt;
+                &lt;div&gt;Fri&lt;/div&gt;
+                &lt;div&gt;Sat&lt;/div&gt;
+                &lt;div&gt;Sun&lt;/div&gt;
+            &lt;/div&gt;
+            
+            &lt;div class=&quot;days-grid&quot; id=&quot;calendarGrid&quot;&gt;
+                &lt;!-- Grid generated by JS --&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;footer&gt;
+            &lt;p&gt;Isotope Calendar System v1.0 | 28-Day Standard Months + 29-Day Extra Month&lt;/p&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // --- Configuration &amp; Constants ---
+        const MONTH_NAMES = [
+            &quot;Sol 1&quot;, &quot;Sol 2&quot;, &quot;Sol 3&quot;, &quot;Sol 4&quot;, 
+            &quot;Sol 5&quot;, &quot;Sol 6&quot;, &quot;Sol 7&quot;, &quot;Sol 8&quot;, 
+            &quot;Sol 9&quot;, &quot;Sol 10&quot;, &quot;Sol 11&quot;, &quot;Sol 12&quot;,
+            &quot;Extra Month&quot;
+        ];
+
+        const WEEKDAY_NAMES = [&quot;Mon&quot;, &quot;Tue&quot;, &quot;Wed&quot;, &quot;Thu&quot;, &quot;Fri&quot;, &quot;Sat&quot;, &quot;Sun&quot;];
+
+        // Helper: Check if a year is leap (Gregorian rules)
+        function isLeapYear(year) {
+            return (year % 4 === 0 &amp;&amp; year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        // Helper: Get days in a specific Earth month
+        function getDaysInEarthMonth(month, year) {
+            if (month === 2) return isLeapYear(year) ? 29 : 28;
+            if ([4, 6, 9, 11].includes(month)) return 30;
+            return 31;
+        }
+
+        // Helper: Calculate Day of Year (1-365 / 1-366)
+        function getDayOfYear(dateObj) {
+            const year = dateObj.getFullYear();
+            const month = dateObj.getMonth(); // 0-indexed
+            const day = dateObj.getDate();
+            
+            let doy = day;
+            for (let i = 0; i &lt; month; i++) {
+                doy += getDaysInEarthMonth(i + 1, year);
+            }
+            return doy;
+        }
+
+        // --- Core Conversion Logic ---
+        
+        /**
+         * Converts an Earth Date to Isotope Calendar Data
+         * @param {Date} earthDate 
+         * @returns {Object} Calendar Data
+         */
+        function convertToIsotope(earthDate) {
+            const year = earthDate.getFullYear();
+            const monthIndex = earthDate.getMonth(); // 0-11
+            const day = earthDate.getDate();
+
+            // 1. Calculate Day of Year (1-based)
+            let dayOfYear = getDayOfYear(earthDate);
+
+            // Handle Leap Year adjustment if before March (Leap day is day 60 or 61)
+            // If it's a leap year and we are past Feb 28, the DOY includes the leap day.
+            // Our Isotope calendar has NO leap days in the standard months. 
+            // The extra month absorbs the &quot;extra&quot; time.
+            
+            // Earth Year: 365 days -&gt; Isotope Year: 13 * 28 + 1 = 365 days
+            // Earth Year: 366 days (Leap) -&gt; Isotope Year: 365 days + 1 day in Extra Month
+            
+            let isoYear = year;
+            
+            // Logic for Leap Years:
+            // If it's a leap year and the date is March 1st or later, DayOfYear includes Feb 29th.
+            // Since our calendar has exactly 365 days (no leap day), we shift the extra day into the Extra Month.
+            
+            let isLeapYearFlag = isLeapYear(year);
+            let adjustedDayOfYear = dayOfYear;
+
+            if (isLeapYearFlag &amp;&amp; dayOfYear &gt; 59) {
+                // It's a leap year and we are past Feb 29
+                // Shift everything after Feb 29 by +1 day to fill the gap
+                adjustedDayOfYear = dayOfYear + 1;
+            }
+
+            // Calculate Month and Day
+            let isoMonthIndex = Math.floor((adjustedDayOfYear - 1) / 28);
+            let isoDay = (adjustedDayOfYear - 1) % 28 + 1;
+
+            const monthName = MONTH_NAMES[isoMonthIndex];
+            
+            return {
+                year: isoYear,
+                monthIndex: isoMonthIndex,
+                day: isoDay,
+                monthName: monthName,
+                isExtraMonth: isoMonthIndex === 12
+            };
+        }
+
+        // --- UI Rendering Logic ---
+
+        const dateInput = document.getElementById('dateInput');
+        const calendarGrid = document.getElementById('calendarGrid');
+        const headerMonthName = document.getElementById('headerMonthName');
+        const headerYear = document.getElementById('headerYear');
+        const extraIndicator = document.getElementById('extraIndicator');
+        
+        // Info Boxes
+        const infoMonthName = document.getElementById('currentMonthName');
+        const infoDayNumber = document.getElementById('currentDayNumber');
+        const infoDaysRemaining = document.getElementById('daysRemaining');
+
+        function renderCalendar(isoDate) {
+            // Update Header
+            headerMonthName.textContent = isoDate.monthName;
+            headerYear.textContent = isoDate.year;
+            
+            if (isoDate.isExtraMonth) {
+                extraIndicator.style.display = 'inline';
+            } else {
+                extraIndicator.style.display = 'none';
+            }
+
+            // Update Info Boxes
+            infoMonthName.textContent = isoDate.monthName;
+            infoDayNumber.textContent = isoDate.day;
+
+            // Calculate Days Remaining
+            const totalDaysInYear = 365;
+            const currentDayOfYear = ((isoDate.monthIndex * 28) + isoDate.day);
+            const daysRemaining = totalDaysInYear - currentDayOfYear;
+            infoDaysRemaining.textContent = daysRemaining;
+
+            // Render Grid
+            calendarGrid.innerHTML = '';
+            
+            const daysInMonth = isoDate.isExtraMonth ? 29 : 28;
+            
+            // Create 7x4 Grid (28 days)
+            // Since Month 1 starts on Monday, Day 1 is always at Grid Index 0.
+            
+            for (let i = 1; i &lt;= daysInMonth; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                
+                // Check if this is &quot;Today&quot; based on the input date
+                // We compare the calculated ISO date with the input date to highlight correctly
+                // But visually, we just need to know which day number matches the selected date's day
+                
+                if (i === isoDate.day) {
+                    cell.classList.add('today');
+                }
+
+                // Add extra styling for Extra Month days
+                if (isoDate.isExtraMonth) {
+                    cell.classList.add('extra-month');
+                }
+
+                cell.textContent = i;
+                calendarGrid.appendChild(cell);
+            }
+        }
+
+        function updateCalendar(dateStr) {
+            let dateObj;
+            
+            if (!dateStr) {
+                // Default to today if no input
+                dateObj = new Date();
+            } else {
+                dateObj = new Date(dateStr);
+            }
+
+            const isoData = convertToIsotope(dateObj);
+            renderCalendar(isoData);
+        }
+
+        function resetToToday() {
+            updateCalendar(null);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () =&gt; {
+            // Set input to today by default
+            const todayStr = new Date().toISOString().split('T')[0];
+            dateInput.valueAsDate = new Date();
+            
+            updateCalendar(todayStr);
+
+            // Event Listener for Input Change
+            dateInput.addEventListener('change', (e) =&gt; {
+                if (e.target.value) {
+                    updateCalendar(e.target.value);
+                }
+            });
+        });
+
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" sandbox="allow-scripts" loading="lazy"></iframe>
         </div>
         <div class="scores no-scores">Not scored</div>
       </div>
