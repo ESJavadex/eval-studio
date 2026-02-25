@@ -6,9 +6,22 @@
  * that and returns only the code.
  */
 
-/** Strip <think>...</think> blocks that thinking models emit. */
+/** Strip <think>...</think> blocks that thinking models emit.
+ *  Also handles the case where the opening <think> tag is missing
+ *  (some providers strip it) but </think> is present.
+ */
 function stripThinkBlocks(text: string): string {
-  return text.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+  // First, strip fully-closed <think>...</think> blocks
+  let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+
+  // If there's still a </think> without a matching <think>, strip everything
+  // before (and including) the </think> tag — it's orphaned thinking content
+  const orphanClose = cleaned.indexOf("</think>");
+  if (orphanClose !== -1) {
+    cleaned = cleaned.slice(orphanClose + "</think>".length).trim();
+  }
+
+  return cleaned;
 }
 
 /** Extract content from <answer>...</answer> if present. */
@@ -20,9 +33,10 @@ function extractAnswerBlock(text: string): string | null {
 /**
  * Find the LAST html fenced code block that contains a full HTML document.
  * Falls back to the last html fence, then any last fence.
+ * Also handles unclosed fences (model hit max_tokens mid-generation).
  */
 function findLastHtmlFence(text: string): string | null {
-  // Collect all html fenced blocks
+  // Collect all html fenced blocks (closed)
   const htmlFences: string[] = [];
   const htmlPattern = /```html\s*\n([\s\S]*?)```/gi;
   let m: RegExpExecArray | null;
@@ -35,6 +49,14 @@ function findLastHtmlFence(text: string): string | null {
     const fullDoc = [...htmlFences].reverse().find(looksLikeFullHtml);
     return fullDoc ?? htmlFences[htmlFences.length - 1];
   }
+
+  // No closed fences found — check for an unclosed ```html block
+  // (model was cut off by max_tokens before closing the fence)
+  const unclosedMatch = text.match(/```html\s*\n([\s\S]+)$/i);
+  if (unclosedMatch?.[1]) {
+    return unclosedMatch[1].trim();
+  }
+
   return null;
 }
 

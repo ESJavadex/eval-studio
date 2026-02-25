@@ -3,6 +3,7 @@ import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 import { getModelById } from "@/lib/models";
 import { listBenchmarks, runBenchmark } from "@/lib/benchmark-runner";
+import { safeModelDir } from "@/lib/types";
 import type { RunResult } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -27,6 +28,8 @@ export async function POST(req: NextRequest) {
     const benchmarks = listBenchmarks();
     const results: RunResult[] = [];
 
+    const safeMid = safeModelDir(modelId);
+
     for (const benchmark of benchmarks) {
       try {
         const { rawResponse, extractedCode, durationMs } = await runBenchmark(
@@ -39,7 +42,7 @@ export async function POST(req: NextRequest) {
           "public",
           "results",
           benchmark.id,
-          modelId
+          safeMid
         );
         if (!existsSync(resultDir)) {
           mkdirSync(resultDir, { recursive: true });
@@ -58,7 +61,7 @@ export async function POST(req: NextRequest) {
           modelName: model.name,
           rawResponse,
           extractedCode,
-          resultPath: `/results/${benchmark.id}/${modelId}/index.html`,
+          resultPath: `/results/${benchmark.id}/${safeMid}/index.html`,
           durationMs,
           success: true,
         });

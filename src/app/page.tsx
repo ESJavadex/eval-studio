@@ -8,6 +8,7 @@ import PastResults from "@/components/PastResults";
 import TabBar from "@/components/TabBar";
 import Scoreboard from "@/components/Scoreboard";
 import type { BenchmarkInfo, RunResult, Score, ScoringCriteria, StreamingState } from "@/lib/types";
+import { safeModelDir } from "@/lib/types";
 import { extractCodePartial } from "@/lib/code-extractor";
 
 interface ModelInfo {
@@ -57,6 +58,9 @@ export default function Home() {
   const [loadingModels, setLoadingModels] = useState<Set<string>>(new Set());
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Backend connection status
+  const [backendConnected, setBackendConnected] = useState(false);
+
   // Fetch model loaded states
   const refreshModelStates = useCallback(async () => {
     try {
@@ -71,6 +75,18 @@ export default function Home() {
     } catch {
       // silently ignore
     }
+  }, []);
+
+  // Health check: ping backend every 10s
+  useEffect(() => {
+    const checkBackend = () => {
+      fetch("/api/benchmarks", { method: "HEAD" })
+        .then((r) => setBackendConnected(r.ok))
+        .catch(() => setBackendConnected(false));
+    };
+    checkBackend();
+    const hcInterval = setInterval(checkBackend, 10000);
+    return () => clearInterval(hcInterval);
   }, []);
 
   useEffect(() => {
@@ -88,7 +104,8 @@ export default function Home() {
       setPastResults(p);
       setScores(s);
       setCriteria(c);
-    });
+      setBackendConnected(true);
+    }).catch(() => setBackendConnected(false));
 
     refreshModelStates();
     // Poll every 5s
@@ -553,7 +570,7 @@ export default function Home() {
         modelName: modelNames[modelId] ?? modelId,
         rawResponse: "",
         extractedCode: "",
-        resultPath: `/results/${benchmarkId}/${modelId}/index.html`,
+        resultPath: `/results/${benchmarkId}/${safeModelDir(modelId)}/index.html`,
         durationMs: 0,
         success: true,
       }))
@@ -570,7 +587,7 @@ export default function Home() {
         modelName: modelNames[modelId] ?? modelId,
         rawResponse: "",
         extractedCode: "",
-        resultPath: `/results/${benchmarkId}/${modelId}/index.html`,
+        resultPath: `/results/${benchmarkId}/${safeModelDir(modelId)}/index.html`,
         durationMs: 0,
         success: true,
       }))
@@ -607,7 +624,17 @@ export default function Home() {
           </div>
           <div>
             <h1 className="text-sm font-bold">Eval Studio</h1>
-            <p className="text-[10px] text-zinc-500">LLM Benchmarking</p>
+            <div className="flex items-center gap-1.5">
+              <span
+                className={`inline-block w-2 h-2 rounded-full ${
+                  backendConnected ? "bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]" : "bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]"
+                }`}
+                title={backendConnected ? "Backend connected" : "Backend disconnected"}
+              />
+              <p className="text-[10px] text-zinc-500">
+                {backendConnected ? "Connected" : "Disconnected"}
+              </p>
+            </div>
           </div>
         </div>
 

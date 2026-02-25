@@ -57,8 +57,10 @@ export async function GET(req: NextRequest) {
   for (const dir of modelDirs) {
     const htmlPath = join(benchmarkDir, dir.name, "index.html");
     const html = readFileSync(htmlPath, "utf-8");
+    // Reverse the safeModelDir encoding for matching scores
+    const originalModelId = dir.name.replace(/--/g, "/");
     const modelScore = scores.find(
-      (s) => s.benchmarkId === benchmarkId && s.modelId === dir.name
+      (s) => s.benchmarkId === benchmarkId && (s.modelId === dir.name || s.modelId === originalModelId)
     );
     cards.push({
       modelId: dir.name,

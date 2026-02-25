@@ -49,3 +49,11 @@ export interface StreamingState {
   tokenCount: number;
   startTime: number;
 }
+
+/**
+ * Sanitize a model ID for use as a filesystem directory name.
+ * Replaces slashes with double-dashes to avoid nested directories.
+ */
+export function safeModelDir(modelId: string): string {
+  return modelId.replace(/\//g, "--");
+}
